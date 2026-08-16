@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wedding Invitation</title>
+<meta name="description" content="Together with their families — you are warmly invited to our wedding.">
+<meta name="theme-color" content="#8E2436">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="You are warmly invited">
+<meta property="og:description" content="Four days of celebration. Tap to open our invitation.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='%238E2436'/><text x='16' y='23' font-size='20' font-family='Georgia,serif' font-style='italic' text-anchor='middle' fill='%23F0D48A'>%26</text></svg>">
+</head>
+<body>
+
+<!-- ====================== SVG SPRITE (ceremony artwork) ====================== -->
+<svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    <!-- ---------- HALDI: turmeric bowl, marigolds, leaves ---------- -->
+    <symbol id="art-haldi" viewBox="0 0 120 120">
+      <g fill="none" stroke="#7A4A0E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- bowl -->
+        <path d="M24 62 Q60 104 96 62 Z" fill="#E9B24B"/>
+        <ellipse cx="60" cy="62" rx="36" ry="10" fill="#F6D687"/>
+        <!-- turmeric heap -->
+        <path d="M38 60 Q46 48 60 50 Q76 47 82 60" fill="#E5A129"/>
+        <!-- drip -->
+        <path d="M60 72 q3 8 0 12 q-3 -4 0 -12" fill="#E5A129" stroke-width="1.6"/>
+        <!-- base -->
+        <path d="M46 96 h28"/>
+        <!-- marigold left -->
+        <g transform="translate(28,32)">
+          <circle cx="0" cy="0" r="11" fill="#F0A93A"/>
+          <circle cx="0" cy="0" r="6" fill="#E28A1E"/>
+          <g stroke-width="1.6">
+            <path d="M0-11v-5M0 11v5M-11 0h-5M11 0h5M-8-8l-3.5-3.5M8 8l3.5 3.5M8-8l3.5-3.5M-8 8l-3.5 3.5"/>
+          </g>
+        </g>
+        <!-- marigold right -->
+        <g transform="translate(94,40)">
+          <circle cx="0" cy="0" r="8.5" fill="#F0A93A"/>
+          <circle cx="0" cy="0" r="4.5" fill="#E28A1E"/>
+          <g stroke-width="1.4">
+            <path d="M0-8.5v-4M0 8.5v4M-8.5 0h-4M8.5 0h4M-6-6l-3-3M6 6l3 3M6-6l3-3M-6 6l-3 3"/>
+          </g>
+        </g>
+        <!-- leaves -->
+        <path d="M14 78 q10 -6 18 2 q-10 6 -18 -2Z" fill="#7F9245"/>
+        <path d="M106 82 q-10 -6 -18 2 q10 6 18 -2Z" fill="#7F9245"/>
+      </g>
+    </symbol>
+
+    <!-- ---------- MEHNDI: hennaed hand ---------- -->
+    <symbol id="art-mehndi" viewBox="0 0 120 120">
+      <g fill="none" stroke="#4A5626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- palm + fingers -->
+        <path d="M38 108 V70 q0-10 8-13 V32 a5 5 0 0 1 10 0 v22 V26 a5 5 0 0 1 10 0 v28 V30 a5 5 0 0 1 10 0 v26 V40 a5 5 0 0 1 10 0 v34 q0 22-14 34 Z"
+              fill="#EBD9AE"/>
+        <!-- thumb -->
+        <path d="M38 74 L26 62 a5 5 0 0 1 7-7 l9 9" fill="#EBD9AE"/>
+        <!-- mandala -->
+        <circle cx="58" cy="84" r="11" fill="#8B6A2B" fill-opacity=".22"/>
+        <circle cx="58" cy="84" r="5.5"/>
+        <g stroke-width="1.5">
+          <path d="M58 73v-5M58 95v5M47 84h-5M69 84h5M50.5 76.5l-3.5-3.5M65.5 91.5l3.5 3.5M65.5 76.5l3.5-3.5M50.5 91.5l-3.5 3.5"/>
+        </g>
+        <!-- paisley vine down the fingers -->
+        <g stroke-width="1.5">
+          <path d="M52 60 q6-6 4-14 q-6 2-4 14Z"/>
+          <path d="M64 56 q6-6 4-14 q-6 2-4 14Z"/>
+          <path d="M76 62 q6-5 5-12 q-6 2-5 12Z"/>
+          <circle cx="46" cy="96" r="1.6" fill="#4A5626"/>
+          <circle cx="70" cy="98" r="1.6" fill="#4A5626"/>
+          <circle cx="58" cy="104" r="1.6" fill="#4A5626"/>
+        </g>
+      </g>
+    </symbol>
+
+    <!-- ---------- SANGEET: dhol + notes ---------- -->
+    <symbol id="art-sangeet" viewBox="0 0 120 120">
+      <g fill="none" stroke="#5E1622" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <g transform="rotate(-12 60 68)">
+          <!-- barrel -->
+          <path d="M32 48 q28-10 56 0 v40 q-28 10-56 0 Z" fill="#C0623F"/>
+          <ellipse cx="32" cy="68" rx="7" ry="20" fill="#F1DCB6"/>
+          <ellipse cx="88" cy="68" rx="7" ry="20" fill="#F1DCB6"/>
+          <!-- lacing -->
+          <g stroke-width="1.5">
+            <path d="M36 52 L84 52M36 84 L84 84"/>
+            <path d="M40 52 l6 32M52 50 l4 36M68 50 l-4 36M80 52 l-6 32"/>
+          </g>
+        </g>
+        <!-- beat notes -->
+        <g stroke-width="2">
+          <path d="M96 34 v-14 l10-3 v14" />
+          <circle cx="93" cy="34" r="3.4" fill="#5E1622"/>
+          <circle cx="103" cy="31" r="3.4" fill="#5E1622"/>
+          <path d="M22 30 v-12"/>
+          <circle cx="19" cy="30" r="3" fill="#5E1622"/>
+        </g>
+      </g>
+    </symbol>
+
+    <!-- ---------- WEDDING: mandap, kalash, garland ---------- -->
+    <symbol id="art-wedding" viewBox="0 0 120 120">
+      <g fill="none" stroke="#5E1622" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- canopy -->
+        <path d="M18 40 Q60 8 102 40" fill="#E7C778" fill-opacity=".55"/>
+        <path d="M18 40 q10 12 21 0 q10 12 21 0 q10 12 21 0 q10 12 21 0"/>
+        <!-- pillars -->
+        <path d="M20 40 V104M100 40 V104"/>
+        <path d="M12 104h16M92 104h16"/>
+        <!-- garland swag -->
+        <path d="M24 48 Q60 74 96 48" stroke-dasharray="1.5 6" stroke-width="3" stroke="#E8A33D"/>
+        <!-- kalash -->
+        <path d="M48 96 q-4-16 12-20 q16 4 12 20 Z" fill="#D9A648"/>
+        <path d="M44 76 h32"/>
+        <!-- coconut + flame -->
+        <ellipse cx="60" cy="70" rx="7" ry="6" fill="#8B5E2A"/>
+        <path d="M60 62 q6-8 0-14 q-6 6 0 14Z" fill="#E8A33D"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="phone">
+
+  <!-- ============================== COVER ============================== -->
+  <section class="cover" id="cover" data-screen-label="Cover">
+
+    <!-- marigold + bell garland strip -->
+    <div class="garland" aria-hidden="true">
+      <svg width="100%" height="64" preserveAspectRatio="none">
+        <defs>
+          <pattern id="garlandTile" width="72" height="64" patternUnits="userSpaceOnUse">
+            <path d="M0 8 Q36 30 72 8" fill="none" stroke="#9A6B23" stroke-width="1.5" opacity=".65"/>
+            <g>
+              <circle cx="12" cy="17" r="7.5" fill="#E8A33D"/>
+              <circle cx="12" cy="17" r="3.8" fill="#D0821B"/>
+              <circle cx="36" cy="24" r="9" fill="#EFB44E"/>
+              <circle cx="36" cy="24" r="4.5" fill="#D0821B"/>
+              <circle cx="60" cy="17" r="7.5" fill="#E8A33D"/>
+              <circle cx="60" cy="17" r="3.8" fill="#D0821B"/>
+              <circle cx="24" cy="22" r="4.5" fill="#C4453F"/>
+              <circle cx="48" cy="22" r="4.5" fill="#C4453F"/>
+            </g>
+            <!-- hanging bells -->
+            <g stroke="#9A6B23" stroke-width="1.3" fill="none">
+              <path d="M24 26 v10M48 26 v14"/>
+            </g>
+            <g fill="#D9A648" stroke="#8A5F1E" stroke-width="1.1">
+              <path d="M20 36 q4-7 8 0 q1 3-4 3 q-5 0-4-3Z"/>
+              <circle cx="24" cy="41.5" r="1.6"/>
+              <path d="M44 40 q4-7 8 0 q1 3-4 3 q-5 0-4-3Z"/>
+              <circle cx="48" cy="45.5" r="1.6"/>
+            </g>
+            <!-- leaf pair -->
+            <path d="M36 34 q7-4 12 1 q-7 4-12-1Z" fill="#7F9245" opacity=".9"/>
+            <path d="M36 34 q-7-4-12 1 q7 4 12-1Z" fill="#7F9245" opacity=".9"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="64" fill="#F7E7C4"/>
+        <rect width="100%" height="64" fill="url(#garlandTile)"/>
+      </svg>
+    </div>
+
+    <div class="petals" data-petals aria-hidden="true"></div>
+
+    <div class="cover-body">
+      <p class="eyebrow eyebrow--maroon">You are warmly invited</p>
+
+      <a class="seal" href="#invitation" aria-label="Reveal the invitation">
+        <span class="seal-amp">&amp;</span>
+        <span class="seal-initials"><span data-w="brideInitial">B</span> &amp; <span data-w="groomInitial">G</span></span>
+      </a>
+
+      <a class="tap-pill" href="#invitation" aria-hidden="true" tabindex="-1">↓ Tap to reveal</a>
+    </div>
+  </section>
+
+  <!-- ============================ INVITATION ============================ -->
+  <section class="invitation reveal" id="invitation" data-screen-label="Invitation">
+    <p class="script-muted">Together with their families</p>
+
+    <h1 class="couple-name" data-w="brideName">[Bride Name]</h1>
+    <div class="amp">&amp;</div>
+    <h1 class="couple-name" data-w="groomName">[Groom Name]</h1>
+
+    <p class="parents">
+      <span data-w="brideParents">D/o [Bride's Parents]</span><br>
+      <span data-w="groomParents">S/o [Groom's Parents]</span>
+    </p>
+
+    <div class="whenwhere">
+      <div class="ww-cell">
+        <p class="micro-label">When</p>
+        <p class="ww-value" data-w="weddingDateLabel">[11 December 2026]</p>
+      </div>
+      <div class="ww-rule"></div>
+      <div class="ww-cell">
+        <p class="micro-label">Where</p>
+        <p class="ww-value"><span data-w="venue">[Venue]</span>,<br><span data-w="city">[City]</span></p>
+      </div>
+    </div>
+
+    <p class="hashtag">#<span data-w="hashtag">[COUPLEHASHTAG]</span></p>
+  </section>
+
+  <!-- ============================ FESTIVITIES ============================ -->
+  <section class="festivities reveal" id="festivities" data-screen-label="Festivities">
+    <header class="section-head">
+      <p class="eyebrow">Four days of celebration</p>
+      <h2 class="section-title">The Festivities</h2>
+    </header>
+
+    <!-- timeline is rendered from config.js -->
+    <div class="timeline" data-timeline></div>
+  </section>
+
+  <!-- =========================== PICK YOUR SIDE =========================== -->
+  <section class="sides reveal" id="sides" data-screen-label="Pick your side">
+    <p class="eyebrow">A little friendly rivalry</p>
+    <h2 class="section-title section-title--sm">Pick your side</h2>
+    <p class="lede">Whose side are you cheering for? Tap to join — your pick rides along with your RSVP.</p>
+
+    <div class="side-row">
+      <button class="side" data-side="bride" aria-pressed="false">
+        <span class="side-badge">You’re in</span>
+        <span class="side-icon side-icon--bride" aria-hidden="true">♀</span>
+        <span class="side-team">Team Bride</span>
+        <span class="side-name" data-w="brideShort">[Bride]</span>
+      </button>
+
+      <span class="vs">vs</span>
+
+      <button class="side" data-side="groom" aria-pressed="false">
+        <span class="side-badge">You’re in</span>
+        <span class="side-icon side-icon--groom" aria-hidden="true">♂</span>
+        <span class="side-team">Team Groom</span>
+        <span class="side-name" data-w="groomShort">[Groom]</span>
+      </button>
+    </div>
+
+    <p class="team-msg" data-team-msg aria-live="polite">Tap a side to join the fun.</p>
+  </section>
+
+  <!-- ============================= COUNTDOWN ============================= -->
+  <section class="countdown reveal" id="countdown" data-screen-label="Countdown" hidden>
+    <p class="eyebrow eyebrow--gold">Counting down to the vows</p>
+    <div class="clock" data-clock role="timer" aria-live="off">
+      <div class="unit"><span class="unit-num" data-days>00</span><span class="unit-label">Days</span></div>
+      <div class="unit"><span class="unit-num" data-hours>00</span><span class="unit-label">Hours</span></div>
+      <div class="unit"><span class="unit-num" data-mins>00</span><span class="unit-label">Mins</span></div>
+      <div class="unit"><span class="unit-num" data-secs>00</span><span class="unit-label">Secs</span></div>
+    </div>
+    <p class="clock-note" data-clock-note hidden>The celebrations have begun 🎉</p>
+  </section>
+
+  <!-- =============================== RSVP =============================== -->
+  <section class="rsvp reveal" id="rsvp" data-screen-label="RSVP">
+    <header class="section-head">
+      <p class="eyebrow">Will you join us?</p>
+      <h2 class="section-title">RSVP</h2>
+    </header>
+
+    <label class="micro-label micro-label--block" for="rsvp-name">Your name</label>
+    <input class="field" id="rsvp-name" type="text" name="name" autocomplete="name" placeholder="Full name" data-name>
+
+    <p class="micro-label micro-label--block mt">Which celebrations? <span class="soft">(tap all that apply)</span></p>
+    <div class="chips" data-chips></div>
+
+    <p class="micro-label micro-label--block mt">Number of guests</p>
+    <div class="stepper">
+      <button class="step" data-guests="-1" aria-label="One guest fewer">−</button>
+      <span class="step-value" data-guest-count aria-live="polite">1</span>
+      <button class="step" data-guests="1" aria-label="One guest more">+</button>
+    </div>
+
+    <a class="wa-btn" data-whatsapp href="#" target="_blank" rel="noopener">
+      <span class="wa-icon" aria-hidden="true">✆</span>
+      Send RSVP on WhatsApp
+    </a>
+    <p class="call-line">Prefer to call? <a data-tel href="#">Call the family</a></p>
+  </section>
+
+  <!-- ============================= BLESSING ============================= -->
+  <section class="blessing" id="blessing" data-screen-label="Blessing">
+    <div class="petals petals--dark" data-petals aria-hidden="true"></div>
+    <div class="blessing-body">
+      <p class="om" aria-hidden="true">ॐ</p>
+      <p class="blessing-text">With the blessings of our elders and the warmth of your presence.</p>
+      <h2 class="blessing-names"><span data-w="brideShort">[Bride]</span> &amp; <span data-w="groomShort">[Groom]</span></h2>
+      <p class="madewith">Made with love</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============================ REVEAL MODAL ============================ -->
+<div class="backdrop" data-backdrop hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" data-modal>
+    <button class="modal-close" data-close aria-label="Close">×</button>
+
+    <!-- the card underneath -->
+    <div class="card" data-card>
+      <p class="card-kicker">Reveal ▸</p>
+      <p class="card-lead">Join us to celebrate our</p>
+      <h3 class="card-title" id="modal-title" data-card-title>Haldi</h3>
+      <p class="card-sub">Ceremony</p>
+      <div class="card-art">
+        <svg viewBox="0 0 120 120" data-card-art><use href="#art-haldi"></use></svg>
+      </div>
+      <p class="card-time" data-card-time>At 6:00 PM</p>
+      <p class="card-where" data-card-where></p>
+      <p class="card-cta" data-card-cta></p>
+    </div>
+
+    <!-- the game layer on top of it -->
+    <div class="veil" data-veil hidden>
+      <p class="veil-hint" data-veil-hint></p>
+      <div class="veil-stage" data-veil-stage></div>
+      <button class="veil-skip" data-skip>Skip &amp; reveal →</button>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="games.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
