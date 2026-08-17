@@ -114,6 +114,30 @@ function findRowById(sheet, id) {
   return -1;
 }
 
+/**
+ * DIAGNOSTIC — run this from the editor (select whereAmI → Run) and read the
+ * execution log. It needs no deployment, so it always reflects the code in
+ * front of you rather than whatever version is currently published.
+ *
+ * It answers the only question that matters when the sheet looks empty:
+ * which file is this script actually writing to?
+ */
+function whereAmI() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    Logger.log('NOT BOUND to a spreadsheet. This is a standalone script — ' +
+               'open the sheet you want, use Extensions > Apps Script, and ' +
+               'paste this file in there instead.');
+    return;
+  }
+  Logger.log('Writing to file: ' + ss.getName());
+  Logger.log('URL: ' + ss.getUrl());
+  var names = ss.getSheets().map(function (sh) {
+    return sh.getName() + ' (' + sh.getLastRow() + ' rows)';
+  });
+  Logger.log('Tabs: ' + names.join(' | '));
+}
+
 function json(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
