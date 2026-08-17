@@ -69,13 +69,16 @@ window.WEDDING = {
      Optional per-event fields:
        venue          overrides the default venue above
        venueShort     shorter form for the timeline, where the venue repeats
+       kind           the small label under the card title (default "Ceremony")
+       cardLead       the line above it (default "Join us to celebrate our")
        note           a plain practical line (logistics, not poetry)
        dressCode      shown as "Dress code: …"
        durationHours  overrides eventDurationHours for the calendar file
        dayLabel       overrides the weekday/date line, which is otherwise
                       derived from `date` so the two can never disagree
 
-     `game` is one of 'thaal' | 'scratch' | 'trace' | 'dhol' | 'knots' | 'akshata'
+     `game` is one of 'thaal' | 'scratch' | 'trace' | 'dhol' | 'sights' | 'beat'
+     | 'knots' | 'akshata'
      | null (null = no game,
      the card opens straight away).
 
@@ -154,15 +157,17 @@ window.WEDDING = {
       title: 'Sightseeing',
       subtitle: 'A day out around Palakkad',
       date: '2026-12-27T14:00:00',
-      timeLabel: '[2:00 PM] onwards',
+      timeLabel: '2:00 PM onwards',
       venue: 'Around Palakkad',
       mapUrl: null,
+      kind: 'Day out',
+      cardLead: 'Join us for our',
       quote: 'Forts, palm groves and the long green quiet.',
-      thumbLabel: 'View card',
-      cta: null,
-      game: null,
-      accent: '#7C8A5A',
-      tint: '#9AA96F',
+      thumbLabel: 'Find the sights',
+      cta: 'Find the four sights',
+      game: 'sights',
+      accent: '#6E7B3C',
+      tint: '#8FA24E',
       art: 'sights',
     },
     {
@@ -170,15 +175,17 @@ window.WEDDING = {
       title: 'DJ Night',
       subtitle: 'The dance floor by the river',
       date: '2026-12-27T20:00:00',
-      timeLabel: '[8:00 PM] onwards',
+      timeLabel: '8:00 PM onwards',
       venue: 'Riverscapes by Noorjehan',
       mapUrl: 'https://maps.app.goo.gl/P4KH13UhaWHwoKDCA',
+      kind: 'Night out',
+      cardLead: 'Join us for our',
       quote: 'One more night on our feet before the vows.',
-      thumbLabel: 'View card',
-      cta: null,
-      game: null,
-      accent: '#5C3A6E',
-      tint: '#7E5A96',
+      thumbLabel: 'Drop the beat',
+      cta: 'Drop the beat',
+      game: 'beat',
+      accent: '#6E3A5E',
+      tint: '#8E5A80',
       art: 'dj',
     },
     {

@@ -614,6 +614,8 @@
 
     card.style.setProperty('--tint', ev.tint);
     $('[data-card-title]').textContent = ev.title;
+    $('[data-card-lead]').textContent = ev.cardLead || 'Join us to celebrate our';
+    $('[data-card-sub]').textContent = ev.kind || 'Ceremony';
     // "At 6:00 PM", but not "At Early morning, 6:00 AM" — only prefix a label
     // that actually starts with a clock time
     const time = ev.timeLabel.replace(' onwards', '');
@@ -643,6 +645,29 @@
 
   function hasGame(ev) { return !!(ev && ev.game && window.Games[ev.game]); }
 
+  /* Some games hide the skip link until the guest stalls, so it never
+     competes with the interaction. Once shown it stays: a control that
+     flickers in and out is worse than one that is simply there. */
+  let idleTimer = null;
+
+  function showSkip() { skipBtn.classList.remove('is-idle'); }
+
+  function bumpIdle() {
+    if (!skipBtn.classList.contains('is-idle')) return;   // already revealed
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(showSkip, 3000);
+  }
+
+  function armIdleSkip(on) {
+    clearTimeout(idleTimer);
+    veil.removeEventListener('pointerdown', bumpIdle);
+    skipBtn.classList.remove('is-idle');
+    if (!on) return;
+    skipBtn.classList.add('is-idle');
+    veil.addEventListener('pointerdown', bumpIdle);
+    idleTimer = setTimeout(showSkip, 3000);
+  }
+
   function mountGame(ev) {
     teardownGame();
     veil.hidden = false;
@@ -653,6 +678,7 @@
     game = window.Games[ev.game]({
       veil, stage: veilStage, hint: veilHint, event: ev, complete: unlock,
     });
+    armIdleSkip(!!window.Games[ev.game].idleSkip);
   }
 
   // The replay link only makes sense once the card is already open — including
@@ -687,6 +713,7 @@
   }
 
   function teardownGame() {
+    armIdleSkip(false);
     if (game) { game.destroy(); game = null; }
     veilStage.innerHTML = '';
     veilHint.textContent = '';

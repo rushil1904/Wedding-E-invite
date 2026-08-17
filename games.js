@@ -413,7 +413,7 @@ window.Games = (function () {
     }
 
     const cap = document.createElement('p');
-    cap.className = 'knot-cap';
+    cap.className = 'game-cap';
     cap.textContent = 'Three knots, tied by family, bind two lives.';
 
     wrap.append(svg, dots, cap);
@@ -782,7 +782,7 @@ window.Games = (function () {
     meter.appendChild(fill);
 
     const cap = document.createElement('p');
-    cap.className = 'knot-cap';
+    cap.className = 'game-cap';
     cap.textContent = 'A brother comes bearing all his sister’s family could need.';
 
     wrap.append(svg, meter, cap);
@@ -883,5 +883,234 @@ window.Games = (function () {
     };
   }
 
-  return { thaal, scratch, trace, dhol, knots, akshata };
+  /* ------------------------------------------------------------------ *
+   * SIGHTSEEING — find the sights
+   * Four landmarks glow faintly on a map of the town; tap each to name it.
+   * ------------------------------------------------------------------ */
+  const SIGHTS = [
+    { label: 'Fort',       at: [56, 58] },
+    { label: 'Palm grove', at: [144, 50] },
+    { label: 'Temple',     at: [150, 116] },
+    { label: 'River',      at: [54, 122] },
+  ];
+
+  function sights(ctx_) {
+    const { veil, stage, hint, complete } = ctx_;
+    veil.style.setProperty('--veil-bg', '#6E7B3C');
+    hint.textContent = 'Tap the glowing pins';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'sights-wrap';
+
+    const svg = svgEl('svg', { viewBox: '0 0 200 170', class: 'sights-svg' });
+    svg.innerHTML =
+      '<rect x="8" y="12" width="184" height="146" rx="16" fill="#EFE8CC"/>' +
+      // river
+      '<path d="M12 132 q34-20 64-7 q30 13 56-9 q20-16 56-8" fill="none"' +
+      ' stroke="#8FB6C9" stroke-width="8" stroke-linecap="round"/>' +
+      // roads
+      '<g stroke="#CFC49C" stroke-width="2.4" stroke-dasharray="5 7" fill="none">' +
+      '<path d="M18 66 H184M100 18 V150"/></g>' +
+      // greenery
+      '<g fill="#A8BC86">' +
+      '<circle cx="34" cy="36" r="7"/><circle cx="46" cy="30" r="5"/>' +
+      '<circle cx="170" cy="80" r="6"/><circle cx="120" cy="146" r="6"/>' +
+      '<circle cx="74" cy="92" r="5"/></g>';
+
+    const pins = SIGHTS.map((sight, i) => {
+      const w = 26 + sight.label.length * 5.4;
+      const g = svgEl('g', { class: 'pin', 'data-i': String(i) });
+      g.style.transform = 'translate(' + sight.at[0] + 'px,' + sight.at[1] + 'px)';
+      g.innerHTML =
+        '<circle class="pin-hit" r="22" fill="transparent"/>' +
+        '<circle class="pin-glow" r="14" fill="#FFF7E4"/>' +
+        '<path class="pin-body" d="M0 4 q-8-10-8-16 a8 8 0 0 1 16 0 q0 6-8 16 Z"' +
+        ' fill="#8E2436" stroke="#5E1622" stroke-width="1.6"/>' +
+        '<circle cx="0" cy="-12" r="3.2" fill="#FFF7E4"/>' +
+        '<g class="pin-label">' +
+        '<rect x="' + (-w / 2).toFixed(1) + '" y="-42" width="' + w.toFixed(1) +
+        '" height="17" rx="8.5" fill="#FCF9F1"/>' +
+        '<text x="0" y="-30.5" text-anchor="middle">' + sight.label + '</text>' +
+        '</g>';
+      svg.appendChild(g);
+      return g;
+    });
+
+    const count = document.createElement('p');
+    count.className = 'game-count';
+
+    const cap = document.createElement('p');
+    cap.className = 'game-cap';
+    cap.textContent = 'Between the sangeet and the vows, a day for the town.';
+
+    wrap.append(svg, count, cap);
+    stage.appendChild(wrap);
+
+    let found = 0, done = false;
+    const got = pins.map(() => false);
+
+    function paint() {
+      count.textContent = found + ' of ' + SIGHTS.length + ' found';
+    }
+    paint();
+
+    function onDown(e) {
+      if (done) return;
+      const g = e.target.closest('.pin');
+      if (!g) return;
+      const i = Number(g.dataset.i);
+      if (got[i]) return;
+
+      got[i] = true;
+      found++;
+      g.classList.add('is-found');
+      tone({ freq: 540 + found * 90, to: 320, type: 'triangle', dur: .16, gain: .18 });
+      paint();
+
+      if (found >= SIGHTS.length) {
+        done = true;
+        hint.textContent = 'All four found 🌴';
+        setTimeout(complete, 700);
+      }
+    }
+
+    svg.addEventListener('pointerdown', onDown);
+
+    return {
+      destroy() {
+        wrap.remove();
+        veil.style.removeProperty('--veil-bg');
+      },
+    };
+  }
+  sights.idleSkip = true;
+
+  /* ------------------------------------------------------------------ *
+   * DJ NIGHT — drop the beat
+   * Tap the disc to layer the track, or hold it to build to the drop.
+   * ------------------------------------------------------------------ */
+  const BEAT_TAPS = 6;
+  const HOLD_DROP_MS = 2000;
+  const BARS = 11;
+
+  function beat(ctx_) {
+    const { veil, stage, hint, complete } = ctx_;
+    veil.style.setProperty('--veil-bg', '#6E3A5E');
+    hint.textContent = 'Tap the disc to build the beat';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'beat-wrap';
+
+    const svg = svgEl('svg', { viewBox: '0 0 200 170', class: 'beat-svg' });
+
+    // equaliser
+    const bars = [];
+    const eq = svgEl('g', { class: 'eq' });
+    for (let i = 0; i < BARS; i++) {
+      const r = svgEl('rect', {
+        class: 'eq-bar',
+        x: String(18 + i * 16.4), y: '112', width: '10', height: '38', rx: '5',
+        fill: i % 2 ? '#E8A33D' : '#F3D882',
+      });
+      eq.appendChild(r);
+      bars.push(r);
+    }
+    svg.appendChild(eq);
+
+    // the disc
+    const disc = svgEl('g', { class: 'beat-disc' });
+    disc.innerHTML =
+      '<circle class="disc-halo" cx="100" cy="58" r="40" fill="#FFF3CE" opacity=".2"/>' +
+      '<circle cx="100" cy="58" r="31" fill="#3B2247" stroke="#F3D882" stroke-width="3"/>' +
+      '<circle cx="100" cy="58" r="13" fill="#F3D882"/>' +
+      '<circle cx="100" cy="58" r="4" fill="#3B2247"/>' +
+      '<path d="M112 50 l14 8 l-14 8 Z" fill="#FFF3CE" opacity=".9"/>';
+    svg.appendChild(disc);
+
+    const count = document.createElement('p');
+    count.className = 'game-count';
+
+    const cap = document.createElement('p');
+    cap.className = 'game-cap';
+    cap.textContent = 'One last night on the floor before the vows.';
+
+    wrap.append(svg, count, cap);
+    stage.appendChild(wrap);
+
+    let energy = 0, done = false, holdTimer = null, heldFrom = 0;
+
+    function paint() {
+      count.textContent = Math.min(energy, BEAT_TAPS) + ' of ' + BEAT_TAPS;
+    }
+    paint();
+
+    function flare(scale) {
+      if (reduceMotion) return;
+      bars.forEach((b) => {
+        const k = scale * (0.45 + Math.random() * 0.85);
+        b.style.transform = 'scaleY(' + Math.max(0.25, k).toFixed(2) + ')';
+      });
+    }
+
+    function drop() {
+      if (done) return;
+      done = true;
+      clearTimeout(holdTimer);
+      svg.classList.remove('is-building');
+      svg.classList.add('is-drop');
+      flare(2.6);
+      hint.textContent = 'Drop! 🎶';
+      count.textContent = BEAT_TAPS + ' of ' + BEAT_TAPS;
+      tone({ freq: 110, to: 42, type: 'sine', dur: .7, gain: .4 });
+      setTimeout(complete, 820);
+    }
+
+    function tap() {
+      if (done) return;
+      energy++;
+      paint();
+      flare(0.8 + energy * 0.22);
+      // each layer lands a little higher and a little louder
+      tone({
+        freq: 180 + energy * 55, to: 90, type: 'triangle',
+        dur: .18, gain: Math.min(.34, .12 + energy * .035),
+      });
+      if (energy >= BEAT_TAPS) drop();
+      else hint.textContent = 'Keep going — ' + (BEAT_TAPS - energy) + ' to the drop';
+    }
+
+    function onDown(e) {
+      if (done) return;
+      if (!e.target.closest('.beat-disc')) return;
+      heldFrom = performance.now();
+      svg.classList.add('is-building');
+      holdTimer = setTimeout(drop, HOLD_DROP_MS);
+      try { svg.setPointerCapture(e.pointerId); } catch (_) { /* not capturable */ }
+    }
+
+    function onUp() {
+      if (done || !heldFrom) return;
+      clearTimeout(holdTimer);
+      holdTimer = null;
+      svg.classList.remove('is-building');
+      // a short press is a tap; a long one would already have dropped
+      if (performance.now() - heldFrom < HOLD_DROP_MS) tap();
+      heldFrom = 0;
+    }
+
+    svg.addEventListener('pointerdown', onDown);
+    svg.addEventListener('pointerup', onUp);
+    svg.addEventListener('pointercancel', onUp);
+
+    return {
+      destroy() {
+        clearTimeout(holdTimer);
+        wrap.remove();
+        veil.style.removeProperty('--veil-bg');
+      },
+    };
+  }
+  beat.idleSkip = true;
+
+  return { thaal, scratch, trace, dhol, sights, beat, knots, akshata };
 })();

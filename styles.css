@@ -905,7 +905,11 @@ button { font-family: var(--serif); }
   justify-content: center;
   min-height: 0;
 }
+/* Hidden until ~3s of inactivity, so it never competes with the game, and
+   low-contrast when it does arrive. */
+.veil-skip.is-idle { opacity: 0; pointer-events: none; }
 .veil-skip {
+  transition: opacity .45s ease;
   background: transparent;
   border: none;
   color: rgba(255, 255, 255, .85);
@@ -983,6 +987,60 @@ button { font-family: var(--serif); }
   transition: width .4s cubic-bezier(.2, .9, .3, 1);
 }
 
+/* sightseeing — find the sights */
+.sights-wrap, .beat-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.sights-svg, .beat-svg { width: 100%; height: auto; max-height: 210px; touch-action: none; }
+
+.pin { cursor: pointer; }
+/* the generous invisible target must still take the tap */
+.pin-hit { pointer-events: all; }
+.pin-body { transition: transform .3s cubic-bezier(.2, 1.5, .4, 1); transform-box: fill-box; transform-origin: bottom; }
+.pin-glow { opacity: .4; animation: pinGlow 2.1s ease-out infinite; }
+.pin:nth-of-type(2) .pin-glow { animation-delay: .5s; }
+.pin:nth-of-type(3) .pin-glow { animation-delay: 1s; }
+.pin:nth-of-type(4) .pin-glow { animation-delay: 1.5s; }
+@keyframes pinGlow {
+  0%   { transform: scale(.55); opacity: .55; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+.pin.is-found .pin-glow { animation: none; opacity: 0; }
+.pin.is-found .pin-body { transform: scale(1.18); }
+.pin.is-found { cursor: default; }
+
+.pin-label { opacity: 0; transition: opacity .28s ease; }
+.pin.is-found .pin-label { opacity: 1; }
+.pin-label text {
+  font-family: var(--serif);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  fill: #4A3B33;
+}
+
+/* dj night — drop the beat */
+.eq-bar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transform: scaleY(.3);
+  transition: transform .18s ease-out;
+}
+.beat-svg.is-building .eq-bar { transform: scaleY(1.7); transition: transform 2s linear; }
+.beat-svg.is-drop .eq-bar { transition: transform .12s ease-out; }
+
+.beat-disc { cursor: pointer; }
+.disc-halo { transform-box: fill-box; transform-origin: center; animation: discPulse 1.8s ease-out infinite; }
+@keyframes discPulse {
+  0%   { transform: scale(.72); opacity: .32; }
+  100% { transform: scale(1.15); opacity: 0; }
+}
+.beat-svg.is-drop .disc-halo { animation: none; opacity: .5; transform: scale(1.3); }
+
 /* mangalya sutra — tie the knots */
 .knot-wrap {
   display: flex;
@@ -1037,13 +1095,20 @@ button { font-family: var(--serif); }
 .knot-dot.is-now { border-color: #FFF3CE; color: #FFF3CE; transform: scale(1.12); }
 .knot-dot.is-done { background: #FFF3CE; border-color: #FFF3CE; color: #8A5F1E; }
 
-.knot-cap {
+.game-cap {
   margin: 0;
   font-family: var(--script);
   font-style: italic;
   font-size: 14px;
   text-align: center;
   color: rgba(255, 255, 255, .8);
+}
+.game-count {
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .92);
 }
 
 /* the wedding — shower the akshata */
