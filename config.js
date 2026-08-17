@@ -5,18 +5,27 @@
    files all read from here.
    ========================================================================== */
 
+/* The 26th's functions (Haldi, Mehendi, Sangeet) are NOT at the wedding hall.
+   Set the venue here once and all three pick it up. Until `map` is filled in
+   they render as plain text with no directions link, rather than sending
+   guests to the wedding hall by mistake. */
+const DAY_ONE_VENUE = {
+  name: '[Venue for the 26th]',
+  map: null,               // ← its Google Maps link goes here
+};
+
 window.WEDDING = {
   bride: {
     name: 'Rithika Sunil Nair',
     short: 'Rithika',
     initial: 'R',
-    parents: "D/o [Bride's Parents]",
+    parents: 'D/o Mr. Sunil & Mrs. Pravita Nair',
   },
   groom: {
     name: 'Rushil Deshwal',
     short: 'Rushil',
     initial: 'R',
-    parents: 'S/o [Groom’s Parents]',
+    parents: 'S/o Dr. Rajesh & Dr. Kusum Deshwal',
   },
 
   hashtag: '[COUPLEHASHTAG]',
@@ -61,6 +70,8 @@ window.WEDDING = {
   events: [
     {
       id: 'haldi',
+      venue: DAY_ONE_VENUE.name,
+      mapUrl: DAY_ONE_VENUE.map,
       title: 'Haldi',
       subtitle: 'Manjal Neerattu Vizha',
       date: '2026-12-26T10:00:00',
@@ -75,6 +86,8 @@ window.WEDDING = {
     },
     {
       id: 'mehendi',
+      venue: DAY_ONE_VENUE.name,
+      mapUrl: DAY_ONE_VENUE.map,
       title: 'Mehendi',
       subtitle: 'Where henna meets hearts',
       date: '2026-12-26T16:00:00',
@@ -90,6 +103,8 @@ window.WEDDING = {
     },
     {
       id: 'sangeet',
+      venue: DAY_ONE_VENUE.name,
+      mapUrl: DAY_ONE_VENUE.map,
       title: 'Sangeet',
       subtitle: 'An evening of song, following the Mehendi',
       date: '2026-12-26T19:00:00',
