@@ -472,13 +472,38 @@
     };
   }
 
+  const againBtn = $('[data-again]');
+
   function paintSubmitted() {
     if (!ENDPOINT) return;
     submitBtn.textContent = state.sent ? 'Update my RSVP' : 'Send RSVP';
+    againBtn.hidden = !state.sent;
     if (state.sent && !statusEl.textContent) {
       setStatus('ok', 'Your RSVP is with us — thank you.');
     }
   }
+
+  /* One phone gets passed around a family. Without this, the second person's
+     RSVP would overwrite the first, because the submission id is per browser
+     and the sheet updates the row it matches. */
+  againBtn.addEventListener('click', () => {
+    state.rsvpId = null;
+    state.sent = false;
+    state.name = '';
+    state.cels = {};
+    state.guests = 1;
+    state.team = null;
+    save();
+
+    nameInput.value = '';
+    renderChips();
+    paintSides();
+    paintGuests();
+    paintWhatsapp();
+    setStatus('', '');
+    paintSubmitted();
+    nameInput.focus();
+  });
 
   async function sendRsvp() {
     if (!state.name.trim()) {

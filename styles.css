@@ -671,6 +671,21 @@ button { font-family: var(--serif); }
 .rsvp-status.is-error { color: var(--maroon); }
 .rsvp-status.is-busy { color: var(--ink-muted); }
 
+.again-btn {
+  display: block;
+  margin: 8px auto 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--script);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--maroon);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.again-btn[hidden] { display: none; }
+
 .wa-btn {
   display: flex;
   align-items: center;

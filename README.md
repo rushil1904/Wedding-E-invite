@@ -75,7 +75,12 @@ page works throughout. Once it is set:
 - WhatsApp drops to a quiet secondary link, and is promoted back to a button
   if a submission fails — a failed RSVP always has somewhere to go.
 - Guests can correct a submission. Each browser keeps a submission id, and the
-  script overwrites that row rather than adding a second one.
+  script overwrites that row rather than adding a second one. **"RSVP for
+  someone else"** clears that id, so a phone passed around a family records
+  each person on their own row instead of overwriting the last one.
+- Rows land in a tab named `RSVPs`, which the script creates. A spreadsheet
+  opens on `Sheet1`, which stays empty — check the tabs before concluding
+  nothing was saved.
 - A hidden honeypot field is discarded by the script. The endpoint is
   publicly writable by design, as any unauthenticated endpoint is; at this
   scale the remedy for a junk row is deleting it.
