@@ -367,18 +367,26 @@ window.Games = (function () {
 
     // the thali hanging at the lowest point
     const pendant = svgEl('g', { class: 'thali' });
-    pendant.append(
-      svgEl('path', { d: 'M-9 0 q9-14 18 0 q-9 16-18 0Z', fill: '#D9A648', stroke: '#8A5F1E', 'stroke-width': '1.6' }),
-      svgEl('circle', { cx: '0', cy: '2', r: '3', fill: '#8A5F1E' })
-    );
+    pendant.innerHTML =
+      '<circle cx="0" cy="7" r="3.4" fill="none" stroke="#8A5F1E" stroke-width="1.7"/>' +
+      '<path d="M0 10.5 q-9 9-9 18 q0 8 9 8 q9 0 9-8 q0-9-9-18Z"' +
+      ' fill="#D9A648" stroke="#8A5F1E" stroke-width="1.7"/>' +
+      // a diamond and a dot, not a dot and a curve — the latter reads as a face
+      '<path d="M0 21 l4 5 -4 5 -4 -5 Z" fill="#8A5F1E"/>' +
+      '<circle cx="0" cy="32.5" r="1.5" fill="#8A5F1E"/>';
     svg.appendChild(pendant);
 
     const marks = [];
     for (let i = 0; i < KNOTS; i++) {
       const g = svgEl('g', { class: 'knot' });
+      // two crossing strands read as a knot; a circle with a single curve in
+      // it reads as a face, which is exactly what to avoid here
       g.append(
-        svgEl('circle', { r: '7', fill: '#E8C25A', stroke: '#8A5F1E', 'stroke-width': '1.6' }),
-        svgEl('path', { d: 'M-4 -1 q4 4 8 0', fill: 'none', stroke: '#8A5F1E', 'stroke-width': '1.4' })
+        svgEl('ellipse', { rx: '7.5', ry: '6', fill: '#E8C25A', stroke: '#8A5F1E', 'stroke-width': '1.5' }),
+        svgEl('path', {
+          d: 'M-6 -3 q6 4 12 -1 M-6 3 q6 -4 12 1',
+          fill: 'none', stroke: '#8A5F1E', 'stroke-width': '1.5', 'stroke-linecap': 'round',
+        })
       );
       svg.appendChild(g);
       marks.push(g);
@@ -400,7 +408,7 @@ window.Games = (function () {
       });
 
       const low = thread.getPointAtLength(len * 0.5);
-      pendant.setAttribute('transform', 'translate(' + low.x + ',' + (low.y + 27) + ')');
+      pendant.setAttribute('transform', 'translate(' + low.x + ',' + low.y + ')');
       return at;
     }
 
@@ -490,35 +498,59 @@ window.Games = (function () {
 
     const svg = svgEl('svg', { viewBox: '0 0 200 170', class: 'akshata-svg' });
 
-    // couple, drawn once in outline and again in colour; the colour layer
-    // fades up as the blessings land
-    function couple(fillA, fillB, cls) {
-      const g = svgEl('g', { class: cls || '' });
-      // bride
-      g.append(
-        svgEl('circle', { cx: '78', cy: '58', r: '13', fill: fillA }),
-        svgEl('path', { d: 'M60 138 q0-42 18-42 q18 0 18 42 Z', fill: fillA }),
-        svgEl('path', { d: 'M78 74 q-14 8-16 30 q10-6 16-6 q6 0 16 6 q-2-22-16-30Z', fill: fillB, opacity: '.85' })
-      );
-      // groom
-      g.append(
-        svgEl('circle', { cx: '124', cy: '54', r: '13', fill: fillA }),
-        svgEl('path', { d: 'M107 138 q0-44 17-44 q17 0 17 44 Z', fill: fillA }),
-        svgEl('path', { d: 'M124 70 v40', stroke: fillB, 'stroke-width': '3', fill: 'none', opacity: '.7' })
-      );
-      return g;
+    /* The couple in full wedding dress, drawn once. "Blessedness" is a filter
+       over the whole group — desaturated and dim to begin with, warming to
+       full colour as the akshata lands. One drawing, not two layers that have
+       to be kept in step. */
+
+    /* Varmala: flowers packed tightly enough along a U to read as one strand.
+       Spaced out on an arc they just look like scattered confetti. */
+    function garland(cx, cy, drop) {
+      const x0 = cx - 13, x1 = cx + 13, cxx = cx, cyy = cy + drop;
+      let out = '<g>';
+      for (let i = 0; i <= 17; i++) {
+        const t = i / 17, u = 1 - t;
+        const x = u * u * x0 + 2 * u * t * cxx + t * t * x1;
+        const y = u * u * cy + 2 * u * t * cyy + t * t * cy;
+        out += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) +
+               '" r="2.9" fill="' + (i % 3 === 0 ? '#FFF7E4' : '#E8A33D') + '"/>';
+      }
+      return out + '</g>';
     }
 
-    svg.appendChild(couple('rgba(255,255,255,.26)', 'rgba(255,255,255,.16)', 'couple-base'));
-    const blessed = couple('#E7B94A', '#C4453F', 'couple-blessed');
-    blessed.setAttribute('opacity', '0');
-    svg.appendChild(blessed);
+    const figures = svgEl('g', { class: 'akshata-figures' });
+    figures.innerHTML = [
+      // ------------------------- bride -------------------------
+      '<path d="M56 96 Q52 122 48 146 L100 146 Q96 122 92 96 Z" fill="#C4453F"/>',
+      '<path d="M48.6 137 L99.4 137 L100 146 L48 146 Z" fill="#E7B94A"/>',
+      '<path d="M62 70 L86 70 L92 98 L58 98 Z" fill="#A8302E"/>',
+      '<path d="M85 66 Q99 88 95 118 L82 112 Q90 88 79 70 Z" fill="#D9564F"/>',
+      '<path d="M85 66 Q99 88 95 118 L91 116 Q95 90 82 68 Z" fill="#E7B94A"/>',
+      '<path d="M69 60 h10 v10 h-10 Z" fill="#C98A5E"/>',
+      '<ellipse cx="74" cy="50" rx="11.5" ry="13" fill="#C98A5E"/>',
+      '<path d="M62.5 52 q0-15 11.5-15 q11.5 0 11.5 15 q-6-7-11.5-7 q-5.5 0-11.5 7 Z" fill="#2A1A12"/>',
+      '<circle cx="87" cy="55" r="6.5" fill="#2A1A12"/>',
+      '<path d="M74 37 v-6" stroke="#E7B94A" stroke-width="1.4" fill="none"/>',
+      '<circle cx="74" cy="30" r="2.4" fill="#E7B94A"/>',
+      '<circle cx="74" cy="45" r="1.7" fill="#8E2436"/>',
+      '<circle cx="63.5" cy="57" r="2.6" fill="#E7B94A"/>',
+      '<path d="M67 70 q7 9 14 0" fill="none" stroke="#E7B94A" stroke-width="2.4"/>',
 
-    // bowl of akshata
-    svg.append(
-      svgEl('path', { d: 'M14 148 q18 22 42 0 Z', fill: '#D9A648', stroke: '#7A4A0E', 'stroke-width': '2' }),
-      svgEl('ellipse', { cx: '35', cy: '148', rx: '21', ry: '6', fill: '#FFF7E4', stroke: '#7A4A0E', 'stroke-width': '2' })
-    );
+      // ------------------------- groom -------------------------
+      '<path d="M112 98 L146 98 L150 146 L108 146 Z" fill="#FBF5E6"/>',
+      '<path d="M108.4 137 L149.6 137 L150 146 L108 146 Z" fill="#E7B94A"/>',
+      '<path d="M114 68 L142 68 L147 100 L109 100 Z" fill="#F5EDDC"/>',
+      '<path d="M140 66 q-9 22-5 44 l-11-3 q6-21 3-40 Z" fill="#E7C778"/>',
+      '<path d="M123 58 h10 v10 h-10 Z" fill="#B87A4E"/>',
+      '<ellipse cx="128" cy="47" rx="11.5" ry="13" fill="#B87A4E"/>',
+      '<path d="M116.5 49 q0-15 11.5-15 q11.5 0 11.5 15 q-6-8-11.5-8 q-5.5 0-11.5 8 Z" fill="#2A1A12"/>',
+
+      garland(74, 72, 34),
+      garland(128, 70, 34),
+    ].join('');
+    figures.style.filter = 'saturate(.12) brightness(.72)';
+    figures.style.opacity = '.6';
+    svg.appendChild(figures);
 
     const canvas = document.createElement('canvas');
     canvas.className = 'akshata-canvas';
@@ -543,10 +575,12 @@ window.Games = (function () {
     }
     let box = size();
 
-    function spawn(x, y, n) {
+    /* Grains always rain over the couple. Spawning them at the touch point
+       meant tapping near the bowl showered rice down the empty left edge. */
+    function spawn(y, n) {
       for (let i = 0; i < n; i++) {
         grains.push({
-          x: x + (Math.random() - .5) * 40,
+          x: box.w * 0.5 + (Math.random() - .5) * box.w * 0.46,
           y: y + (Math.random() - .5) * 16,
           vx: (Math.random() - .5) * 1.1,
           vy: 0.6 + Math.random() * 1.4,
@@ -578,13 +612,14 @@ window.Games = (function () {
 
     function bless(e) {
       if (done) return;
-      const r = wrap.getBoundingClientRect();
-      const x = e ? e.clientX - r.left : box.w / 2;
-      spawn(x, 6, 12);
+      spawn(4, 12);
 
       blessings++;
       const pct = Math.min(1, blessings / BLESSINGS);
-      blessed.setAttribute('opacity', String(pct));
+      figures.style.filter =
+        'saturate(' + (0.12 + 0.88 * pct).toFixed(2) + ') ' +
+        'brightness(' + (0.72 + 0.28 * pct).toFixed(2) + ')';
+      figures.style.opacity = (0.6 + 0.4 * pct).toFixed(2);
       tone({ freq: 900 + Math.random() * 260, type: 'triangle', dur: .12, gain: .13 });
 
       if (blessings >= BLESSINGS) {
