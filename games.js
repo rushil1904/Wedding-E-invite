@@ -887,11 +887,35 @@ window.Games = (function () {
    * SIGHTSEEING — find the sights
    * Four landmarks glow faintly on a map of the town; tap each to name it.
    * ------------------------------------------------------------------ */
+  /* Each sight opens into a medallion of the thing itself — a name alone
+     leaves the guest none the wiser about what they just found. */
+  const SIGHT_ICONS = {
+    fort:
+      '<path d="M-9 6 V-2 h2.6 v-2.6 h2.6 v2.6 h3 v-2.6 h2.6 v2.6 h3 v-2.6 h2.6 v2.6 H9 V6 Z"' +
+      ' fill="#D3B075" stroke="#7A4A0E" stroke-width="1.3" stroke-linejoin="round"/>' +
+      '<path d="M-1.6 6 V1.6 a1.6 1.6 0 0 1 3.2 0 V6 Z" fill="#7A4A0E"/>',
+    palm:
+      '<path d="M0 8 V-1" stroke="#6B4A1E" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<path d="M0 -1 q-8-6-12-2 q8-4 12 0 q3-8 11-6 q-8 1-11 6 q0-8 5-11 q-5 4-5 11 Z"' +
+      ' fill="#7F9245" stroke="#4A5626" stroke-width="1"/>',
+    temple:
+      '<path d="M-9 8 H9 L7 2 H-7 Z" fill="#F1DCB6" stroke="#7A4A0E" stroke-width="1.3"/>' +
+      '<path d="M-7 2 H7 L5 -4 H-5 Z" fill="#F1DCB6" stroke="#7A4A0E" stroke-width="1.3"/>' +
+      '<path d="M-3.4 -4 q3.4-5 6.8 0 Z" fill="#D9A648" stroke="#7A4A0E" stroke-width="1.1"/>' +
+      '<path d="M0 -8 v2.6" stroke="#7A4A0E" stroke-width="1.3"/>' +
+      '<path d="M-1.7 8 V4 a1.7 1.7 0 0 1 3.4 0 V8 Z" fill="#8B5E2A"/>',
+    river:
+      '<g fill="none" stroke-width="2.6" stroke-linecap="round">' +
+      '<path d="M-9 -4 q4.5-3.4 9 0 t9 0" stroke="#A8CBDC"/>' +
+      '<path d="M-9 1 q4.5-3.4 9 0 t9 0" stroke="#8FB6C9"/>' +
+      '<path d="M-9 6 q4.5-3.4 9 0 t9 0" stroke="#6FA0BC"/></g>',
+  };
+
   const SIGHTS = [
-    { label: 'Fort',       at: [56, 58] },
-    { label: 'Palm grove', at: [144, 50] },
-    { label: 'Temple',     at: [150, 116] },
-    { label: 'River',      at: [54, 122] },
+    { label: 'Fort',       icon: 'fort',   at: [56, 58] },
+    { label: 'Palm grove', icon: 'palm',   at: [144, 50] },
+    { label: 'Temple',     icon: 'temple', at: [150, 116] },
+    { label: 'River',      icon: 'river',  at: [54, 122] },
   ];
 
   function sights(ctx_) {
@@ -922,15 +946,21 @@ window.Games = (function () {
       const g = svgEl('g', { class: 'pin', 'data-i': String(i) });
       g.style.transform = 'translate(' + sight.at[0] + 'px,' + sight.at[1] + 'px)';
       g.innerHTML =
-        '<circle class="pin-hit" r="22" fill="transparent"/>' +
+        '<circle class="pin-hit" r="24" fill="transparent"/>' +
+        // before: a glowing pin with nothing to give away
+        '<g class="pin-mark">' +
         '<circle class="pin-glow" r="14" fill="#FFF7E4"/>' +
         '<path class="pin-body" d="M0 4 q-8-10-8-16 a8 8 0 0 1 16 0 q0 6-8 16 Z"' +
         ' fill="#8E2436" stroke="#5E1622" stroke-width="1.6"/>' +
         '<circle cx="0" cy="-12" r="3.2" fill="#FFF7E4"/>' +
-        '<g class="pin-label">' +
-        '<rect x="' + (-w / 2).toFixed(1) + '" y="-42" width="' + w.toFixed(1) +
-        '" height="17" rx="8.5" fill="#FCF9F1"/>' +
-        '<text x="0" y="-30.5" text-anchor="middle">' + sight.label + '</text>' +
+        '</g>' +
+        // after: the sight itself, named
+        '<g class="pin-found">' +
+        '<circle cx="0" cy="-18" r="17.5" fill="#FCF9F1" stroke="#8E2436" stroke-width="2"/>' +
+        '<g transform="translate(0,-18)">' + SIGHT_ICONS[sight.icon] + '</g>' +
+        '<rect x="' + (-w / 2).toFixed(1) + '" y="3" width="' + w.toFixed(1) +
+        '" height="16" rx="8" fill="#FCF9F1"/>' +
+        '<text x="0" y="14.5" text-anchor="middle">' + sight.label + '</text>' +
         '</g>';
       svg.appendChild(g);
       return g;

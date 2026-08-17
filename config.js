@@ -111,6 +111,7 @@ window.WEDDING = {
       subtitle: 'Manjal Neerattu Vizha',
       date: '2026-12-26T10:30:00',
       timeLabel: '10:30 AM onwards',
+      dressCode: 'Yellow',
       quote: 'Turmeric, laughter and the very first blessings.',
       thumbLabel: 'Rub to reveal',
       cta: 'Rub off the turmeric',

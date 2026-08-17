@@ -104,7 +104,7 @@ control that flickers in and out is worse than one that is simply there.
 | Haldi | Rub the turmeric off a canvas scratch layer (reveals at 60% cleared) |
 | Mehendi | Trace the henna vine with your finger — the path fills as you go |
 | Sangeet | Tap the dhol eight times to the beat, with a WebAudio drum hit |
-| Sightseeing | Four landmarks glow faintly on a map of the town — tap each to name it, "X of 4 found" |
+| Sightseeing | Four landmarks glow faintly on a map of the town — tap each to open a medallion of the sight itself, "X of 4 found" |
 | DJ Night | Tap the disc to layer the track, or hold it two seconds to build to the drop |
 | Mangalya Sutra | Press and hold each of the three knots — a ring fills as you hold, the cord cinches tighter and the thali settles on the third |
 | The Wedding | Tap or flick to shower akshata over the couple, who take on colour as the blessings land |

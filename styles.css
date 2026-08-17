@@ -1000,7 +1000,6 @@ button { font-family: var(--serif); }
 .pin { cursor: pointer; }
 /* the generous invisible target must still take the tap */
 .pin-hit { pointer-events: all; }
-.pin-body { transition: transform .3s cubic-bezier(.2, 1.5, .4, 1); transform-box: fill-box; transform-origin: bottom; }
 .pin-glow { opacity: .4; animation: pinGlow 2.1s ease-out infinite; }
 .pin:nth-of-type(2) .pin-glow { animation-delay: .5s; }
 .pin:nth-of-type(3) .pin-glow { animation-delay: 1s; }
@@ -1010,12 +1009,22 @@ button { font-family: var(--serif); }
   100% { transform: scale(1.35); opacity: 0; }
 }
 .pin.is-found .pin-glow { animation: none; opacity: 0; }
-.pin.is-found .pin-body { transform: scale(1.18); }
 .pin.is-found { cursor: default; }
 
-.pin-label { opacity: 0; transition: opacity .28s ease; }
-.pin.is-found .pin-label { opacity: 1; }
-.pin-label text {
+/* the pin gives way to the medallion */
+.pin-mark { transition: opacity .25s ease, transform .3s ease; transform-box: fill-box; transform-origin: bottom; }
+.pin.is-found .pin-mark { opacity: 0; transform: scale(.5); }
+
+.pin-found {
+  opacity: 0;
+  transform: scale(.55);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity .3s ease, transform .4s cubic-bezier(.2, 1.5, .4, 1);
+}
+.pin.is-found .pin-found { opacity: 1; transform: scale(1); }
+
+.pin-found text {
   font-family: var(--serif);
   font-size: 9px;
   letter-spacing: .1em;
