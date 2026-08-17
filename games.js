@@ -13,6 +13,50 @@ window.Games = (function () {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ------------------------------------------------------------------ *
+   * Shared audio — one context for every game, created on the first
+   * gesture (browsers refuse to start one before that). Sound is always a
+   * bonus here, never a requirement, so every path fails quietly.
+   * ------------------------------------------------------------------ */
+  let ctx = null;
+
+  function audioCtx() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = ctx || new AC();
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    } catch (_) { return null; }
+  }
+
+  function tone(opts) {
+    const ac = audioCtx();
+    if (!ac) return;
+    try {
+      const o = opts || {};
+      const dur = o.dur || 0.22;
+      const t = ac.currentTime;
+      const osc = ac.createOscillator();
+      const gain = ac.createGain();
+      osc.type = o.type || 'sine';
+      osc.frequency.setValueAtTime(o.freq || 220, t);
+      if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + dur * 0.8);
+      gain.gain.setValueAtTime(o.gain || 0.3, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.connect(gain).connect(ac.destination);
+      osc.start(t);
+      osc.stop(t + dur + 0.02);
+    } catch (_) { /* never let audio break a game */ }
+  }
+
+  const NS = 'http://www.w3.org/2000/svg';
+  function svgEl(name, attrs) {
+    const el = document.createElementNS(NS, name);
+    Object.keys(attrs || {}).forEach((k) => el.setAttribute(k, attrs[k]));
+    return el;
+  }
+
+  /* ------------------------------------------------------------------ *
    * HALDI — rub the turmeric off (canvas scratch-off)
    * ------------------------------------------------------------------ */
   function scratch(ctx) {
@@ -132,7 +176,6 @@ window.Games = (function () {
     veil.style.setProperty('--veil-bg', '#6E7B3C');
     hint.textContent = 'Trace the henna';
 
-    const NS = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(NS, 'svg');
     svg.setAttribute('viewBox', '14 16 172 130');
     svg.setAttribute('class', 'trace-svg');
@@ -255,27 +298,7 @@ window.Games = (function () {
     wrap.append(holder, dots);
     stage.appendChild(wrap);
 
-    let audio = null;
-    function thump() {
-      try {
-        const AC = window.AudioContext || window.webkitAudioContext;
-        if (!AC) return;
-        audio = audio || new AC();
-        if (audio.state === 'suspended') audio.resume();
-        const t = audio.currentTime;
-
-        const osc = audio.createOscillator();
-        const gain = audio.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(190, t);
-        osc.frequency.exponentialRampToValueAtTime(70, t + .16);
-        gain.gain.setValueAtTime(.35, t);
-        gain.gain.exponentialRampToValueAtTime(.001, t + .22);
-        osc.connect(gain).connect(audio.destination);
-        osc.start(t);
-        osc.stop(t + .25);
-      } catch (_) { /* audio is a bonus, never a blocker */ }
-    }
+    function thump() { tone({ freq: 190, to: 70, dur: .22, gain: .35 }); }
 
     let hits = 0, lastAt = 0, won = false;
 
@@ -311,10 +334,292 @@ window.Games = (function () {
       destroy() {
         wrap.remove();
         veil.style.removeProperty('--veil-bg');
-        if (audio) { audio.close().catch(() => {}); audio = null; }
       },
     };
   }
 
-  return { scratch, trace, dhol };
+  /* ------------------------------------------------------------------ *
+   * MANGALYA SUTRA — tie the three knots (moonu mudichu)
+   * Swipe across each knot in turn; the thread cinches tighter each time
+   * and the thali settles once the third is tied.
+   * ------------------------------------------------------------------ */
+  const KNOTS = 3;
+
+  function knots(ctx_) {
+    const { veil, stage, hint, complete } = ctx_;
+    veil.style.setProperty('--veil-bg', '#C08F33');
+    hint.textContent = 'Swipe to tie the first knot';
+
+    const svg = svgEl('svg', { viewBox: '0 0 200 150', class: 'knot-svg' });
+
+    // sag shrinks with every knot — the thread visibly tightens
+    const SAG = [116, 100, 86, 74];
+    let tied = 0;
+
+    const thread = svgEl('path', {
+      fill: 'none', stroke: '#E8C25A', 'stroke-width': '4', 'stroke-linecap': 'round',
+    });
+    const thread2 = svgEl('path', {
+      fill: 'none', stroke: '#B8871F', 'stroke-width': '1.4',
+      'stroke-linecap': 'round', 'stroke-dasharray': '3 5', opacity: '.8',
+    });
+    svg.append(thread, thread2);
+
+    // the thali hanging at the lowest point
+    const pendant = svgEl('g', { class: 'thali' });
+    pendant.append(
+      svgEl('path', { d: 'M-9 0 q9-14 18 0 q-9 16-18 0Z', fill: '#D9A648', stroke: '#8A5F1E', 'stroke-width': '1.6' }),
+      svgEl('circle', { cx: '0', cy: '2', r: '3', fill: '#8A5F1E' })
+    );
+    svg.appendChild(pendant);
+
+    const marks = [];
+    for (let i = 0; i < KNOTS; i++) {
+      const g = svgEl('g', { class: 'knot' });
+      g.append(
+        svgEl('circle', { r: '7', fill: '#E8C25A', stroke: '#8A5F1E', 'stroke-width': '1.6' }),
+        svgEl('path', { d: 'M-4 -1 q4 4 8 0', fill: 'none', stroke: '#8A5F1E', 'stroke-width': '1.4' })
+      );
+      svg.appendChild(g);
+      marks.push(g);
+    }
+    stage.appendChild(svg);
+
+    function layout() {
+      const sag = SAG[tied];
+      const d = 'M18 26 Q100 ' + sag + ' 182 26';
+      thread.setAttribute('d', d);
+      thread2.setAttribute('d', d);
+
+      const len = thread.getTotalLength();
+      const at = [0.3, 0.5, 0.7].map((f) => thread.getPointAtLength(len * f));
+      marks.forEach((g, i) => {
+        g.setAttribute('transform', 'translate(' + at[i].x + ',' + at[i].y + ')');
+        g.classList.toggle('is-tied', i < tied);
+        g.classList.toggle('is-active', i === tied);
+      });
+
+      const low = thread.getPointAtLength(len * 0.5);
+      pendant.setAttribute('transform', 'translate(' + low.x + ',' + (low.y + 27) + ')');
+      return at;
+    }
+
+    let spots = layout();
+
+    function toSvg(e) {
+      const m = svg.getScreenCTM();
+      if (!m) return null;
+      const p = svg.createSVGPoint();
+      p.x = e.clientX;
+      p.y = e.clientY;
+      return p.matrixTransform(m.inverse());
+    }
+
+    let travelled = 0, overKnot = false, prev = null, done = false;
+
+    function onDown(e) {
+      travelled = 0;
+      overKnot = false;
+      prev = toSvg(e);
+    }
+
+    function onMove(e) {
+      if (done) return;
+      if (!e.buttons && e.pointerType === 'mouse') { prev = null; return; }
+      const p = toSvg(e);
+      if (!p) return;
+      if (prev) travelled += Math.hypot(p.x - prev.x, p.y - prev.y);
+      prev = p;
+
+      const k = spots[tied];
+      if (k && Math.hypot(p.x - k.x, p.y - k.y) < 30) overKnot = true;
+
+      // a swipe, not a tap: it has to cross the knot AND cover some ground
+      if (overKnot && travelled > 42) cinch();
+    }
+
+    function cinch() {
+      tied++;
+      travelled = 0;
+      overKnot = false;
+      tone({ freq: 520, to: 300, type: 'triangle', dur: .18, gain: .22 });
+
+      spots = layout();
+
+      if (tied >= KNOTS) {
+        done = true;
+        hint.textContent = 'Tied 🙏';
+        pendant.classList.add('is-settled');
+        setTimeout(complete, 620);
+      } else {
+        hint.textContent = tied === 1
+          ? 'Two more knots'
+          : 'One more knot';
+      }
+    }
+
+    function onUp() { travelled = 0; overKnot = false; prev = null; }
+
+    svg.addEventListener('pointerdown', onDown);
+    svg.addEventListener('pointermove', onMove);
+    svg.addEventListener('pointerup', onUp);
+    svg.addEventListener('pointercancel', onUp);
+
+    return {
+      destroy() {
+        svg.remove();
+        veil.style.removeProperty('--veil-bg');
+      },
+    };
+  }
+
+  /* ------------------------------------------------------------------ *
+   * THE WEDDING — shower the akshata
+   * Tap or flick over the couple to rain rice-and-turmeric blessings.
+   * The couple takes on colour as the blessings accumulate.
+   * ------------------------------------------------------------------ */
+  const BLESSINGS = 10;
+
+  function akshata(ctx_) {
+    const { veil, stage, hint, complete } = ctx_;
+    veil.style.setProperty('--veil-bg', '#8E2436');
+    hint.textContent = 'Tap to shower the akshata';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'akshata-wrap';
+
+    const svg = svgEl('svg', { viewBox: '0 0 200 170', class: 'akshata-svg' });
+
+    // couple, drawn once in outline and again in colour; the colour layer
+    // fades up as the blessings land
+    function couple(fillA, fillB, cls) {
+      const g = svgEl('g', { class: cls || '' });
+      // bride
+      g.append(
+        svgEl('circle', { cx: '78', cy: '58', r: '13', fill: fillA }),
+        svgEl('path', { d: 'M60 138 q0-42 18-42 q18 0 18 42 Z', fill: fillA }),
+        svgEl('path', { d: 'M78 74 q-14 8-16 30 q10-6 16-6 q6 0 16 6 q-2-22-16-30Z', fill: fillB, opacity: '.85' })
+      );
+      // groom
+      g.append(
+        svgEl('circle', { cx: '124', cy: '54', r: '13', fill: fillA }),
+        svgEl('path', { d: 'M107 138 q0-44 17-44 q17 0 17 44 Z', fill: fillA }),
+        svgEl('path', { d: 'M124 70 v40', stroke: fillB, 'stroke-width': '3', fill: 'none', opacity: '.7' })
+      );
+      return g;
+    }
+
+    svg.appendChild(couple('rgba(255,255,255,.26)', 'rgba(255,255,255,.16)', 'couple-base'));
+    const blessed = couple('#E7B94A', '#C4453F', 'couple-blessed');
+    blessed.setAttribute('opacity', '0');
+    svg.appendChild(blessed);
+
+    // bowl of akshata
+    svg.append(
+      svgEl('path', { d: 'M14 148 q18 22 42 0 Z', fill: '#D9A648', stroke: '#7A4A0E', 'stroke-width': '2' }),
+      svgEl('ellipse', { cx: '35', cy: '148', rx: '21', ry: '6', fill: '#FFF7E4', stroke: '#7A4A0E', 'stroke-width': '2' })
+    );
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'akshata-canvas';
+
+    wrap.append(svg, canvas);
+    stage.appendChild(wrap);
+
+    const c = canvas.getContext('2d');
+    let grains = [];
+    let blessings = 0;
+    let raf = 0;
+    let done = false;
+
+    function size() {
+      const w = wrap.clientWidth || 260;
+      const h = wrap.clientHeight || 220;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      c.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { w, h };
+    }
+    let box = size();
+
+    function spawn(x, y, n) {
+      for (let i = 0; i < n; i++) {
+        grains.push({
+          x: x + (Math.random() - .5) * 40,
+          y: y + (Math.random() - .5) * 16,
+          vx: (Math.random() - .5) * 1.1,
+          vy: 0.6 + Math.random() * 1.4,
+          r: 1.4 + Math.random() * 1.6,
+          life: 1,
+          col: Math.random() > .35 ? '#FFF7E4' : '#E8A33D',
+        });
+      }
+    }
+
+    function frame() {
+      raf = requestAnimationFrame(frame);
+      c.clearRect(0, 0, box.w, box.h);
+      grains = grains.filter((g) => g.y < box.h + 8 && g.life > 0);
+      grains.forEach((g) => {
+        g.vy += 0.055;
+        g.x += g.vx;
+        g.y += g.vy;
+        if (g.y > box.h - 10) g.life -= .06;
+        c.globalAlpha = Math.max(0, Math.min(1, g.life));
+        c.fillStyle = g.col;
+        c.beginPath();
+        c.ellipse(g.x, g.y, g.r, g.r * 1.7, 0, 0, Math.PI * 2);
+        c.fill();
+      });
+      c.globalAlpha = 1;
+    }
+    if (!reduceMotion) raf = requestAnimationFrame(frame);
+
+    function bless(e) {
+      if (done) return;
+      const r = wrap.getBoundingClientRect();
+      const x = e ? e.clientX - r.left : box.w / 2;
+      spawn(x, 6, 12);
+
+      blessings++;
+      const pct = Math.min(1, blessings / BLESSINGS);
+      blessed.setAttribute('opacity', String(pct));
+      tone({ freq: 900 + Math.random() * 260, type: 'triangle', dur: .12, gain: .13 });
+
+      if (blessings >= BLESSINGS) {
+        done = true;
+        hint.textContent = 'Blessed 🌾';
+        setTimeout(complete, 560);
+      } else {
+        hint.textContent = 'Keep showering — ' + (BLESSINGS - blessings) + ' to go';
+      }
+    }
+
+    function onDown(e) { bless(e); }
+    let lastFlick = 0;
+    function onMove(e) {
+      if (!e.buttons && e.pointerType === 'mouse') return;
+      const now = performance.now();
+      if (now - lastFlick < 140) return;   // a flick keeps giving, but not per pixel
+      lastFlick = now;
+      bless(e);
+    }
+
+    wrap.addEventListener('pointerdown', onDown);
+    wrap.addEventListener('pointermove', onMove);
+    const onResize = () => { box = size(); };
+    window.addEventListener('resize', onResize);
+
+    return {
+      destroy() {
+        cancelAnimationFrame(raf);
+        window.removeEventListener('resize', onResize);
+        wrap.remove();
+        veil.style.removeProperty('--veil-bg');
+      },
+    };
+  }
+
+  return { scratch, trace, dhol, knots, akshata };
 })();

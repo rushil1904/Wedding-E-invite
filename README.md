@@ -59,7 +59,7 @@ Blessing footer, plus a reveal modal.
 
 ## The mini-games
 
-The first three ceremonies open a card that is hidden behind a game. Winning
+Each ceremony opens a card that is hidden behind a game. Winning
 fades the cover away and reveals the ceremony card underneath; unlocked cards
 get a ✓ on their thumbnail and stay unlocked. Every game has a
 **Skip & reveal** link, so nobody is ever locked out of the details.
@@ -67,8 +67,10 @@ get a ✓ on their thumbnail and stay unlocked. Every game has a
 | Ceremony | Game |
 |---|---|
 | Haldi | Rub the turmeric off a canvas scratch layer (reveals at 60% cleared) |
-| Mehndi | Trace the henna vine with your finger — the path fills as you go |
+| Mehendi | Trace the henna vine with your finger — the path fills as you go |
 | Sangeet | Tap the dhol eight times to the beat, with a WebAudio drum hit |
+| Mangalya Sutra | Swipe to tie the three knots — the thread cinches tighter each time and the thali settles on the third |
+| The Wedding | Tap or flick to shower akshata over the couple, who take on colour as the blessings land |
 
 To turn one off, set that event's `game` to `null` — the card then opens
 straight away. A thumbnail appears whenever an event has a `thumbLabel`, so

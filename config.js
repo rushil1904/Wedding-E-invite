@@ -61,7 +61,7 @@ window.WEDDING = {
        dayLabel       overrides the weekday/date line, which is otherwise
                       derived from `date` so the two can never disagree
 
-     `game` is one of 'scratch' | 'trace' | 'dhol' | null (null = no game,
+     `game` is one of 'scratch' | 'trace' | 'dhol' | 'knots' | 'akshata' | null (null = no game,
      the card opens straight away).
 
      NOTE: every time in [brackets] is a guess from "morning" / "evening" /
@@ -92,7 +92,6 @@ window.WEDDING = {
       subtitle: 'Where henna meets hearts',
       date: '2026-12-26T16:00:00',
       timeLabel: '[4:00 PM] onwards',
-      dressCode: 'Pastel & floral',
       quote: 'The deeper the mehendi, the deeper the love.',
       thumbLabel: 'Trace the henna',
       cta: 'Trace the henna',
@@ -127,9 +126,9 @@ window.WEDDING = {
       mapUrl: null,          // ← add the temple's Google Maps link here
       durationHours: 2,
       quote: 'The knot that binds two families.',
-      thumbLabel: 'View card',
-      cta: null,
-      game: null,
+      thumbLabel: 'Tie the knots',
+      cta: 'Tie the three knots',
+      game: 'knots',
       accent: '#BE9034',
       tint: '#D9B15C',
       art: 'temple',
@@ -143,9 +142,9 @@ window.WEDDING = {
       dressCode: 'Traditional',
       note: 'After the temple ceremony everyone returns to their rooms to get ready.',
       quote: 'The sacred vows — with your blessings.',
-      thumbLabel: 'View card',
-      cta: null,
-      game: null,
+      thumbLabel: 'Shower akshata',
+      cta: 'Shower the akshata',
+      game: 'akshata',
       accent: '#8E2436',
       tint: '#D98A5E',
       art: 'wedding',
