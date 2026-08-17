@@ -28,7 +28,7 @@ window.WEDDING = {
     parents: 'S/o Dr. Rajesh & Dr. Kusum Deshwal',
   },
 
-  hashtag: '[COUPLEHASHTAG]',
+  hashtag: 'R&R',
 
   // Countdown target + the date shown on the invitation. Local time, 24h clock.
   // Points at the Mangalya Sutra, which is the ceremony that actually ties the knot.
