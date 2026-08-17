@@ -70,9 +70,14 @@ window.WEDDING = {
    * invitation to show from the hostname. One deploy means the schedule,
    * artwork and RSVP can never drift apart between the two sides.
    *
+   *   `paths`  URL paths that get this version, e.g. /rithika
    *   `hosts`  subdomains that get this version (bare domain, no https://)
    *   `first`  whose name and parents lead the invitation
    *   `hide`   event ids this side does not see
+   *
+   * Paths work on any domain, including the free rnrmatched.up.railway.app.
+   * Hosts are there for later, if you put the invitation on a domain of your
+   * own — nothing else has to change when you do.
    *
    * `?side=bride` / `?side=groom` overrides the hostname, which is how you
    * check both versions before the DNS exists. Note this is curation, not
@@ -80,19 +85,21 @@ window.WEDDING = {
    * ------------------------------------------------------------------ */
   sides: {
     bride: {
+      paths: ['/rithika'],
       hosts: ['bride.example.com'],
       first: 'bride',
       hide: ['bhaat', 'sightseeing', 'djnight', 'mangalyasutra'],
     },
     groom: {
+      paths: ['/rushil'],
       hosts: ['groom.example.com'],
       first: 'groom',
       hide: [],
     },
   },
 
-  // Any host not listed above — localhost, the raw Railway URL — falls back
-  // to this. null shows everything, bride first.
+  // Any path or host not listed above — the bare domain, localhost — falls
+  // back to this. null shows everything, bride first.
   defaultSide: null,
 
   /* The celebrations, in order. `date` is the local start time and drives the

@@ -7,8 +7,12 @@
 # Railway injects PORT; 8080 is the fallback for `docker run` locally.
 :{$PORT:8080} {
 	root * /srv
-	file_server
 	encode zstd gzip
+
+	# /rithika and /rushil are not files — they are the two invitations, and
+	# each is served the same page, which picks its side from the path
+	try_files {path} {path}/ /index.html
+	file_server
 
 	# The page itself must always be revalidated, or a guest keeps seeing a
 	# stale invitation after the details change.

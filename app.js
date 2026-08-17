@@ -40,8 +40,20 @@
     const forced = new URLSearchParams(location.search).get('side');
     if (forced && sides[forced]) return forced;
 
-    const host = location.hostname.toLowerCase();
     const names = Object.keys(sides);
+    const tidy = (v) => String(v).toLowerCase().replace(/\/+$/, '');
+
+    // path first: /rithika and /rushil work on any domain, including the
+    // free Railway one, where only a single hostname is available
+    const path = tidy(location.pathname) || '/';
+    for (let i = 0; i < names.length; i++) {
+      const paths = sides[names[i]].paths || [];
+      for (let j = 0; j < paths.length; j++) {
+        if (tidy(paths[j]) === path) return names[i];
+      }
+    }
+
+    const host = location.hostname.toLowerCase();
     for (let i = 0; i < names.length; i++) {
       const hosts = sides[names[i]].hosts || [];
       for (let j = 0; j < hosts.length; j++) {
@@ -671,8 +683,8 @@
     const webp = $('[data-card-webp]');
     img.classList.remove('is-loaded');
     if (ev.image) {
-      webp.srcset = 'assets/web/' + ev.image + '.webp';
-      img.src = 'assets/web/' + ev.image + '.jpg';
+      webp.srcset = '/assets/web/' + ev.image + '.webp';
+      img.src = '/assets/web/' + ev.image + '.jpg';
       img.alt = ev.title;
       if (img.complete) img.classList.add('is-loaded');
       else img.onload = () => img.classList.add('is-loaded');

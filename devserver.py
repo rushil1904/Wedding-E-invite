@@ -75,7 +75,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self._send(stamp().encode(), 'text/plain; charset=utf-8')
             return
 
-        if path in ('/', '/index.html'):
+        # any extensionless path is one of the invitations (/rithika, /rushil),
+        # matching the try_files fallback Caddy does in production
+        if path in ('/', '/index.html') or '.' not in os.path.basename(path):
             with open(os.path.join(ROOT, 'index.html'), encoding='utf-8') as f:
                 html = f.read()
             html = html.replace('</body>', LIVE_RELOAD + '</body>')

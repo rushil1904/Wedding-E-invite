@@ -58,24 +58,29 @@ a different invitation:
 | Parents | Nair line first | Deshwal line first |
 | Events | Haldi, Mehendi, Sangeet, The Wedding | all eight |
 
-**Both subdomains point at the same Railway service.** In Railway → Settings →
-Networking, add both custom domains to the one deployment. The page works out
-which invitation to show from `location.hostname`.
+**Both links are paths on the one deployment:**
 
-Set the real subdomains in `sides` in `config.js` — until the `hosts` arrays
-match your actual domains, every visitor gets the fallback view (everything,
-bride first):
-
-```js
-sides: {
-  bride: { hosts: ['bride.yourdomain.com'], first: 'bride',
-           hide: ['bhaat', 'sightseeing', 'djnight', 'mangalyasutra'] },
-  groom: { hosts: ['groom.yourdomain.com'], first: 'groom', hide: [] },
-},
+```
+https://<your-railway-domain>/rithika    →  bride's side
+https://<your-railway-domain>/rushil     →  groom's side
+https://<your-railway-domain>/           →  everything, bride first
 ```
 
-Append `?side=bride` or `?side=groom` to any URL to preview either version —
-that is how to check both before the DNS exists.
+Paths rather than subdomains because Railway issues a single
+`*.up.railway.app` domain per service — two subdomains would need a domain you
+own, or a second service, which would mean two copies of the invitation to
+keep in step.
+
+Caddy serves `index.html` for any path that is not a file (`try_files`), and
+the page picks its side from `location.pathname`. Nothing else needs setting
+up: no DNS, no second service.
+
+If you later put this on a domain of your own, fill in the `hosts` arrays and
+add both subdomains to the same Railway service — the code already checks the
+hostname and nothing else changes.
+
+The paths live in `sides` in `config.js`; rename them there if you want
+different words. `?side=bride` / `?side=groom` also works on any URL.
 
 Deliberately **one deployment, not two builds.** Two copies of the invitation
 would drift apart the first time a time or a venue changed, and this is a live
@@ -201,8 +206,8 @@ the dashboard, and no build step, since Caddy serves the files as they are.
 
 1. New Project → Deploy from GitHub repo → pick this repo
 2. Railway builds the `Dockerfile` and starts the service
-3. Settings → Networking → add **both** custom subdomains to this one service
-   (see "Two invitations, one site" above)
+3. Settings → Networking → Generate Domain. That one domain serves both
+   invitations at `/rithika` and `/rushil` — see "Two invitations, one site"
 
 Railway injects `PORT`; the `Caddyfile` binds to it via `:{$PORT:8080}` and
 falls back to 8080 for a plain `docker run -p 8080:8080 …` locally.
