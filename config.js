@@ -69,6 +69,7 @@ window.WEDDING = {
      Optional per-event fields:
        venue          overrides the default venue above
        venueShort     shorter form for the timeline, where the venue repeats
+       image          basename in assets/web/ for the reveal card artwork
        kind           the small label under the card title (default "Ceremony")
        cardLead       the line above it (default "Join us to celebrate our")
        note           a plain practical line (logistics, not poetry)
@@ -88,6 +89,7 @@ window.WEDDING = {
   events: [
     {
       id: 'bhaat',
+      image: 'bhaat',
       title: 'Bhaat',
       subtitle: 'Mayra · the mama’s welcome',
       date: '2026-12-26T09:30:00',
@@ -105,6 +107,7 @@ window.WEDDING = {
     },
     {
       id: 'haldi',
+      image: 'haldi',
       venue: DAY_ONE_VENUE.name,
       mapUrl: DAY_ONE_VENUE.map,
       title: 'Haldi',
@@ -122,6 +125,7 @@ window.WEDDING = {
     },
     {
       id: 'mehendi',
+      image: 'mehendi',
       venue: DAY_ONE_VENUE.name,
       mapUrl: DAY_ONE_VENUE.map,
       title: 'Mehendi',
@@ -138,6 +142,7 @@ window.WEDDING = {
     },
     {
       id: 'sangeet',
+      image: 'sangeet',
       venue: DAY_ONE_VENUE.name,
       mapUrl: DAY_ONE_VENUE.map,
       title: 'Sangeet',
@@ -155,6 +160,7 @@ window.WEDDING = {
     },
     {
       id: 'sightseeing',
+      image: 'sightseeing',
       title: 'Sightseeing',
       subtitle: 'A day out around Palakkad',
       date: '2026-12-27T14:00:00',
@@ -173,6 +179,7 @@ window.WEDDING = {
     },
     {
       id: 'djnight',
+      image: 'DJ',
       title: 'DJ Night',
       subtitle: 'The dance floor by the river',
       date: '2026-12-27T20:00:00',
@@ -191,6 +198,7 @@ window.WEDDING = {
     },
     {
       id: 'mangalyasutra',
+      image: 'mangal_sutra',
       title: 'Mangalya Sutra',
       subtitle: 'The sacred thread, at the temple',
       date: '2026-12-28T06:00:00',
@@ -209,6 +217,7 @@ window.WEDDING = {
     },
     {
       id: 'wedding',
+      image: 'wedding',
       title: 'The Wedding',
       subtitle: 'The Muhurtham',
       date: '2026-12-28T10:00:00',

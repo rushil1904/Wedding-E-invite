@@ -113,9 +113,30 @@ To turn one off, set that event's `game` to `null` — the card then opens
 straight away. A thumbnail appears whenever an event has a `thumbLabel`, so
 set that to `null` instead if you want no card at all for an event.
 
-## Artwork
+## Artwork on the reveal cards
 
-The garland strip, the four ceremony illustrations and the seal are inline SVG
+Each ceremony card shows an illustration from `assets/web/`, named by the
+event's `image` field in `config.js`.
+
+`assets/*.png` are the full-size originals (~2.5 MB each). They are **not**
+deployed — `.dockerignore` keeps them out of the image. What ships is
+`assets/web/`, regenerated from the originals with:
+
+```sh
+cd assets
+for f in *.png; do
+  sips -Z 900 -s format jpeg -s formatOptions 78 "$f" --out "web/${f%.png}.jpg"
+  cwebp -q 78 -resize 900 0 "$f" -o "web/${f%.png}.webp"
+done
+```
+
+WebP is served to anything modern and JPEG to older phones, via `<picture>`.
+The card's `src` is set when the modal opens rather than up front, so a guest
+downloads only the one illustration they are looking at — not all eight.
+
+## Line artwork
+
+The garland strip, the timeline thumbnails and the seal are inline SVG
 in `index.html` (`<symbol id="art-haldi">` and friends) — no image files, so the
 page stays fast and crisp at any density. To swap in real illustrations,
 replace the contents of each `<symbol>`, or point the `<use href>` at an

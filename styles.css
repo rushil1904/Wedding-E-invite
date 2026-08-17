@@ -836,17 +836,27 @@ button { font-family: var(--serif); }
   margin: 4px 0 2px;
 }
 .card-sub { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; margin: 0; }
+/* The artwork is the payoff of the game, so it gets the width of the card.
+   Aspect ratios differ between illustrations, so height follows the image
+   rather than cropping — faces sit high in the portraits and a square crop
+   would cut them. The cap keeps the card inside a short screen. */
 .card-art {
   margin: 18px auto;
-  width: 150px;
-  height: 150px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, .5);
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 120px;
 }
-.card-art svg { width: 118px; height: 118px; }
+.card-art img {
+  display: block;
+  max-width: 100%;
+  max-height: min(300px, 34vh);
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .22);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.card-art img.is-loaded { opacity: 1; }
 .card-time { font-family: var(--script); font-style: italic; font-size: 18px; margin: 0; }
 .card-where { font-size: 13px; margin: 4px 0 0; }
 .card-cta { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; opacity: .6; margin: 16px 0 0; }

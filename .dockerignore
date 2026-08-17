@@ -5,3 +5,7 @@ Dockerfile
 devserver.py
 README.md
 *.md
+
+# ship only the web-sized artwork, not the multi-megabyte originals
+assets/*.png
+.DS_Store

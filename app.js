@@ -626,7 +626,17 @@
     fillPlace(tail, ev);
     where.appendChild(tail);
     $('[data-card-cta]').textContent = ev.cta || '';
-    $('[data-card-art] use').setAttribute('href', '#art-' + ev.art);
+    // set on open, not up front, so only the card being looked at is fetched
+    const img = $('[data-card-img]');
+    const webp = $('[data-card-webp]');
+    img.classList.remove('is-loaded');
+    if (ev.image) {
+      webp.srcset = 'assets/web/' + ev.image + '.webp';
+      img.src = 'assets/web/' + ev.image + '.jpg';
+      img.alt = ev.title;
+      if (img.complete) img.classList.add('is-loaded');
+      else img.onload = () => img.classList.add('is-loaded');
+    }
 
     backdrop.hidden = false;
     document.body.style.overflow = 'hidden';

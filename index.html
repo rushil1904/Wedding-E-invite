@@ -412,7 +412,11 @@
       <h3 class="card-title" id="modal-title" data-card-title>Haldi</h3>
       <p class="card-sub" data-card-sub>Ceremony</p>
       <div class="card-art">
-        <svg viewBox="0 0 120 120" data-card-art><use href="#art-haldi"></use></svg>
+        <picture>
+          <!-- webp for anything modern, jpeg for older phones -->
+          <source data-card-webp type="image/webp">
+          <img data-card-img alt="" decoding="async">
+        </picture>
       </div>
       <p class="card-time" data-card-time>At 6:00 PM</p>
       <p class="card-where" data-card-where></p>
