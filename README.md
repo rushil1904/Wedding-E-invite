@@ -53,9 +53,32 @@ Blessing footer, plus a reveal modal.
 
 - **Countdown** ticks every second to `weddingDate` and clamps at zero.
 - **Pick your side** is single-select; tapping the active side clears it.
-- **RSVP** collects name, celebrations and guest count (1–20) and builds a
-  `https://wa.me/…` deep link. Guest input is remembered in `localStorage`.
+- **RSVP** collects name, celebrations and guest count (1–20) and saves them
+  to a Google Sheet. See below. Guest input is remembered in `localStorage`.
 - **+ Add to calendar** on each event downloads an `.ics` file.
+
+## RSVPs
+
+Responses go to a Google Sheet through an Apps Script web app — no database,
+no backend service, and the people who need the numbers (family, caterer) can
+read the answers without anyone's help.
+
+Setup instructions are at the top of [`rsvp-sheet.gs`](rsvp-sheet.gs). Paste
+that file into the sheet's Apps Script editor, deploy it as a web app with
+access set to **Anyone**, and put the `/exec` URL into `rsvpEndpoint` in
+`config.js`.
+
+Until that URL is set, the WhatsApp button stays the primary action, so the
+page works throughout. Once it is set:
+
+- **Send RSVP** becomes the primary button and writes a row to the sheet.
+- WhatsApp drops to a quiet secondary link, and is promoted back to a button
+  if a submission fails — a failed RSVP always has somewhere to go.
+- Guests can correct a submission. Each browser keeps a submission id, and the
+  script overwrites that row rather than adding a second one.
+- A hidden honeypot field is discarded by the script. The endpoint is
+  publicly writable by design, as any unauthenticated endpoint is; at this
+  scale the remedy for a junk row is deleting it.
 
 ## The mini-games
 

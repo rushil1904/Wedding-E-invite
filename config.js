@@ -43,6 +43,11 @@ window.WEDDING = {
   city: 'Palakkad',
   mapUrl: 'https://maps.app.goo.gl/44ULdVCSmp6FC4zDA',
 
+  /* Where RSVPs are saved. Paste the /exec URL of the Apps Script web app
+     deployed from rsvp-sheet.gs (see the README). While this is empty the
+     WhatsApp button stays the primary action, so the page never breaks. */
+  rsvpEndpoint: '',
+
   // Digits only, with country code and no "+" — e.g. '919876543210'.
   // Leave empty and the button opens WhatsApp's "choose a contact" screen.
   whatsappNumber: '',

@@ -310,6 +310,16 @@
       <button class="step" data-guests="1" aria-label="One guest more">+</button>
     </div>
 
+    <!-- spam trap: off-screen, never focusable, ignored by the sheet -->
+    <div class="hp" aria-hidden="true">
+      <label>Leave this empty
+        <input type="text" data-hp tabindex="-1" autocomplete="off">
+      </label>
+    </div>
+
+    <button class="submit-btn reveal-item" data-submit type="button" hidden>Send RSVP</button>
+    <p class="rsvp-status" data-status role="status" aria-live="polite" hidden></p>
+
     <a class="wa-btn reveal-item" data-whatsapp href="#" target="_blank" rel="noopener">
       <span class="wa-icon" aria-hidden="true">✆</span>
       Send RSVP on WhatsApp

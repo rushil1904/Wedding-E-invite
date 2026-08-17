@@ -437,6 +437,105 @@
   tel.href = 'tel:' + String(W.phone || '').replace(/[^0-9+]/g, '');
 
   /* ---------------------------------------------------------------- *
+   * Saving the RSVP to the sheet
+   * ---------------------------------------------------------------- */
+  const submitBtn = $('[data-submit]');
+  const statusEl = $('[data-status]');
+  const hpEl = $('[data-hp]');
+  const ENDPOINT = String(W.rsvpEndpoint || '').trim();
+
+  function setStatus(kind, text) {
+    statusEl.hidden = !text;
+    statusEl.textContent = text || '';
+    statusEl.className = 'rsvp-status' + (kind ? ' is-' + kind : '');
+  }
+
+  // stable per browser, so an updated RSVP replaces its row instead of
+  // adding a second one under the same name
+  function rsvpId() {
+    if (!state.rsvpId) {
+      state.rsvpId = 'r-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+      save();
+    }
+    return state.rsvpId;
+  }
+
+  function payload() {
+    return {
+      id: rsvpId(),
+      name: state.name.trim(),
+      guests: state.guests,
+      celebrations: W.events.map((e) => e.title).filter((t) => state.cels[t]),
+      team: state.team || '',
+      hp: hpEl ? hpEl.value : '',
+      submittedAt: new Date().toISOString(),
+    };
+  }
+
+  function paintSubmitted() {
+    if (!ENDPOINT) return;
+    submitBtn.textContent = state.sent ? 'Update my RSVP' : 'Send RSVP';
+    if (state.sent && !statusEl.textContent) {
+      setStatus('ok', 'Your RSVP is with us — thank you.');
+    }
+  }
+
+  async function sendRsvp() {
+    if (!state.name.trim()) {
+      setStatus('error', 'Please add your name first.');
+      nameInput.focus();
+      return;
+    }
+    if (hpEl && hpEl.value) return;   // a bot filled the trap
+
+    submitBtn.disabled = true;
+    setStatus('busy', 'Sending…');
+
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 9000);
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        // text/plain avoids the CORS preflight, which an Apps Script web app
+        // cannot answer; the script reads the raw body itself
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload()),
+        signal: ctrl.signal,
+      });
+
+      /* fetch only rejects on network failure, so a mistyped endpoint would
+         come back 404 and still look like success. Check the status, and the
+         script's own {ok:false} for a payload it refused. */
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      let body = null;
+      try { body = await res.json(); } catch (_) { /* non-JSON: treat as sent */ }
+      if (body && body.ok === false) throw new Error(body.error || 'rejected');
+
+      state.sent = true;
+      save();
+      setStatus('ok', 'Thank you — your RSVP is with us.');
+      paintSubmitted();
+    } catch (_) {
+      /* The row may well have been written and only the reply lost. Sending
+         again is safe: the sheet matches on id and overwrites. */
+      setStatus('error', 'Could not send just now — please try again, or use WhatsApp below.');
+      waBtn.classList.remove('wa-btn--secondary');
+    } finally {
+      clearTimeout(timer);
+      submitBtn.disabled = false;
+    }
+  }
+
+  function initRsvpMode() {
+    if (!ENDPOINT) return;          // no endpoint yet: WhatsApp stays primary
+    submitBtn.hidden = false;
+    waBtn.classList.add('wa-btn--secondary');
+    waBtn.innerHTML = 'or send it on WhatsApp instead';
+    submitBtn.addEventListener('click', sendRsvp);
+    paintSubmitted();
+  }
+
+  /* ---------------------------------------------------------------- *
    * Reveal modal + games
    * ---------------------------------------------------------------- */
   const backdrop = $('[data-backdrop]');
@@ -625,6 +724,7 @@
   paintSides();
   paintGuests();
   paintWhatsapp();
+  initRsvpMode();
   startCountdown();
   watchReveals();
   sowPetals();
