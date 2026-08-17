@@ -7,15 +7,15 @@
 
 window.WEDDING = {
   bride: {
-    name: '[Bride Name]',   //   = non-breaking space, keeps the name on one line
-    short: '[Bride]',
-    initial: 'B',
+    name: 'Rithika Sunil Nair',
+    short: 'Rithika',
+    initial: 'R',
     parents: "D/o [Bride's Parents]",
   },
   groom: {
-    name: '[Groom Name]',
-    short: '[Groom]',
-    initial: 'G',
+    name: 'Rushil Deshwal',
+    short: 'Rushil',
+    initial: 'R',
     parents: 'S/o [Groom’s Parents]',
   },
 

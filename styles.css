@@ -209,10 +209,14 @@ button { font-family: var(--serif); }
   font-family: var(--script);
   font-style: italic;
   font-weight: 500;
-  font-size: 56px;
+  /* scales with the phone rather than stepping at a breakpoint, so a long
+     name doesn't split in two on a 375px screen and stay whole on a 390 */
+  font-size: clamp(40px, 13vw, 56px);
   line-height: 1.02;
   margin: 14px 0 0;
   color: var(--maroon);
+  /* a long name should break into even lines, not leave a word stranded */
+  text-wrap: balance;
 }
 .couple-name + .amp + .couple-name { margin: 0 0 20px; }
 .amp {
@@ -693,6 +697,22 @@ button { font-family: var(--serif); }
 .card-where { font-size: 13px; margin: 4px 0 0; }
 .card-cta { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; opacity: .6; margin: 16px 0 0; }
 
+.card-replay {
+  margin-top: 14px;
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: inherit;
+  background: rgba(255, 255, 255, .35);
+  border: 1px solid rgba(58, 42, 16, .28);
+  border-radius: 999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.card-replay:hover { background: rgba(255, 255, 255, .6); }
+.card-replay[hidden] { display: none; }
+
 /* --- the game layer sitting on top of the card --- */
 
 .veil {
@@ -824,7 +844,6 @@ button { font-family: var(--serif); }
 /* ---------- narrow phones ---------- */
 
 @media (max-width: 360px) {
-  .couple-name { font-size: 46px; }
   .section-title { font-size: 33px; }
   .event-thumb { width: 66px; }
   .card-title { font-size: 34px; }

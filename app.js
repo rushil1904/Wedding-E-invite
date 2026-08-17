@@ -354,6 +354,7 @@
   const veilHint = $('[data-veil-hint]');
   const skipBtn = $('[data-skip]');
   const closeBtn = $('[data-close]');
+  const replayBtn = $('[data-replay]');
 
   let game = null;
   let current = null;
@@ -379,19 +380,40 @@
     backdrop.hidden = false;
     document.body.style.overflow = 'hidden';
 
-    teardownGame();
-    if (ev.game && !state.unlocked[ev.id] && window.Games[ev.game]) {
-      veil.hidden = false;
-      veil.classList.remove('is-clearing');
-      game = window.Games[ev.game]({
-        veil, stage: veilStage, hint: veilHint, event: ev, complete: unlock,
-      });
+    if (hasGame(ev) && !state.unlocked[ev.id]) {
+      mountGame(ev);
     } else {
+      teardownGame();
       veil.hidden = true;
+      veil.classList.remove('is-clearing');
     }
+    paintReplay(ev);
 
     closeBtn.focus();
   }
+
+  function hasGame(ev) { return !!(ev && ev.game && window.Games[ev.game]); }
+
+  function mountGame(ev) {
+    teardownGame();
+    veil.hidden = false;
+    veil.classList.remove('is-clearing');
+    game = window.Games[ev.game]({
+      veil, stage: veilStage, hint: veilHint, event: ev, complete: unlock,
+    });
+  }
+
+  // The replay link only makes sense once the card is already open — including
+  // for guests who used "Skip & reveal" and never actually played.
+  function paintReplay(ev) {
+    replayBtn.hidden = !(hasGame(ev) && state.unlocked[ev.id]);
+  }
+
+  replayBtn.addEventListener('click', () => {
+    // deliberately does NOT clear the unlock flag: abandoning a replay must
+    // never take the ceremony details away again
+    if (hasGame(current)) mountGame(current);
+  });
 
   function unlock() {
     if (!current) return;
@@ -408,6 +430,7 @@
       if (current !== fading) return;
       veil.hidden = true;
       teardownGame();
+      paintReplay(fading);
     }, reduceMotion ? 0 : 560);
   }
 
