@@ -177,6 +177,25 @@ WebP is served to anything modern and JPEG to older phones, via `<picture>`.
 The card's `src` is set when the modal opens rather than up front, so a guest
 downloads only the one illustration they are looking at — not all eight.
 
+## The browser icon
+
+`assets/rr.svg` is the source. Modern browsers take the SVG directly; the PNGs
+in `assets/web/` cover the rest and give a phone a proper icon when a guest
+adds the invitation to their home screen. Regenerate them after editing the
+SVG with:
+
+```sh
+# with the dev server running
+for s in 180 32; do
+  printf '<!doctype html><body style="margin:0;background:transparent">\
+<img src="/assets/rr.svg" width="%s" height="%s" style="display:block">' $s $s > _icon.html
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new \
+    --default-background-color=00000000 --window-size=$s,$s --virtual-time-budget=2500 \
+    --screenshot=assets/web/icon-$s.png http://localhost:8000/_icon.html
+done
+rm _icon.html
+```
+
 ## Line artwork
 
 The garland strip, the timeline thumbnails and the seal are inline SVG
