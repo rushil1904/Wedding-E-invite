@@ -22,11 +22,13 @@ window.WEDDING = {
   hashtag: '[COUPLEHASHTAG]',
 
   // Countdown target + the date shown on the invitation. Local time, 24h clock.
-  weddingDate: '2026-12-11T18:00:00',
-  weddingDateLabel: '[11 December 2026]',
+  // Points at the Mangalya Sutra, which is the ceremony that actually ties the knot.
+  weddingDate: '2026-12-28T06:00:00',
+  weddingDateLabel: '28 December 2026',
 
-  venue: '[Venue]',
-  city: '[City]',
+  // Default venue. An event can override it with its own `venue` (the temple does).
+  venue: '[Wedding Hall]',
+  city: 'Palakkad',
 
   // Digits only, with country code and no "+" — e.g. '919876543210'.
   // Leave empty and the button opens WhatsApp's "choose a contact" screen.
@@ -35,18 +37,30 @@ window.WEDDING = {
   // Shown as "Call the family".
   phone: '+910000000000',
 
-  /* The four celebrations, in order. `date` is the local start time and drives
-     both the countdown-free timeline copy and the .ics calendar files.
-     `game` is one of 'scratch' | 'trace' | 'dhol' | null (null = no reveal card). */
+  /* The celebrations, in order. `date` is the local start time and drives the
+     countdown, the timeline and the .ics calendar files.
+
+     Optional per-event fields:
+       venue          overrides the default venue above
+       note           a plain practical line (logistics, not poetry)
+       dressCode      shown as "Dress code: …"
+       durationHours  overrides eventDurationHours for the calendar file
+       dayLabel       overrides the weekday/date line, which is otherwise
+                      derived from `date` so the two can never disagree
+
+     `game` is one of 'scratch' | 'trace' | 'dhol' | null (null = no game,
+     the card opens straight away).
+
+     NOTE: every time in [brackets] is a guess from "morning" / "evening" /
+     "early morning" and needs confirming. The bracketed labels are what the
+     guest sees, so they stay obviously provisional until you set them. */
   events: [
     {
       id: 'haldi',
       title: 'Haldi',
       subtitle: 'Manjal Neerattu Vizha',
-      date: '2026-12-08T18:00:00',
-      dayLabel: 'Tuesday, 8 December 2026',
-      timeLabel: '6:00 PM onwards',
-      dressCode: null,
+      date: '2026-12-26T10:00:00',
+      timeLabel: '[10:00 AM] onwards',
       quote: 'Turmeric, laughter and the very first blessings.',
       thumbLabel: 'Rub to reveal',
       cta: 'Rub off the turmeric',
@@ -56,14 +70,13 @@ window.WEDDING = {
       art: 'haldi',
     },
     {
-      id: 'mehndi',
-      title: 'Mehndi',
+      id: 'mehendi',
+      title: 'Mehendi',
       subtitle: 'Where henna meets hearts',
-      date: '2026-12-09T17:30:00',
-      dayLabel: 'Wednesday, 9 December 2026',
-      timeLabel: '5:30 PM onwards',
+      date: '2026-12-26T16:00:00',
+      timeLabel: '[4:00 PM] onwards',
       dressCode: 'Pastel & floral',
-      quote: 'The deeper the mehndi, the deeper the love.',
+      quote: 'The deeper the mehendi, the deeper the love.',
       thumbLabel: 'Trace the henna',
       cta: 'Trace the henna',
       game: 'trace',
@@ -74,11 +87,9 @@ window.WEDDING = {
     {
       id: 'sangeet',
       title: 'Sangeet',
-      subtitle: 'An evening of song',
-      date: '2026-12-10T18:00:00',
-      dayLabel: 'Thursday, 10 December 2026',
-      timeLabel: '6:00 PM onwards',
-      dressCode: null,
+      subtitle: 'An evening of song, following the Mehendi',
+      date: '2026-12-26T19:00:00',
+      timeLabel: '[7:00 PM] onwards',
       quote: 'Music, dance and the whole family on its feet.',
       thumbLabel: 'Tap the dhol',
       cta: 'Tap the dhol to the beat',
@@ -88,15 +99,31 @@ window.WEDDING = {
       art: 'sangeet',
     },
     {
+      id: 'mangalyasutra',
+      title: 'Mangalya Sutra',
+      subtitle: 'The sacred thread, at the temple',
+      date: '2026-12-28T06:00:00',
+      timeLabel: 'Early morning, [6:00 AM]',
+      venue: '[Temple Name]',
+      durationHours: 2,
+      quote: 'The knot that binds two families.',
+      thumbLabel: 'View card',
+      cta: null,
+      game: null,
+      accent: '#BE9034',
+      tint: '#D9B15C',
+      art: 'temple',
+    },
+    {
       id: 'wedding',
       title: 'The Wedding',
       subtitle: 'The Muhurtham',
-      date: '2026-12-11T18:00:00',
-      dayLabel: 'Friday, 11 December 2026',
-      timeLabel: '6:00 PM onwards',
+      date: '2026-12-28T11:00:00',
+      timeLabel: '[11:00 AM] onwards',
       dressCode: 'Traditional',
+      note: 'After the temple ceremony everyone returns to their rooms to get ready.',
       quote: 'The sacred vows — with your blessings.',
-      thumbLabel: null,
+      thumbLabel: 'View card',
       cta: null,
       game: null,
       accent: '#8E2436',
@@ -105,7 +132,7 @@ window.WEDDING = {
     },
   ],
 
-  // How long each event blocks out in the calendar file, in hours.
+  // Default block of time each event takes in the calendar file, in hours.
   eventDurationHours: 4,
 
   // Toggles

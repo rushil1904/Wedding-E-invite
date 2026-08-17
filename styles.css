@@ -21,6 +21,10 @@
 
   --serif: 'EB Garamond', Georgia, serif;
   --script: 'Cormorant Garamond', Georgia, serif;
+
+  /* one vertical rhythm for every section, so the scroll has a steady beat */
+  --sec-y: clamp(72px, 17vw, 104px);
+  --sec-x: clamp(24px, 7vw, 32px);
 }
 
 * { box-sizing: border-box; }
@@ -120,10 +124,16 @@ button { font-family: var(--serif); }
 
 /* ============================== COVER ============================== */
 
+/* Fills the screen so nothing below it is visible — otherwise "Tap to reveal"
+   is pointing at details the guest can already read. */
 .cover {
   position: relative;
   overflow: hidden;
-  padding: 0 0 48px;
+  padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   background: radial-gradient(120% 90% at 50% 0%, #F6E4B8 0%, #F0D79A 34%, #E7C273 100%);
 }
 .garland {
@@ -136,8 +146,14 @@ button { font-family: var(--serif); }
   position: relative;
   z-index: 2;
   text-align: center;
-  padding: 40px 28px 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 28px 96px;
 }
+.cover-hero { display: flex; flex-direction: column; align-items: center; }
 
 .seal {
   margin: 38px auto 0;
@@ -177,8 +193,13 @@ button { font-family: var(--serif); }
   50%      { box-shadow: 0 0 0 14px rgba(190, 144, 52, 0); }
 }
 
+/* pinned to the bottom edge of the screen, where a scroll cue belongs */
 .tap-pill {
-  margin-top: 22px;
+  position: absolute;
+  bottom: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: nudge 2.4s ease-in-out 1.2s infinite;
   display: inline-block;
   font-size: 11px;
   letter-spacing: .3em;
@@ -189,13 +210,48 @@ button { font-family: var(--serif); }
   padding: 7px 16px;
 }
 .tap-pill:hover { background: rgba(255, 255, 255, .35); color: #7A1E2E; }
+@keyframes nudge {
+  0%, 82%, 100% { transform: translate(-50%, 0); }
+  88%           { transform: translate(-50%, 6px); }
+  94%           { transform: translate(-50%, 0); }
+}
+
+/* The cover arrives on load rather than waiting to be scrolled into view.
+   fill-mode is `backwards`, not `both`: it hides the element during the delay
+   but releases the properties again afterwards, so the seal's glow loop and
+   its :active press are not frozen by a lingering final keyframe. */
+.cover-in { animation: rise .9s cubic-bezier(.2, .7, .3, 1) backwards; }
+.cover-in--1 { animation-delay: .15s; }
+.cover-in--2 { animation-delay: .3s; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* the seal keeps pulsing once it has arrived */
+.seal.cover-in {
+  animation:
+    rise .9s cubic-bezier(.2, .7, .3, 1) .3s backwards,
+    glow 3.2s ease-in-out 1.3s infinite;
+}
+
+/* the pill is centred by a transform, so it needs its own keyframes */
+.tap-pill.cover-in {
+  animation:
+    rise-pill .9s cubic-bezier(.2, .7, .3, 1) .85s backwards,
+    nudge 2.4s ease-in-out 2.4s infinite;
+}
+@keyframes rise-pill {
+  from { opacity: 0; transform: translate(-50%, 18px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
 
 /* ============================ INVITATION ============================ */
 
 .invitation {
   position: relative;
   text-align: center;
-  padding: 56px 30px 52px;
+  padding: var(--sec-y) var(--sec-x);
   background: var(--cream);
 }
 .script-muted {
@@ -263,12 +319,12 @@ button { font-family: var(--serif); }
 
 /* ============================ FESTIVITIES ============================ */
 
-.festivities { padding: 52px 26px 46px; background: var(--ivory); }
+.festivities { padding: var(--sec-y) var(--sec-x); background: var(--ivory); }
 
 .event {
   display: flex;
   gap: 16px;
-  padding: 0 0 30px 22px;
+  padding: 0 0 38px 22px;
   margin-left: 6px;
   border-left: 2px solid var(--rule);
   position: relative;
@@ -306,6 +362,15 @@ button { font-family: var(--serif); }
 .event-when { font-size: 14px; color: var(--ink); margin: 8px 0 0; }
 .event-when b { color: var(--maroon); }
 .event-dress { font-size: 13px; color: var(--ink-soft); margin: 4px 0 0; }
+/* practical logistics, set apart from the ceremonial copy */
+.event-note {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 8px 0 0;
+  padding-left: 10px;
+  border-left: 2px solid var(--rule);
+  line-height: 1.45;
+}
 .event-quote {
   font-family: var(--script);
   font-style: italic;
@@ -372,7 +437,7 @@ button { font-family: var(--serif); }
 
 /* =========================== PICK YOUR SIDE =========================== */
 
-.sides { padding: 48px 26px; background: var(--cream); text-align: center; }
+.sides { padding: var(--sec-y) var(--sec-x); background: var(--cream); text-align: center; }
 .lede {
   font-size: 14px;
   color: var(--ink-soft);
@@ -458,7 +523,7 @@ button { font-family: var(--serif); }
 /* ============================= COUNTDOWN ============================= */
 
 .countdown {
-  padding: 46px 26px;
+  padding: var(--sec-y) var(--sec-x);
   background: var(--maroon);
   color: #F3E4B8;
   text-align: center;
@@ -498,7 +563,7 @@ button { font-family: var(--serif); }
 
 /* =============================== RSVP =============================== */
 
-.rsvp { padding: 52px 30px 46px; background: var(--ivory); }
+.rsvp { padding: var(--sec-y) var(--sec-x); background: var(--ivory); }
 
 .field {
   width: 100%;
@@ -592,7 +657,7 @@ button { font-family: var(--serif); }
 .blessing {
   position: relative;
   overflow: hidden;
-  padding: 56px 30px 48px;
+  padding: var(--sec-y) var(--sec-x);
   background: radial-gradient(120% 100% at 50% 0%, #4A1019 0%, #2E0A10 70%);
   color: #EBD6A6;
   text-align: center;
@@ -819,12 +884,21 @@ button { font-family: var(--serif); }
 
 /* ---------- scroll reveal ---------- */
 
-.reveal {
+/* A section is only an observer anchor now — its children arrive one after
+   another, which reads as choreography rather than one slab sliding up. */
+/* Gated behind .js-reveal, which app.js sets on <html> once it is running.
+   Without that gate a JS failure would leave every section permanently
+   invisible — the content must never depend on the animation succeeding. */
+.js-reveal .reveal-item {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity .7s ease, transform .7s ease;
+  transform: translateY(20px);
 }
-.reveal.is-in { opacity: 1; transform: none; }
+.reveal-item {
+  transition:
+    opacity .75s cubic-bezier(.2, .7, .3, 1),
+    transform .75s cubic-bezier(.2, .7, .3, 1);
+}
+.js-reveal .is-in .reveal-item { opacity: 1; transform: none; }
 
 /* ---------- accessibility ---------- */
 
@@ -837,8 +911,18 @@ button { font-family: var(--serif); }
     animation-iteration-count: 1 !important;
     transition-duration: .001ms !important;
   }
-  .reveal { opacity: 1; transform: none; }
+  .js-reveal .reveal-item { opacity: 1; transform: none; }
   .petals { display: none; }
+}
+
+/* ---------- short screens (landscape phones) ----------
+   the cover is one screen tall, so on a short viewport the seal has to give
+   way or the scroll cue ends up below the fold it is meant to point at */
+@media (max-height: 620px) {
+  .cover-body { padding-top: 24px; padding-bottom: 72px; }
+  .seal { width: 132px; height: 132px; margin-top: 24px; }
+  .seal-amp { font-size: 44px; }
+  .tap-pill { bottom: 24px; }
 }
 
 /* ---------- narrow phones ---------- */

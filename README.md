@@ -2,7 +2,7 @@
 
 A mobile-first, single-page interactive Indian wedding invitation. Static site —
 no build step, no backend, no dependencies. Built from the design mockup
-`Wedding E-Invite.dc.html` and its build spec.
+`Wedding E-Invite.dc.html` and its build spec. Deployed on Railway.
 
 ```
 index.html    markup + inline SVG artwork (garland, ceremony illustrations)
@@ -10,7 +10,9 @@ styles.css    all styling and design tokens
 config.js     ← the only file you need to edit
 app.js        page logic: bindings, timeline, countdown, RSVP, modal
 games.js      the three ceremony mini-games
-netlify.toml  deploy config
+Dockerfile    Railway build — Caddy serving the files as-is
+Caddyfile     server config: ports, caching, security headers
+devserver.py  local dev server (no-cache + live reload); not deployed
 ```
 
 ## Making it yours
@@ -26,7 +28,20 @@ The two you must not forget:
 | `weddingDate` | Drives the countdown. Local time, `YYYY-MM-DDTHH:MM:SS`. |
 
 `weddingDateLabel` is the human-readable date shown on the invitation, kept
-separate so you can write it however you like ("11 December 2026", "11.12.26").
+separate so you can write it however you like ("28 December 2026", "28.12.26").
+
+Each event takes these optional fields:
+
+| Field | Effect |
+|---|---|
+| `venue` | Overrides the default venue — the temple ceremony uses this |
+| `note` | A plain practical line, set apart from the ceremonial copy |
+| `dressCode` | Rendered as "Dress code: …" |
+| `durationHours` | Overrides `eventDurationHours` for that calendar file |
+| `dayLabel` | Overrides the weekday line, which is otherwise derived from `date` |
+
+The weekday line and the "N days of celebration" heading are both derived from
+the event dates, so they cannot drift out of step with the schedule.
 
 ## Sections
 
@@ -52,8 +67,9 @@ get a ✓ on their thumbnail and stay unlocked. Every game has a
 | Mehndi | Trace the henna vine with your finger — the path fills as you go |
 | Sangeet | Tap the dhol eight times to the beat, with a WebAudio drum hit |
 
-To turn one off, set that event's `game` to `null` in `config.js` — the
-thumbnail disappears and the card opens directly.
+To turn one off, set that event's `game` to `null` — the card then opens
+straight away. A thumbnail appears whenever an event has a `thumbLabel`, so
+set that to `null` instead if you want no card at all for an event.
 
 ## Artwork
 
@@ -63,19 +79,35 @@ page stays fast and crisp at any density. To swap in real illustrations,
 replace the contents of each `<symbol>`, or point the `<use href>` at an
 `<img>`-based markup instead.
 
-## Running it
-
-Any static server:
+## Running it locally
 
 ```sh
-python3 -m http.server 8000    # then open http://localhost:8000
+python3 devserver.py           # http://localhost:8000
+PORT=3000 python3 devserver.py
 ```
 
-## Deploying
+Use this rather than `python3 -m http.server`. It sends `Cache-Control:
+no-store` and injects a live-reload snippet into `index.html`, so an edited
+stylesheet shows up immediately instead of being served from the browser
+cache. The snippet is added to the response only — the file on disk stays
+clean, and nothing is injected in production. The page keeps its URL hash on
+reload, so `#invitation` stays where it is.
 
-Netlify, publish directory `.`, no build command (`netlify.toml` sets this).
-Drag-and-drop the folder onto Netlify or connect the repo. Any static host
-works — GitHub Pages, Cloudflare Pages, Vercel.
+## Deploying to Railway
+
+Railway detects the `Dockerfile` and builds it — no configuration needed in
+the dashboard, and no build step, since Caddy serves the files as they are.
+
+1. New Project → Deploy from GitHub repo → pick this repo
+2. Railway builds the `Dockerfile` and starts the service
+3. Settings → Networking → Generate Domain
+
+Railway injects `PORT`; the `Caddyfile` binds to it via `:{$PORT:8080}` and
+falls back to 8080 for a plain `docker run -p 8080:8080 …` locally.
+
+`index.html` and `config.js` are served `must-revalidate` so a guest never
+sees a stale invitation after the names, dates or venues change; the other
+static assets are cached for an hour.
 
 ## Notes
 

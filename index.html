@@ -9,7 +9,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="You are warmly invited">
-<meta property="og:description" content="Four days of celebration. Tap to open our invitation.">
+<meta property="og:description" content="Join us for our wedding celebrations. Tap to open our invitation.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -107,6 +107,32 @@
       </g>
     </symbol>
 
+    <!-- ---------- MANGALYA SUTRA: temple gopuram + lamp ---------- -->
+    <symbol id="art-temple" viewBox="0 0 120 120">
+      <g fill="none" stroke="#5E1622" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- tiered tower -->
+        <path d="M26 96 H94 L88 78 H32 Z" fill="#F1DCB6"/>
+        <path d="M32 78 H88 L83 62 H37 Z" fill="#F1DCB6"/>
+        <path d="M37 62 H83 L79 48 H41 Z" fill="#F1DCB6"/>
+        <path d="M41 48 H79 L74 38 H46 Z" fill="#E7C778"/>
+        <!-- tier detailing -->
+        <g stroke-width="1.4" opacity=".75">
+          <path d="M38 88 h44M42 71 h36M46 55 h28"/>
+        </g>
+        <!-- kalasam -->
+        <path d="M52 38 q8-11 16 0 Z" fill="#D9A648"/>
+        <path d="M60 27 v-6"/>
+        <circle cx="60" cy="19" r="2.6" fill="#D9A648"/>
+        <!-- doorway -->
+        <path d="M52 96 v-9 a8 8 0 0 1 16 0 v9 Z" fill="#8B5E2A"/>
+        <!-- steps -->
+        <path d="M20 104 h80M24 100 h72"/>
+        <!-- oil lamp -->
+        <path d="M96 92 q8-4 12 0 q-4 4-12 0Z" fill="#D9A648"/>
+        <path d="M102 86 q4-6 0-10 q-4 4 0 10Z" fill="#E8A33D"/>
+      </g>
+    </symbol>
+
     <!-- ---------- WEDDING: mandap, kalash, garland ---------- -->
     <symbol id="art-wedding" viewBox="0 0 120 120">
       <g fill="none" stroke="#5E1622" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -173,31 +199,33 @@
     <div class="petals" data-petals aria-hidden="true"></div>
 
     <div class="cover-body">
-      <p class="eyebrow eyebrow--maroon">You are warmly invited</p>
+      <div class="cover-hero">
+        <p class="eyebrow eyebrow--maroon cover-in cover-in--1">You are warmly invited</p>
 
-      <a class="seal" href="#invitation" aria-label="Reveal the invitation">
-        <span class="seal-amp">&amp;</span>
-        <span class="seal-initials"><span data-w="brideInitial">B</span> &amp; <span data-w="groomInitial">G</span></span>
-      </a>
+        <a class="seal cover-in cover-in--2" href="#invitation" aria-label="Reveal the invitation">
+          <span class="seal-amp">&amp;</span>
+          <span class="seal-initials"><span data-w="brideInitial">B</span> &amp; <span data-w="groomInitial">G</span></span>
+        </a>
+      </div>
 
-      <a class="tap-pill" href="#invitation" aria-hidden="true" tabindex="-1">↓ Tap to reveal</a>
+      <a class="tap-pill cover-in cover-in--3" href="#invitation" aria-hidden="true" tabindex="-1">↓ Tap to reveal</a>
     </div>
   </section>
 
   <!-- ============================ INVITATION ============================ -->
   <section class="invitation reveal" id="invitation" data-screen-label="Invitation">
-    <p class="script-muted">Together with their families</p>
+    <p class="script-muted reveal-item">Together with their families</p>
 
-    <h1 class="couple-name" data-w="brideName">[Bride Name]</h1>
-    <div class="amp">&amp;</div>
-    <h1 class="couple-name" data-w="groomName">[Groom Name]</h1>
+    <h1 class="couple-name reveal-item" data-w="brideName">[Bride Name]</h1>
+    <div class="amp reveal-item">&amp;</div>
+    <h1 class="couple-name reveal-item" data-w="groomName">[Groom Name]</h1>
 
-    <p class="parents">
+    <p class="parents reveal-item">
       <span data-w="brideParents">D/o [Bride's Parents]</span><br>
       <span data-w="groomParents">S/o [Groom's Parents]</span>
     </p>
 
-    <div class="whenwhere">
+    <div class="whenwhere reveal-item">
       <div class="ww-cell">
         <p class="micro-label">When</p>
         <p class="ww-value" data-w="weddingDateLabel">[11 December 2026]</p>
@@ -209,13 +237,13 @@
       </div>
     </div>
 
-    <p class="hashtag">#<span data-w="hashtag">[COUPLEHASHTAG]</span></p>
+    <p class="hashtag reveal-item">#<span data-w="hashtag">[COUPLEHASHTAG]</span></p>
   </section>
 
   <!-- ============================ FESTIVITIES ============================ -->
   <section class="festivities reveal" id="festivities" data-screen-label="Festivities">
-    <header class="section-head">
-      <p class="eyebrow">Four days of celebration</p>
+    <header class="section-head reveal-item">
+      <p class="eyebrow" data-days-label>Two days of celebration</p>
       <h2 class="section-title">The Festivities</h2>
     </header>
 
@@ -225,11 +253,11 @@
 
   <!-- =========================== PICK YOUR SIDE =========================== -->
   <section class="sides reveal" id="sides" data-screen-label="Pick your side">
-    <p class="eyebrow">A little friendly rivalry</p>
-    <h2 class="section-title section-title--sm">Pick your side</h2>
-    <p class="lede">Whose side are you cheering for? Tap to join — your pick rides along with your RSVP.</p>
+    <p class="eyebrow reveal-item">A little friendly rivalry</p>
+    <h2 class="section-title section-title--sm reveal-item">Pick your side</h2>
+    <p class="lede reveal-item">Whose side are you cheering for? Tap to join — your pick rides along with your RSVP.</p>
 
-    <div class="side-row">
+    <div class="side-row reveal-item">
       <button class="side" data-side="bride" aria-pressed="false">
         <span class="side-badge">You’re in</span>
         <span class="side-icon side-icon--bride" aria-hidden="true">♀</span>
@@ -247,13 +275,13 @@
       </button>
     </div>
 
-    <p class="team-msg" data-team-msg aria-live="polite">Tap a side to join the fun.</p>
+    <p class="team-msg reveal-item" data-team-msg aria-live="polite">Tap a side to join the fun.</p>
   </section>
 
   <!-- ============================= COUNTDOWN ============================= -->
   <section class="countdown reveal" id="countdown" data-screen-label="Countdown" hidden>
-    <p class="eyebrow eyebrow--gold">Counting down to the vows</p>
-    <div class="clock" data-clock role="timer" aria-live="off">
+    <p class="eyebrow eyebrow--gold reveal-item">Counting down to the vows</p>
+    <div class="clock reveal-item" data-clock role="timer" aria-live="off">
       <div class="unit"><span class="unit-num" data-days>00</span><span class="unit-label">Days</span></div>
       <div class="unit"><span class="unit-num" data-hours>00</span><span class="unit-label">Hours</span></div>
       <div class="unit"><span class="unit-num" data-mins>00</span><span class="unit-label">Mins</span></div>
@@ -264,39 +292,39 @@
 
   <!-- =============================== RSVP =============================== -->
   <section class="rsvp reveal" id="rsvp" data-screen-label="RSVP">
-    <header class="section-head">
+    <header class="section-head reveal-item">
       <p class="eyebrow">Will you join us?</p>
       <h2 class="section-title">RSVP</h2>
     </header>
 
-    <label class="micro-label micro-label--block" for="rsvp-name">Your name</label>
-    <input class="field" id="rsvp-name" type="text" name="name" autocomplete="name" placeholder="Full name" data-name>
+    <label class="micro-label micro-label--block reveal-item" for="rsvp-name">Your name</label>
+    <input class="field reveal-item" id="rsvp-name" type="text" name="name" autocomplete="name" placeholder="Full name" data-name>
 
-    <p class="micro-label micro-label--block mt">Which celebrations? <span class="soft">(tap all that apply)</span></p>
-    <div class="chips" data-chips></div>
+    <p class="micro-label micro-label--block mt reveal-item">Which celebrations? <span class="soft">(tap all that apply)</span></p>
+    <div class="chips reveal-item" data-chips></div>
 
-    <p class="micro-label micro-label--block mt">Number of guests</p>
-    <div class="stepper">
+    <p class="micro-label micro-label--block mt reveal-item">Number of guests</p>
+    <div class="stepper reveal-item">
       <button class="step" data-guests="-1" aria-label="One guest fewer">−</button>
       <span class="step-value" data-guest-count aria-live="polite">1</span>
       <button class="step" data-guests="1" aria-label="One guest more">+</button>
     </div>
 
-    <a class="wa-btn" data-whatsapp href="#" target="_blank" rel="noopener">
+    <a class="wa-btn reveal-item" data-whatsapp href="#" target="_blank" rel="noopener">
       <span class="wa-icon" aria-hidden="true">✆</span>
       Send RSVP on WhatsApp
     </a>
-    <p class="call-line">Prefer to call? <a data-tel href="#">Call the family</a></p>
+    <p class="call-line reveal-item">Prefer to call? <a data-tel href="#">Call the family</a></p>
   </section>
 
   <!-- ============================= BLESSING ============================= -->
-  <section class="blessing" id="blessing" data-screen-label="Blessing">
+  <section class="blessing reveal" id="blessing" data-screen-label="Blessing">
     <div class="petals petals--dark" data-petals aria-hidden="true"></div>
     <div class="blessing-body">
-      <p class="om" aria-hidden="true">ॐ</p>
-      <p class="blessing-text">With the blessings of our elders and the warmth of your presence.</p>
-      <h2 class="blessing-names"><span data-w="brideShort">[Bride]</span> &amp; <span data-w="groomShort">[Groom]</span></h2>
-      <p class="madewith">Made with love</p>
+      <p class="om reveal-item" aria-hidden="true">ॐ</p>
+      <p class="blessing-text reveal-item">With the blessings of our elders and the warmth of your presence.</p>
+      <h2 class="blessing-names reveal-item"><span data-w="brideShort">[Bride]</span> &amp; <span data-w="groomShort">[Groom]</span></h2>
+      <p class="madewith reveal-item">Made with love</p>
     </div>
   </section>
 

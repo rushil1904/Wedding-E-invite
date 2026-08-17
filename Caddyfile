@@ -1,0 +1,30 @@
+{
+	admin off
+	persist_config off
+	auto_https off
+}
+
+# Railway injects PORT; 8080 is the fallback for `docker run` locally.
+:{$PORT:8080} {
+	root * /srv
+	file_server
+	encode zstd gzip
+
+	# The page itself must always be revalidated, or a guest keeps seeing a
+	# stale invitation after the details change.
+	@html path *.html /
+	header @html Cache-Control "public, max-age=0, must-revalidate"
+
+	# config.js carries the names, dates and venues — same reasoning.
+	@config path /config.js
+	header @config Cache-Control "public, max-age=0, must-revalidate"
+
+	@static path *.css *.js *.svg *.png *.jpg *.webp *.woff2
+	header @static Cache-Control "public, max-age=3600"
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+}

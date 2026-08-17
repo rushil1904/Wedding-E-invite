@@ -52,7 +52,29 @@
 
   document.title = W.bride.short + ' & ' + W.groom.short + ' — Wedding Invitation';
 
-  const place = W.venue + ', ' + W.city;
+  // An event can sit somewhere other than the default venue — the temple
+  // ceremony and the wedding hall are different places on the same day.
+  function placeOf(ev) { return (ev && ev.venue ? ev.venue : W.venue) + ', ' + W.city; }
+
+  // Derived from `date`, so the weekday can never contradict the date itself.
+  function dayLabelOf(ev) {
+    if (ev.dayLabel) return ev.dayLabel;
+    return new Date(ev.date).toLocaleDateString(undefined, {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    });
+  }
+
+  const COUNT_WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven'];
+
+  // "Two days of celebration" — counted from the schedule rather than hard-coded,
+  // so adding or dropping a function keeps the heading honest.
+  function paintDaysHeading() {
+    const el = $('[data-days-label]');
+    if (!el) return;
+    const days = new Set(W.events.map((e) => new Date(e.date).toDateString())).size;
+    const word = COUNT_WORDS[days] || days;
+    el.textContent = word + ' day' + (days === 1 ? '' : 's') + ' of celebration';
+  }
 
   /* ---------------------------------------------------------------- *
    * Petals
@@ -95,7 +117,7 @@
 
     W.events.forEach((ev, i) => {
       const row = document.createElement('div');
-      row.className = 'event';
+      row.className = 'event reveal-item';
       row.style.setProperty('--accent', ev.accent);
 
       const dot = document.createElement('span');
@@ -109,14 +131,16 @@
         '<p class="event-sub"></p>' +
         '<p class="event-when"><b></b> · <span></span></p>' +
         (ev.dressCode ? '<p class="event-dress"></p>' : '') +
+        (ev.note ? '<p class="event-note"></p>' : '') +
         '<p class="event-quote"></p>';
 
-      $('.event-day', main).textContent = ev.dayLabel;
+      $('.event-day', main).textContent = dayLabelOf(ev);
       $('.event-title', main).textContent = ev.title;
       $('.event-sub', main).textContent = ev.subtitle;
       $('.event-when b', main).textContent = ev.timeLabel;
-      $('.event-when span', main).textContent = place;
+      $('.event-when span', main).textContent = placeOf(ev);
       if (ev.dressCode) $('.event-dress', main).textContent = 'Dress code: ' + ev.dressCode;
+      if (ev.note) $('.event-note', main).textContent = ev.note;
       $('.event-quote', main).textContent = '“' + ev.quote + '”';
 
       const cal = document.createElement('button');
@@ -136,11 +160,16 @@
 
       row.append(dot, main);
 
-      if (ev.game) {
+      // a thumbnail is driven by having a label, not by having a game — the
+      // ceremony-only events open their card straight away
+      if (ev.thumbLabel) {
         const thumb = document.createElement('button');
         thumb.className = 'event-thumb';
         thumb.type = 'button';
-        thumb.setAttribute('aria-label', ev.thumbLabel + ' — open the ' + ev.title + ' card');
+        thumb.dataset.eventId = ev.id;
+        thumb.setAttribute('aria-label', ev.game
+          ? ev.thumbLabel + ' — open the ' + ev.title + ' card'
+          : 'Open the ' + ev.title + ' card');
         thumb.innerHTML =
           '<svg viewBox="0 0 120 120" aria-hidden="true"><use href="#art-' + ev.art + '"></use></svg>' +
           '<span class="event-thumb-label"></span>' +
@@ -156,14 +185,15 @@
   }
 
   function markThumb(thumb, ev) {
-    const open = !!state.unlocked[ev.id];
+    // the tick means "you got past the game", so it only applies where there is one
+    const open = !!(ev.game && state.unlocked[ev.id]);
     thumb.classList.toggle('is-unlocked', open);
     $('.event-thumb-lock', thumb).textContent = open ? '✓' : '';
   }
 
   function refreshThumbs() {
-    $$('.event-thumb').forEach((thumb, n) => {
-      const ev = W.events.filter((e) => e.game)[n];
+    $$('.event-thumb').forEach((thumb) => {
+      const ev = W.events.find((e) => e.id === thumb.dataset.eventId);
       if (ev) markThumb(thumb, ev);
     });
   }
@@ -187,7 +217,8 @@
 
   function downloadIcs(ev) {
     const start = new Date(ev.date);
-    const end = new Date(start.getTime() + W.eventDurationHours * 3600e3);
+    const hours = ev.durationHours || W.eventDurationHours;
+    const end = new Date(start.getTime() + hours * 3600e3);
     const couple = W.bride.short + ' & ' + W.groom.short;
     const now = new Date();
 
@@ -202,7 +233,7 @@
       'DTSTART:' + icsStamp(start),
       'DTEND:' + icsStamp(end),
       'SUMMARY:' + icsEscape(ev.title + ' — ' + couple),
-      'LOCATION:' + icsEscape(place),
+      'LOCATION:' + icsEscape(placeOf(ev)),
       'DESCRIPTION:' + icsEscape(ev.subtitle + '. ' + ev.quote),
       'END:VEVENT',
       'END:VCALENDAR',
@@ -372,8 +403,11 @@
 
     card.style.setProperty('--tint', ev.tint);
     $('[data-card-title]').textContent = ev.title;
-    $('[data-card-time]').textContent = 'At ' + ev.timeLabel.replace(' onwards', '');
-    $('[data-card-where]').textContent = fmtDate(ev.date) + ' · ' + place;
+    // "At 6:00 PM", but not "At Early morning, 6:00 AM" — only prefix a label
+    // that actually starts with a clock time
+    const time = ev.timeLabel.replace(' onwards', '');
+    $('[data-card-time]').textContent = (/^[[\d]/.test(time) ? 'At ' : '') + time;
+    $('[data-card-where]').textContent = fmtDate(ev.date) + ' · ' + placeOf(ev);
     $('[data-card-cta]').textContent = ev.cta || '';
     $('[data-card-art] use').setAttribute('href', '#art-' + ev.art);
 
@@ -468,23 +502,55 @@
   /* ---------------------------------------------------------------- *
    * Scroll reveal
    * ---------------------------------------------------------------- */
+  const STAGGER_MS = 90;
+  const STAGGER_CAP = 8; // past this the tail feels laggy rather than choreographed
+
+  function markIn(section) {
+    $$('.reveal-item', section).forEach((el, n) => {
+      el.style.transitionDelay = (Math.min(n, STAGGER_CAP) * STAGGER_MS) + 'ms';
+    });
+    section.classList.add('is-in');
+  }
+
   function watchReveals() {
     const targets = $$('.reveal');
+
+    // JS is running, so it is now safe to let CSS hide things pre-reveal
+    document.documentElement.classList.add('js-reveal');
+
     if (reduceMotion || !('IntersectionObserver' in window)) {
-      targets.forEach((t) => t.classList.add('is-in'));
+      targets.forEach(markIn);
       return;
     }
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
-        if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
+        if (!en.isIntersecting) return;
+        markIn(en.target);
+        io.unobserve(en.target);
       });
-    }, { rootMargin: '0px 0px -12% 0px' });
+    }, { rootMargin: '0px 0px -14% 0px' });
+
     targets.forEach((t) => io.observe(t));
+
+    /* Safety net. Opening a deep link like /#invitation lands the guest
+       mid-page, and if the observer's first delivery is missed there, that
+       section stays blank forever. One timed sweep reveals anything already
+       on screen; sections further down still animate on scroll as normal. */
+    setTimeout(() => {
+      const h = window.innerHeight;
+      targets.forEach((t) => {
+        if (t.classList.contains('is-in')) return;
+        const r = t.getBoundingClientRect();
+        if (r.top < h && r.bottom > 0) { markIn(t); io.unobserve(t); }
+      });
+    }, 1200);
   }
 
   /* ---------------------------------------------------------------- *
    * Go
    * ---------------------------------------------------------------- */
+  paintDaysHeading();
   renderTimeline();
   renderChips();
   paintSides();
