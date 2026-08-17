@@ -922,6 +922,30 @@ window.Games = (function () {
     };
   }
 
+  /* Each sight opens into a medallion of the thing itself — a name alone
+     leaves the guest none the wiser about what they just found. */
+  const SIGHT_ICONS = {
+    fort:
+      '<path d="M-9 6 V-2 h2.6 v-2.6 h2.6 v2.6 h3 v-2.6 h2.6 v2.6 h3 v-2.6 h2.6 v2.6 H9 V6 Z"' +
+      ' fill="#D3B075" stroke="#7A4A0E" stroke-width="1.3" stroke-linejoin="round"/>' +
+      '<path d="M-1.6 6 V1.6 a1.6 1.6 0 0 1 3.2 0 V6 Z" fill="#7A4A0E"/>',
+    palm:
+      '<path d="M0 8 V-1" stroke="#6B4A1E" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<path d="M0 -1 q-8-6-12-2 q8-4 12 0 q3-8 11-6 q-8 1-11 6 q0-8 5-11 q-5 4-5 11 Z"' +
+      ' fill="#7F9245" stroke="#4A5626" stroke-width="1"/>',
+    temple:
+      '<path d="M-9 8 H9 L7 2 H-7 Z" fill="#F1DCB6" stroke="#7A4A0E" stroke-width="1.3"/>' +
+      '<path d="M-7 2 H7 L5 -4 H-5 Z" fill="#F1DCB6" stroke="#7A4A0E" stroke-width="1.3"/>' +
+      '<path d="M-3.4 -4 q3.4-5 6.8 0 Z" fill="#D9A648" stroke="#7A4A0E" stroke-width="1.1"/>' +
+      '<path d="M0 -8 v2.6" stroke="#7A4A0E" stroke-width="1.3"/>' +
+      '<path d="M-1.7 8 V4 a1.7 1.7 0 0 1 3.4 0 V8 Z" fill="#8B5E2A"/>',
+    river:
+      '<g fill="none" stroke-width="2.6" stroke-linecap="round">' +
+      '<path d="M-9 -4 q4.5-3.4 9 0 t9 0" stroke="#A8CBDC"/>' +
+      '<path d="M-9 1 q4.5-3.4 9 0 t9 0" stroke="#8FB6C9"/>' +
+      '<path d="M-9 6 q4.5-3.4 9 0 t9 0" stroke="#6FA0BC"/></g>',
+  };
+
   const SIGHTS = [
     { label: 'Fort',       icon: 'fort',   at: [56, 58] },
     { label: 'Palm grove', icon: 'palm',   at: [144, 50] },
