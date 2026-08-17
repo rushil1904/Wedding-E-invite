@@ -54,7 +54,15 @@
 
   // An event can sit somewhere other than the default venue — the temple
   // ceremony and the wedding hall are different places on the same day.
-  function placeOf(ev) { return (ev && ev.venue ? ev.venue : W.venue) + ', ' + W.city; }
+  /* "Around Palakkad, Palakkad" — a venue that already names the town should
+     not have it appended again. */
+  function withCity(name) {
+    const city = String(W.city || '');
+    if (!city) return name;
+    return name.toLowerCase().indexOf(city.toLowerCase()) !== -1 ? name : name + ', ' + city;
+  }
+
+  function placeOf(ev) { return withCity(ev && ev.venue ? ev.venue : W.venue); }
 
   // null on an event means "no map for this one"; undefined means "inherit"
   function mapOf(ev) {
@@ -67,10 +75,10 @@
      the timeline repeats the venue on every event, so it earns the shorter
      form; the roomier modal card keeps the full name. */
   function fillPlace(el, ev, short) {
-    const name = short && !((ev && ev.venue)) && W.venueShort
-      ? W.venueShort
-      : (ev && ev.venue ? ev.venue : W.venue);
-    const text = name + ', ' + W.city;
+    const name = ev && ev.venue
+      ? (short && ev.venueShort ? ev.venueShort : ev.venue)
+      : (short && W.venueShort ? W.venueShort : W.venue);
+    const text = withCity(name);
     const url = mapOf(ev);
 
     el.textContent = '';

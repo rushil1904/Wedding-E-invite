@@ -16,13 +16,13 @@ const DAY_ONE_VENUE = {
 
 window.WEDDING = {
   bride: {
-    name: 'Rithika Sunil Nair',
+    name: 'Rithika',
     short: 'Rithika',
     initial: 'R',
     parents: 'D/o Mr. Sunil & Mrs. Pravita Nair',
   },
   groom: {
-    name: 'Rushil Deshwal',
+    name: 'Rushil',
     short: 'Rushil',
     initial: 'R',
     parents: 'S/o Dr. Rajesh & Dr. Kusum Deshwal',
@@ -68,6 +68,7 @@ window.WEDDING = {
 
      Optional per-event fields:
        venue          overrides the default venue above
+       venueShort     shorter form for the timeline, where the venue repeats
        note           a plain practical line (logistics, not poetry)
        dressCode      shown as "Dress code: …"
        durationHours  overrides eventDurationHours for the calendar file
@@ -149,13 +150,46 @@ window.WEDDING = {
       art: 'sangeet',
     },
     {
+      id: 'sightseeing',
+      title: 'Sightseeing',
+      subtitle: 'A day out around Palakkad',
+      date: '2026-12-27T14:00:00',
+      timeLabel: '[2:00 PM] onwards',
+      venue: 'Around Palakkad',
+      mapUrl: null,
+      quote: 'Forts, palm groves and the long green quiet.',
+      thumbLabel: 'View card',
+      cta: null,
+      game: null,
+      accent: '#7C8A5A',
+      tint: '#9AA96F',
+      art: 'sights',
+    },
+    {
+      id: 'djnight',
+      title: 'DJ Night',
+      subtitle: 'The dance floor by the river',
+      date: '2026-12-27T20:00:00',
+      timeLabel: '[8:00 PM] onwards',
+      venue: 'Riverscapes by Noorjehan',
+      mapUrl: 'https://maps.app.goo.gl/P4KH13UhaWHwoKDCA',
+      quote: 'One more night on our feet before the vows.',
+      thumbLabel: 'View card',
+      cta: null,
+      game: null,
+      accent: '#5C3A6E',
+      tint: '#7E5A96',
+      art: 'dj',
+    },
+    {
       id: 'mangalyasutra',
       title: 'Mangalya Sutra',
       subtitle: 'The sacred thread, at the temple',
       date: '2026-12-28T06:00:00',
       timeLabel: 'Early morning, [6:00 AM]',
-      venue: '[Temple Name]',
-      mapUrl: null,          // ← add the temple's Google Maps link here
+      venue: 'Vadakanthara Sree Thirupuraikkal Bhagavathi Temple',
+      venueShort: 'Vadakanthara Bhagavathi Temple',
+      mapUrl: 'https://maps.app.goo.gl/nJP9AKiKFJouvpw26',
       durationHours: 2,
       quote: 'The knot that binds two families.',
       thumbLabel: 'Tie the knots',
@@ -169,8 +203,8 @@ window.WEDDING = {
       id: 'wedding',
       title: 'The Wedding',
       subtitle: 'The Muhurtham',
-      date: '2026-12-28T11:00:00',
-      timeLabel: '[11:00 AM] onwards',
+      date: '2026-12-28T10:00:00',
+      timeLabel: '10:00 AM onwards',
       dressCode: 'Traditional',
       note: 'After the temple ceremony everyone returns to their rooms to get ready.',
       quote: 'The sacred vows — with your blessings.',
