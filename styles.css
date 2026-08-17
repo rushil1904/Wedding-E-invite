@@ -819,6 +819,8 @@ button { font-family: var(--serif); }
   color: rgba(255, 255, 255, .95);
   text-align: center;
   margin: 0;
+  /* clears the close button, which sits in the top-right corner */
+  padding: 0 34px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, .25);
 }
 .veil-stage {
@@ -862,16 +864,67 @@ button { font-family: var(--serif); }
 .trace-progress { transition: stroke-dashoffset .12s linear; }
 
 /* mangalya sutra — tie the knots */
-.knot-svg { width: 100%; height: 100%; max-height: 230px; }
-.knot circle { transition: r .18s ease, fill .18s ease; }
-.knot.is-tied circle { r: 8.5; fill: #F3D882; }
-.knot.is-active circle { animation: knotPulse 1.5s ease-in-out infinite; }
-@keyframes knotPulse {
-  0%, 100% { stroke-width: 1.6; }
-  50%      { stroke-width: 3.4; }
+.knot-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
+.knot-svg { width: 100%; height: auto; max-height: 190px; touch-action: none; }
+
+/* the spot you are meant to aim at */
+.knot-spot { transition: opacity .25s ease; }
+.knot-spot:not(.is-active):not(.is-tied) { opacity: .28; }
+.knot-halo { opacity: 0; }
+.knot-spot.is-active .knot-halo { opacity: 1; animation: knotHalo 1.7s ease-out infinite; }
+.knot-spot.is-active .knot-target { animation: knotDash 3s linear infinite; }
+.knot-ring { transition: stroke-dashoffset 180ms linear; }
+.knot-tied { opacity: 0; transition: opacity .25s ease; }
+.knot-spot.is-tied .knot-tied { opacity: 1; animation: knotPop .38s cubic-bezier(.2, 1.5, .4, 1); }
+.knot-spot.is-tied .knot-target,
+.knot-spot.is-tied .knot-halo,
+.knot-spot.is-tied .knot-ring { opacity: 0; }
+.knot-spot.is-holding .knot-halo { opacity: 1; animation: none; }
+
+@keyframes knotHalo {
+  0%   { transform: scale(.75); opacity: .9; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+@keyframes knotDash { to { stroke-dashoffset: -36; } }
+@keyframes knotPop {
+  0%   { transform: scale(.4); }
+  100% { transform: scale(1); }
+}
+
 .thali { transition: transform .5s cubic-bezier(.3, 1.4, .5, 1); }
 .thali.is-settled { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .35)); }
+
+/* 1 · 2 · 3 */
+.knot-dots { display: flex; gap: 10px; }
+.knot-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: rgba(255, 255, 255, .75);
+  border: 1px solid rgba(255, 255, 255, .45);
+  transition: background .2s, color .2s, transform .2s;
+}
+.knot-dot.is-now { border-color: #FFF3CE; color: #FFF3CE; transform: scale(1.12); }
+.knot-dot.is-done { background: #FFF3CE; border-color: #FFF3CE; color: #8A5F1E; }
+
+.knot-cap {
+  margin: 0;
+  font-family: var(--script);
+  font-style: italic;
+  font-size: 14px;
+  text-align: center;
+  color: rgba(255, 255, 255, .8);
+}
 
 /* the wedding — shower the akshata */
 .akshata-wrap {

@@ -69,7 +69,7 @@ get a ✓ on their thumbnail and stay unlocked. Every game has a
 | Haldi | Rub the turmeric off a canvas scratch layer (reveals at 60% cleared) |
 | Mehendi | Trace the henna vine with your finger — the path fills as you go |
 | Sangeet | Tap the dhol eight times to the beat, with a WebAudio drum hit |
-| Mangalya Sutra | Swipe to tie the three knots — the thread cinches tighter each time and the thali settles on the third |
+| Mangalya Sutra | Press and hold each of the three knots — a ring fills as you hold, the cord cinches tighter and the thali settles on the third |
 | The Wedding | Tap or flick to shower akshata over the couple, who take on colour as the blessings land |
 
 To turn one off, set that event's `game` to `null` — the card then opens

@@ -340,20 +340,29 @@ window.Games = (function () {
 
   /* ------------------------------------------------------------------ *
    * MANGALYA SUTRA — tie the three knots (moonu mudichu)
-   * Swipe across each knot in turn; the thread cinches tighter each time
-   * and the thali settles once the third is tied.
+   *
+   * Press and hold each knot spot in turn. Hold beats swipe here: the target
+   * is visible and aimable, it forgives imprecision, it works one-handed, and
+   * a filling ring shows progress the whole way instead of leaving the guest
+   * guessing whether the gesture registered.
    * ------------------------------------------------------------------ */
   const KNOTS = 3;
+  const HOLD_MS = 700;
+  const SPOT_R = 13;
+  const SPOT_C = 2 * Math.PI * SPOT_R;
 
   function knots(ctx_) {
     const { veil, stage, hint, complete } = ctx_;
     veil.style.setProperty('--veil-bg', '#C08F33');
-    hint.textContent = 'Swipe to tie the first knot';
+    hint.textContent = 'Hold to tie the first knot';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'knot-wrap';
 
     const svg = svgEl('svg', { viewBox: '0 0 200 150', class: 'knot-svg' });
 
-    // sag shrinks with every knot — the thread visibly tightens
-    const SAG = [116, 100, 86, 74];
+    // the cord visibly cinches tighter with every knot
+    const SAG = [116, 103, 91, 80];
     let tied = 0;
 
     const thread = svgEl('path', {
@@ -365,43 +374,61 @@ window.Games = (function () {
     });
     svg.append(thread, thread2);
 
-    // the thali hanging at the lowest point
     const pendant = svgEl('g', { class: 'thali' });
     pendant.innerHTML =
       '<circle cx="0" cy="7" r="3.4" fill="none" stroke="#8A5F1E" stroke-width="1.7"/>' +
       '<path d="M0 10.5 q-9 9-9 18 q0 8 9 8 q9 0 9-8 q0-9-9-18Z"' +
       ' fill="#D9A648" stroke="#8A5F1E" stroke-width="1.7"/>' +
-      // a diamond and a dot, not a dot and a curve — the latter reads as a face
       '<path d="M0 21 l4 5 -4 5 -4 -5 Z" fill="#8A5F1E"/>' +
       '<circle cx="0" cy="32.5" r="1.5" fill="#8A5F1E"/>';
     svg.appendChild(pendant);
 
-    const marks = [];
+    const spots = [];
     for (let i = 0; i < KNOTS; i++) {
-      const g = svgEl('g', { class: 'knot' });
-      // two crossing strands read as a knot; a circle with a single curve in
-      // it reads as a face, which is exactly what to avoid here
-      g.append(
-        svgEl('ellipse', { rx: '7.5', ry: '6', fill: '#E8C25A', stroke: '#8A5F1E', 'stroke-width': '1.5' }),
-        svgEl('path', {
-          d: 'M-6 -3 q6 4 12 -1 M-6 3 q6 -4 12 1',
-          fill: 'none', stroke: '#8A5F1E', 'stroke-width': '1.5', 'stroke-linecap': 'round',
-        })
-      );
+      const g = svgEl('g', { class: 'knot-spot' });
+      g.innerHTML =
+        '<circle class="knot-halo" r="' + SPOT_R + '" fill="rgba(255,255,255,.16)"/>' +
+        '<circle class="knot-target" r="' + SPOT_R + '" fill="none"' +
+        ' stroke="rgba(255,255,255,.8)" stroke-width="2" stroke-dasharray="4 5"/>' +
+        '<circle class="knot-ring" r="' + SPOT_R + '" fill="none" stroke="#FFF3CE"' +
+        ' stroke-width="3.6" stroke-linecap="round" transform="rotate(-90)"' +
+        ' stroke-dasharray="' + SPOT_C.toFixed(1) + '" stroke-dashoffset="' + SPOT_C.toFixed(1) + '"/>' +
+        '<g class="knot-tied">' +
+        '<ellipse rx="7.5" ry="6" fill="#E8C25A" stroke="#8A5F1E" stroke-width="1.5"/>' +
+        '<path d="M-6 -3 q6 4 12 -1 M-6 3 q6 -4 12 1" fill="none" stroke="#8A5F1E"' +
+        ' stroke-width="1.5" stroke-linecap="round"/>' +
+        '</g>';
       svg.appendChild(g);
-      marks.push(g);
+      spots.push(g);
     }
-    stage.appendChild(svg);
+
+    // 1 · 2 · 3, so the length of the task is never a mystery
+    const dots = document.createElement('div');
+    dots.className = 'knot-dots';
+    for (let i = 0; i < KNOTS; i++) {
+      const d = document.createElement('span');
+      d.className = 'knot-dot';
+      d.textContent = String(i + 1);
+      dots.appendChild(d);
+    }
+
+    const cap = document.createElement('p');
+    cap.className = 'knot-cap';
+    cap.textContent = 'Three knots, tied by family, bind two lives.';
+
+    wrap.append(svg, dots, cap);
+    stage.appendChild(wrap);
+
+    let at = [];
 
     function layout() {
-      const sag = SAG[tied];
-      const d = 'M18 26 Q100 ' + sag + ' 182 26';
+      const d = 'M18 26 Q100 ' + SAG[tied] + ' 182 26';
       thread.setAttribute('d', d);
       thread2.setAttribute('d', d);
 
       const len = thread.getTotalLength();
-      const at = [0.3, 0.5, 0.7].map((f) => thread.getPointAtLength(len * f));
-      marks.forEach((g, i) => {
+      at = [0.3, 0.5, 0.7].map((f) => thread.getPointAtLength(len * f));
+      spots.forEach((g, i) => {
         g.setAttribute('transform', 'translate(' + at[i].x + ',' + at[i].y + ')');
         g.classList.toggle('is-tied', i < tied);
         g.classList.toggle('is-active', i === tied);
@@ -409,10 +436,16 @@ window.Games = (function () {
 
       const low = thread.getPointAtLength(len * 0.5);
       pendant.setAttribute('transform', 'translate(' + low.x + ',' + low.y + ')');
-      return at;
     }
+    layout();
 
-    let spots = layout();
+    function paintDots() {
+      [...dots.children].forEach((d, i) => {
+        d.classList.toggle('is-done', i < tied);
+        d.classList.toggle('is-now', i === tied);
+      });
+    }
+    paintDots();
 
     function toSvg(e) {
       const m = svg.getScreenCTM();
@@ -423,59 +456,73 @@ window.Games = (function () {
       return p.matrixTransform(m.inverse());
     }
 
-    let travelled = 0, overKnot = false, prev = null, done = false;
+    let holdTimer = null, holding = -1, done = false;
+    const ringOf = (i) => spots[i].querySelector('.knot-ring');
 
-    function onDown(e) {
-      travelled = 0;
-      overKnot = false;
-      prev = toSvg(e);
+    function startHold(i) {
+      if (done || holding === i) return;
+      holding = i;
+      spots[i].classList.add('is-holding');
+      const ring = ringOf(i);
+      ring.style.transitionDuration = HOLD_MS + 'ms';
+      ring.style.strokeDashoffset = '0';
+      holdTimer = setTimeout(() => tie(i), HOLD_MS);
     }
 
-    function onMove(e) {
-      if (done) return;
-      if (!e.buttons && e.pointerType === 'mouse') { prev = null; return; }
-      const p = toSvg(e);
-      if (!p) return;
-      if (prev) travelled += Math.hypot(p.x - prev.x, p.y - prev.y);
-      prev = p;
-
-      const k = spots[tied];
-      if (k && Math.hypot(p.x - k.x, p.y - k.y) < 30) overKnot = true;
-
-      // a swipe, not a tap: it has to cross the knot AND cover some ground
-      if (overKnot && travelled > 42) cinch();
+    function cancelHold() {
+      if (holding < 0) return;
+      const ring = ringOf(holding);
+      ring.style.transitionDuration = '180ms';
+      ring.style.strokeDashoffset = String(SPOT_C);
+      spots[holding].classList.remove('is-holding');
+      clearTimeout(holdTimer);
+      holdTimer = null;
+      holding = -1;
     }
 
-    function cinch() {
+    function tie(i) {
+      clearTimeout(holdTimer);
+      holdTimer = null;
+      holding = -1;
+      spots[i].classList.remove('is-holding');
+
       tied++;
-      travelled = 0;
-      overKnot = false;
       tone({ freq: 520, to: 300, type: 'triangle', dur: .18, gain: .22 });
-
-      spots = layout();
+      layout();
+      paintDots();
 
       if (tied >= KNOTS) {
         done = true;
-        hint.textContent = 'Tied 🙏';
+        hint.textContent = 'The knot is tied 🙏';
+        cap.textContent = 'Bound, with the blessings of both families.';
         pendant.classList.add('is-settled');
-        setTimeout(complete, 620);
+        setTimeout(complete, 700);
       } else {
-        hint.textContent = tied === 1
-          ? 'Two more knots'
-          : 'One more knot';
+        hint.textContent = tied === 1 ? 'Two more knots' : 'One more knot';
       }
     }
 
-    function onUp() { travelled = 0; overKnot = false; prev = null; }
+    function onDown(e) {
+      if (done) return;
+      const p = toSvg(e);
+      const target = at[tied];
+      if (!p || !target) return;
+      // generous radius — the ritual is the point, not the aim
+      if (Math.hypot(p.x - target.x, p.y - target.y) < 34) {
+        try { svg.setPointerCapture(e.pointerId); } catch (_) { /* not capturable */ }
+        startHold(tied);
+      }
+    }
 
     svg.addEventListener('pointerdown', onDown);
-    svg.addEventListener('pointermove', onMove);
-    svg.addEventListener('pointerup', onUp);
-    svg.addEventListener('pointercancel', onUp);
+    svg.addEventListener('pointerup', cancelHold);
+    svg.addEventListener('pointercancel', cancelHold);
+    svg.addEventListener('pointerleave', cancelHold);
 
     return {
       destroy() {
-        svg.remove();
+        clearTimeout(holdTimer);
+        wrap.remove();
         veil.style.removeProperty('--veil-bg');
       },
     };

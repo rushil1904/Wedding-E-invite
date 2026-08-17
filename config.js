@@ -10,8 +10,8 @@
    they render as plain text with no directions link, rather than sending
    guests to the wedding hall by mistake. */
 const DAY_ONE_VENUE = {
-  name: '[Venue for the 26th]',
-  map: null,               // ← its Google Maps link goes here
+  name: 'Udaya Resort',
+  map: 'https://maps.app.goo.gl/PEdy7KchtdPQugru6',
 };
 
 window.WEDDING = {
@@ -74,8 +74,8 @@ window.WEDDING = {
       mapUrl: DAY_ONE_VENUE.map,
       title: 'Haldi',
       subtitle: 'Manjal Neerattu Vizha',
-      date: '2026-12-26T10:00:00',
-      timeLabel: '[10:00 AM] onwards',
+      date: '2026-12-26T10:30:00',
+      timeLabel: '10:30 AM onwards',
       quote: 'Turmeric, laughter and the very first blessings.',
       thumbLabel: 'Rub to reveal',
       cta: 'Rub off the turmeric',
@@ -90,8 +90,8 @@ window.WEDDING = {
       mapUrl: DAY_ONE_VENUE.map,
       title: 'Mehendi',
       subtitle: 'Where henna meets hearts',
-      date: '2026-12-26T16:00:00',
-      timeLabel: '[4:00 PM] onwards',
+      date: '2026-12-26T10:30:00',
+      timeLabel: '10:30 AM onwards',
       quote: 'The deeper the mehendi, the deeper the love.',
       thumbLabel: 'Trace the henna',
       cta: 'Trace the henna',
@@ -105,9 +105,10 @@ window.WEDDING = {
       venue: DAY_ONE_VENUE.name,
       mapUrl: DAY_ONE_VENUE.map,
       title: 'Sangeet',
-      subtitle: 'An evening of song, following the Mehendi',
-      date: '2026-12-26T19:00:00',
-      timeLabel: '[7:00 PM] onwards',
+      subtitle: 'An evening of song',
+      date: '2026-12-26T17:30:00',
+      timeLabel: '5:30 PM – 10:00 PM',
+      durationHours: 4.5,
       quote: 'Music, dance and the whole family on its feet.',
       thumbLabel: 'Tap the dhol',
       cta: 'Tap the dhol to the beat',
