@@ -63,6 +63,38 @@ window.WEDDING = {
     // { label: 'Groom’s family', phone: '+91XXXXXXXXXX' },
   ],
 
+  /* ------------------------------------------------------------------ *
+   * TWO INVITATIONS, ONE SITE
+   *
+   * Both subdomains point at the same deployment; the page works out which
+   * invitation to show from the hostname. One deploy means the schedule,
+   * artwork and RSVP can never drift apart between the two sides.
+   *
+   *   `hosts`  subdomains that get this version (bare domain, no https://)
+   *   `first`  whose name and parents lead the invitation
+   *   `hide`   event ids this side does not see
+   *
+   * `?side=bride` / `?side=groom` overrides the hostname, which is how you
+   * check both versions before the DNS exists. Note this is curation, not
+   * secrecy: anyone can type the other side's URL.
+   * ------------------------------------------------------------------ */
+  sides: {
+    bride: {
+      hosts: ['bride.example.com'],
+      first: 'bride',
+      hide: ['bhaat', 'sightseeing', 'djnight', 'mangalyasutra'],
+    },
+    groom: {
+      hosts: ['groom.example.com'],
+      first: 'groom',
+      hide: [],
+    },
+  },
+
+  // Any host not listed above — localhost, the raw Railway URL — falls back
+  // to this. null shows everything, bride first.
+  defaultSide: null,
+
   /* The celebrations, in order. `date` is the local start time and drives the
      countdown, the timeline and the .ics calendar files.
 

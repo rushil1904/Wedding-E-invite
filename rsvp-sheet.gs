@@ -29,7 +29,7 @@
  */
 
 var SHEET_NAME = 'RSVPs';
-var HEADERS = ['Submitted', 'ID', 'Name', 'Guests', 'Celebrations', 'Team', 'Flag'];
+var HEADERS = ['Submitted', 'ID', 'Name', 'Guests', 'Celebrations', 'Side', 'Team', 'Flag'];
 
 function doPost(e) {
   // Guests can submit at the same moment; the lock stops two writes landing
@@ -57,6 +57,7 @@ function doPost(e) {
       String(data.name).slice(0, 120),
       Number(data.guests) || 1,
       (data.celebrations || []).join(', '),
+      String(data.side || ''),          // which invitation they came from
       String(data.team || ''),
       flag,
     ];

@@ -29,17 +29,57 @@
   }
 
   /* ---------------------------------------------------------------- *
+   * Which invitation is this?
+   *
+   * Both subdomains serve the same files; the side is resolved here rather
+   * than by building two copies, which would drift apart the first time a
+   * time or venue changed.
+   * ---------------------------------------------------------------- */
+  function resolveSide() {
+    const sides = W.sides || {};
+    const forced = new URLSearchParams(location.search).get('side');
+    if (forced && sides[forced]) return forced;
+
+    const host = location.hostname.toLowerCase();
+    const names = Object.keys(sides);
+    for (let i = 0; i < names.length; i++) {
+      const hosts = sides[names[i]].hosts || [];
+      for (let j = 0; j < hosts.length; j++) {
+        if (host === String(hosts[j]).toLowerCase()) return names[i];
+      }
+    }
+    return W.defaultSide || null;
+  }
+
+  const SIDE_NAME = resolveSide();
+  const SIDE = (W.sides || {})[SIDE_NAME] || {};
+  const GROOM_FIRST = SIDE.first === 'groom';
+
+  // whoever leads this version of the invitation
+  const FIRST = GROOM_FIRST ? W.groom : W.bride;
+  const SECOND = GROOM_FIRST ? W.bride : W.groom;
+
+  // the events this side is invited to, used everywhere in place of W.events
+  const HIDDEN = SIDE.hide || [];
+  const EVENTS = W.events.filter((e) => HIDDEN.indexOf(e.id) === -1);
+
+  document.documentElement.dataset.side = SIDE_NAME || 'all';
+
+  /* ---------------------------------------------------------------- *
    * Text bindings — every [data-w="…"] slot in the markup
    * ---------------------------------------------------------------- */
   const SLOTS = {
-    brideName: W.bride.name,
-    groomName: W.groom.name,
+    nameFirst: FIRST.name,
+    nameSecond: SECOND.name,
+    shortFirst: FIRST.short,
+    shortSecond: SECOND.short,
+    initialFirst: FIRST.initial,
+    initialSecond: SECOND.initial,
+    parentsFirst: FIRST.parents,
+    parentsSecond: SECOND.parents,
+    // the teams stay bride/groom whichever way round the invitation reads
     brideShort: W.bride.short,
     groomShort: W.groom.short,
-    brideInitial: W.bride.initial,
-    groomInitial: W.groom.initial,
-    brideParents: W.bride.parents,
-    groomParents: W.groom.parents,
     hashtag: W.hashtag,
     weddingDateLabel: W.weddingDateLabel,
     venue: W.venue,
@@ -50,7 +90,7 @@
     if (v != null) el.textContent = v;
   });
 
-  document.title = W.bride.short + ' & ' + W.groom.short + ' — Wedding Invitation';
+  document.title = FIRST.short + ' & ' + SECOND.short + ' — Wedding Invitation';
 
   // An event can sit somewhere other than the default venue — the temple
   // ceremony and the wedding hall are different places on the same day.
@@ -141,7 +181,7 @@
   function paintDaysHeading() {
     const el = $('[data-days-label]');
     if (!el) return;
-    const days = new Set(W.events.map((e) => new Date(e.date).toDateString())).size;
+    const days = new Set(EVENTS.map((e) => new Date(e.date).toDateString())).size;
     const word = COUNT_WORDS[days] || days;
     el.textContent = word + ' day' + (days === 1 ? '' : 's') + ' of celebration';
   }
@@ -185,7 +225,7 @@
     const host = $('[data-timeline]');
     host.innerHTML = '';
 
-    W.events.forEach((ev, i) => {
+    EVENTS.forEach((ev) => {
       const row = document.createElement('div');
       row.className = 'event reveal-item';
       row.style.setProperty('--accent', ev.accent);
@@ -246,7 +286,7 @@
           '<span class="event-thumb-lock" aria-hidden="true"></span>';
         $('.event-thumb-label', thumb).textContent = ev.thumbLabel;
         markThumb(thumb, ev);
-        thumb.addEventListener('click', () => openModal(i));
+        thumb.addEventListener('click', () => openModal(ev));
         row.appendChild(thumb);
       }
 
@@ -263,7 +303,7 @@
 
   function refreshThumbs() {
     $$('.event-thumb').forEach((thumb) => {
-      const ev = W.events.find((e) => e.id === thumb.dataset.eventId);
+      const ev = EVENTS.find((e) => e.id === thumb.dataset.eventId);
       if (ev) markThumb(thumb, ev);
     });
   }
@@ -289,7 +329,7 @@
     const start = new Date(ev.date);
     const hours = ev.durationHours || W.eventDurationHours;
     const end = new Date(start.getTime() + hours * 3600e3);
-    const couple = W.bride.short + ' & ' + W.groom.short;
+    const couple = FIRST.short + ' & ' + SECOND.short;
     const now = new Date();
 
     const lines = [
@@ -390,7 +430,7 @@
   function renderChips() {
     const host = $('[data-chips]');
     host.innerHTML = '';
-    W.events.forEach((ev) => {
+    EVENTS.forEach((ev) => {
       const chip = document.createElement('button');
       chip.className = 'chip';
       chip.type = 'button';
@@ -430,7 +470,7 @@
   }
 
   function paintWhatsapp() {
-    const chosen = W.events.map((e) => e.title).filter((t) => state.cels[t]);
+    const chosen = EVENTS.map((e) => e.title).filter((t) => state.cels[t]);
     const parts = [
       'Hi! RSVP from ' + (state.name.trim() || '[name]') + ' — ' + state.guests + ' guest(s).',
     ];
@@ -490,7 +530,8 @@
       id: rsvpId(),
       name: state.name.trim(),
       guests: state.guests,
-      celebrations: W.events.map((e) => e.title).filter((t) => state.cels[t]),
+      celebrations: EVENTS.map((e) => e.title).filter((t) => state.cels[t]),
+      side: SIDE_NAME || 'all',
       team: state.team || '',
       hp: hpEl ? hpEl.value : '',
       submittedAt: new Date().toISOString(),
@@ -607,8 +648,7 @@
     return d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
-  function openModal(index) {
-    const ev = W.events[index];
+  function openModal(ev) {
     current = ev;
     lastFocus = document.activeElement;
 

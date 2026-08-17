@@ -47,6 +47,44 @@ Each event takes these optional fields:
 The weekday line and the "N days of celebration" heading are both derived from
 the event dates, so they cannot drift out of step with the schedule.
 
+## Two invitations, one site
+
+The bride's side and the groom's side get different subdomains, and each sees
+a different invitation:
+
+| | Bride's link | Groom's link |
+|---|---|---|
+| Names | Rithika weds Rushil | Rushil weds Rithika |
+| Parents | Nair line first | Deshwal line first |
+| Events | Haldi, Mehendi, Sangeet, The Wedding | all eight |
+
+**Both subdomains point at the same Railway service.** In Railway → Settings →
+Networking, add both custom domains to the one deployment. The page works out
+which invitation to show from `location.hostname`.
+
+Set the real subdomains in `sides` in `config.js` — until the `hosts` arrays
+match your actual domains, every visitor gets the fallback view (everything,
+bride first):
+
+```js
+sides: {
+  bride: { hosts: ['bride.yourdomain.com'], first: 'bride',
+           hide: ['bhaat', 'sightseeing', 'djnight', 'mangalyasutra'] },
+  groom: { hosts: ['groom.yourdomain.com'], first: 'groom', hide: [] },
+},
+```
+
+Append `?side=bride` or `?side=groom` to any URL to preview either version —
+that is how to check both before the DNS exists.
+
+Deliberately **one deployment, not two builds.** Two copies of the invitation
+would drift apart the first time a time or a venue changed, and this is a live
+document. It also means one RSVP sheet: each submission records which
+invitation the guest used, in a `Side` column.
+
+This is curation, not access control — anyone can type the other side's URL or
+add `?side=`. It shapes what each family is invited to, and is not a secret.
+
 ## Sections
 
 Cover → Invitation → The Festivities → Pick your side → Countdown → RSVP →
@@ -163,7 +201,8 @@ the dashboard, and no build step, since Caddy serves the files as they are.
 
 1. New Project → Deploy from GitHub repo → pick this repo
 2. Railway builds the `Dockerfile` and starts the service
-3. Settings → Networking → Generate Domain
+3. Settings → Networking → add **both** custom subdomains to this one service
+   (see "Two invitations, one site" above)
 
 Railway injects `PORT`; the `Caddyfile` binds to it via `:{$PORT:8080}` and
 falls back to 8080 for a plain `docker run -p 8080:8080 …` locally.
