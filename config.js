@@ -66,13 +66,30 @@ window.WEDDING = {
        dayLabel       overrides the weekday/date line, which is otherwise
                       derived from `date` so the two can never disagree
 
-     `game` is one of 'scratch' | 'trace' | 'dhol' | 'knots' | 'akshata' | null (null = no game,
+     `game` is one of 'thaal' | 'scratch' | 'trace' | 'dhol' | 'knots' | 'akshata'
+     | null (null = no game,
      the card opens straight away).
 
      NOTE: every time in [brackets] is a guess from "morning" / "evening" /
      "early morning" and needs confirming. The bracketed labels are what the
      guest sees, so they stay obviously provisional until you set them. */
   events: [
+    {
+      id: 'bhaat',
+      title: 'Bhaat',
+      subtitle: 'Mayra · the mama’s welcome',
+      date: '2026-12-26T09:00:00',
+      timeLabel: '9:00 AM onwards',
+      venue: DAY_ONE_VENUE.name,
+      mapUrl: DAY_ONE_VENUE.map,
+      quote: 'A brother arrives, arms full, love fuller.',
+      thumbLabel: 'Fill the thaal',
+      cta: 'Fill the thaal',
+      game: 'thaal',
+      accent: '#C0623F',
+      tint: '#C97A4E',
+      art: 'thaal',
+    },
     {
       id: 'haldi',
       venue: DAY_ONE_VENUE.name,

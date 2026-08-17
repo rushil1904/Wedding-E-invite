@@ -94,6 +94,7 @@ get a ✓ on their thumbnail and stay unlocked. Every game has a
 
 | Ceremony | Game |
 |---|---|
+| Bhaat | Tap or drag each gift — bangles, a sari, sweets, a cash envelope, a garland — onto the mama's thaal until it is full |
 | Haldi | Rub the turmeric off a canvas scratch layer (reveals at 60% cleared) |
 | Mehendi | Trace the henna vine with your finger — the path fills as you go |
 | Sangeet | Tap the dhol eight times to the beat, with a WebAudio drum hit |

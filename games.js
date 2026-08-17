@@ -703,5 +703,185 @@ window.Games = (function () {
     };
   }
 
-  return { scratch, trace, dhol, knots, akshata };
+  /* ------------------------------------------------------------------ *
+   * BHAAT — fill the thaal
+   *
+   * The mama arrives with his arms full. Tap a gift to send it to the
+   * platter, or drag it there. Tap is the primary gesture (one-handed, no
+   * aim required); dragging is supported because the gifts look draggable
+   * and anyone who tries it should be rewarded rather than ignored.
+   * ------------------------------------------------------------------ */
+  const GIFTS = [
+    { kind: 'bangles',  from: [34, 44],  to: [76, 142] },
+    { kind: 'sari',     from: [82, 30],  to: [100, 136] },
+    { kind: 'sweets',   from: [130, 34], to: [124, 142] },
+    { kind: 'envelope', from: [168, 52], to: [88, 128] },
+    { kind: 'garland',  from: [104, 74], to: [113, 128] },
+  ];
+
+  function giftShape(kind) {
+    switch (kind) {
+      case 'bangles':
+        return '<circle r="9" fill="none" stroke="#E8A33D" stroke-width="3.4"/>' +
+               '<circle cy="7" r="8" fill="none" stroke="#B23A48" stroke-width="3.4"/>';
+      case 'sari':
+        return '<path d="M-13 -9 h26 v18 h-26 Z" fill="#C4453F" stroke="#7A2E12" stroke-width="1.8"/>' +
+               '<path d="M-13 -2 h26" stroke="#E7B94A" stroke-width="2.4"/>';
+      case 'sweets':
+        return '<circle cx="-6" cy="3" r="7" fill="#E8C25A" stroke="#7A2E12" stroke-width="1.6"/>' +
+               '<circle cx="6" cy="3" r="7" fill="#E8C25A" stroke="#7A2E12" stroke-width="1.6"/>' +
+               '<circle cx="0" cy="-6" r="7" fill="#EFD37E" stroke="#7A2E12" stroke-width="1.6"/>';
+      case 'envelope':
+        return '<path d="M-13 -8 h26 v16 h-26 Z" fill="#FBF5E6" stroke="#7A2E12" stroke-width="1.8"/>' +
+               '<path d="M-13 -8 l13 9 l13 -9" fill="none" stroke="#7A2E12" stroke-width="1.6"/>' +
+               '<circle cx="0" cy="4" r="3" fill="#C4453F"/>';
+      default: { // garland — a ring of marigolds
+        let out = '<g>';
+        for (let k = 0; k < 9; k++) {
+          const a = (k / 9) * Math.PI * 2;
+          out += '<circle cx="' + (Math.cos(a) * 9).toFixed(1) +
+                 '" cy="' + (Math.sin(a) * 9).toFixed(1) +
+                 '" r="3.1" fill="' + (k % 3 === 0 ? '#FFF7E4' : '#E8A33D') +
+                 '" stroke="#7A2E12" stroke-width="1"/>';
+        }
+        return out + '</g>';
+      }
+    }
+  }
+
+  function thaal(ctx_) {
+    const { veil, stage, hint, complete } = ctx_;
+    veil.style.setProperty('--veil-bg', '#B4562F');
+    hint.textContent = 'Tap each gift to fill the thaal';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'thaal-wrap';
+
+    const svg = svgEl('svg', { viewBox: '0 0 200 190', class: 'thaal-svg' });
+
+    // the platter
+    const plate = svgEl('g', { class: 'thaal-plate' });
+    plate.innerHTML =
+      '<ellipse cx="100" cy="158" rx="66" ry="18" fill="#B8871F"/>' +
+      '<ellipse cx="100" cy="152" rx="66" ry="18" fill="#E8C25A" stroke="#7A2E12" stroke-width="2"/>' +
+      '<ellipse cx="100" cy="151" rx="50" ry="12" fill="#F3E0AE"/>';
+    svg.appendChild(plate);
+
+    const nodes = GIFTS.map((g, i) => {
+      const el = svgEl('g', { class: 'gift', 'data-i': String(i) });
+      el.innerHTML = giftShape(g.kind);
+      el.style.transform = 'translate(' + g.from[0] + 'px,' + g.from[1] + 'px)';
+      svg.appendChild(el);
+      return el;
+    });
+
+    const meter = document.createElement('div');
+    meter.className = 'thaal-meter';
+    const fill = document.createElement('span');
+    fill.className = 'thaal-fill';
+    meter.appendChild(fill);
+
+    const cap = document.createElement('p');
+    cap.className = 'knot-cap';
+    cap.textContent = 'A brother comes bearing all his sister’s family could need.';
+
+    wrap.append(svg, meter, cap);
+    stage.appendChild(wrap);
+
+    let given = 0, done = false;
+    const placed = nodes.map(() => false);
+
+    function toSvg(e) {
+      const m = svg.getScreenCTM();
+      if (!m) return null;
+      const p = svg.createSVGPoint();
+      p.x = e.clientX;
+      p.y = e.clientY;
+      return p.matrixTransform(m.inverse());
+    }
+
+    function accept(i) {
+      if (placed[i] || done) return;
+      placed[i] = true;
+      given++;
+
+      const el = nodes[i];
+      el.classList.remove('is-dragging');
+      el.classList.add('is-placed');
+      el.style.transform = 'translate(' + GIFTS[i].to[0] + 'px,' + GIFTS[i].to[1] + 'px)';
+
+      tone({ freq: 660 + given * 70, to: 380, type: 'triangle', dur: .16, gain: .18 });
+      fill.style.width = Math.round((given / GIFTS.length) * 100) + '%';
+
+      if (given >= GIFTS.length) {
+        done = true;
+        hint.textContent = 'The thaal is full 🙏';
+        plate.classList.add('is-full');
+        setTimeout(complete, 700);
+      } else {
+        const left = GIFTS.length - given;
+        hint.textContent = left + (left === 1 ? ' gift to go' : ' gifts to go');
+      }
+    }
+
+    // drag state
+    let dragI = -1, grab = null, moved = 0;
+
+    function onDown(e) {
+      if (done) return;
+      const g = e.target.closest('.gift');
+      if (!g) return;
+      const i = Number(g.dataset.i);
+      if (placed[i]) return;
+      const p = toSvg(e);
+      if (!p) return;
+      dragI = i;
+      moved = 0;
+      grab = { x: p.x - GIFTS[i].from[0], y: p.y - GIFTS[i].from[1] };
+      g.classList.add('is-dragging');
+      try { svg.setPointerCapture(e.pointerId); } catch (_) { /* not capturable */ }
+    }
+
+    function onMove(e) {
+      if (dragI < 0) return;
+      const p = toSvg(e);
+      if (!p) return;
+      moved++;
+      nodes[dragI].style.transform =
+        'translate(' + (p.x - grab.x) + 'px,' + (p.y - grab.y) + 'px)';
+    }
+
+    function onUp(e) {
+      if (dragI < 0) return;
+      const i = dragI;
+      dragI = -1;
+      const el = nodes[i];
+      el.classList.remove('is-dragging');
+
+      // a tap counts as "send it" — no aim required
+      if (moved < 3) { accept(i); return; }
+
+      const p = toSvg(e);
+      const onPlate = p && p.y > 118 && Math.abs(p.x - 100) < 78;
+      if (onPlate) {
+        accept(i);
+      } else {
+        el.style.transform = 'translate(' + GIFTS[i].from[0] + 'px,' + GIFTS[i].from[1] + 'px)';
+      }
+    }
+
+    svg.addEventListener('pointerdown', onDown);
+    svg.addEventListener('pointermove', onMove);
+    svg.addEventListener('pointerup', onUp);
+    svg.addEventListener('pointercancel', onUp);
+
+    return {
+      destroy() {
+        wrap.remove();
+        veil.style.removeProperty('--veil-bg');
+      },
+    };
+  }
+
+  return { thaal, scratch, trace, dhol, knots, akshata };
 })();

@@ -937,6 +937,52 @@ button { font-family: var(--serif); }
 .trace-svg { width: 100%; height: 100%; max-height: 250px; }
 .trace-progress { transition: stroke-dashoffset .12s linear; }
 
+/* bhaat — fill the thaal */
+.thaal-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.thaal-svg { width: 100%; height: auto; max-height: 220px; touch-action: none; }
+
+.gift {
+  cursor: grab;
+  transition: transform .45s cubic-bezier(.2, .9, .3, 1);
+}
+.gift.is-dragging { transition: none; cursor: grabbing; }
+.gift.is-placed { cursor: default; }
+/* the untouched gifts bob gently, so they read as pick-up-able */
+.gift:not(.is-placed):not(.is-dragging) { animation: giftBob 2.6s ease-in-out infinite; }
+.gift:nth-of-type(3) { animation-delay: .4s; }
+.gift:nth-of-type(4) { animation-delay: .8s; }
+.gift:nth-of-type(5) { animation-delay: 1.2s; }
+.gift:nth-of-type(6) { animation-delay: 1.6s; }
+@keyframes giftBob {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -4px; }
+}
+
+.thaal-plate { transition: filter .4s ease; }
+.thaal-plate.is-full { filter: drop-shadow(0 0 10px rgba(255, 243, 206, .85)); }
+
+.thaal-meter {
+  width: 60%;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .28);
+  overflow: hidden;
+}
+.thaal-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: #FFF3CE;
+  transition: width .4s cubic-bezier(.2, .9, .3, 1);
+}
+
 /* mangalya sutra — tie the knots */
 .knot-wrap {
   display: flex;
