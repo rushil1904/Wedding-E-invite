@@ -433,8 +433,25 @@
     waBtn.href = 'https://wa.me/' + num + '?text=' + encodeURIComponent(parts.join(' '));
   }
 
-  const tel = $('[data-tel]');
-  tel.href = 'tel:' + String(W.phone || '').replace(/[^0-9+]/g, '');
+  /* Guests pick who to call, the same way the WhatsApp picker lets them pick
+     who to message. With nobody listed the line is hidden rather than
+     offering a dead number. */
+  (function renderContacts() {
+    const host = $('[data-contacts]');
+    if (!host) return;
+    const list = (Array.isArray(W.contacts) ? W.contacts : []).filter((c) => c && c.phone);
+    if (!list.length) { host.hidden = true; return; }
+
+    host.hidden = false;
+    host.append('Prefer to call? ');
+    list.forEach((c, i) => {
+      const a = document.createElement('a');
+      a.href = 'tel:' + String(c.phone).replace(/[^0-9+]/g, '');
+      a.textContent = c.label || c.phone;
+      host.appendChild(a);
+      if (i < list.length - 1) host.append(' · ');
+    });
+  })();
 
   /* ---------------------------------------------------------------- *
    * Saving the RSVP to the sheet

@@ -48,12 +48,20 @@ window.WEDDING = {
      WhatsApp button stays the primary action, so the page never breaks. */
   rsvpEndpoint: 'https://script.google.com/macros/s/AKfycbytkApSKmCVIxySgxok_z7Vpj-g3jEyfHIDbf65dH6UlL1T8de-Orx14U6WfJE6YxWGpQ/exec',
 
-  // Digits only, with country code and no "+" — e.g. '919876543210'.
-  // Leave empty and the button opens WhatsApp's "choose a contact" screen.
+  /* Deliberately empty: with no number set, the WhatsApp button opens the
+     contact picker, so each guest sends their RSVP to whoever they actually
+     know — the bride's family, the groom's father, a friend of the groom.
+     Set it (digits only, country code, no "+") only if you would rather every
+     RSVP landed in one chat. */
   whatsappNumber: '',
 
-  // Shown as "Call the family".
-  phone: '+910000000000',
+  /* "Prefer to call?" — list as many people as you like and the guest picks.
+     While this is empty the line is hidden altogether, which is better than
+     offering a number that dials nowhere. */
+  contacts: [
+    // { label: 'Bride’s family', phone: '+91XXXXXXXXXX' },
+    // { label: 'Groom’s family', phone: '+91XXXXXXXXXX' },
+  ],
 
   /* The celebrations, in order. `date` is the local start time and drives the
      countdown, the timeline and the .ics calendar files.

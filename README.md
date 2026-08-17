@@ -24,7 +24,8 @@ The two you must not forget:
 
 | Field | What it does |
 |---|---|
-| `whatsappNumber` | Digits only, with country code, no `+` (e.g. `919876543210`). Left empty, the RSVP button opens WhatsApp's contact picker instead of the family's chat. |
+| `whatsappNumber` | Left empty **on purpose**: WhatsApp then opens its contact picker, so each guest sends their RSVP to whoever they actually know. Set it (digits only, country code, no `+`) only if every RSVP should land in one chat. |
+| `contacts` | Optional list of `{ label, phone }` for "Prefer to call?". Guests pick who to ring. Empty hides the line entirely, rather than offering a number that dials nowhere. |
 | `weddingDate` | Drives the countdown. Local time, `YYYY-MM-DDTHH:MM:SS`. |
 | `mapUrl` | Google Maps link. Turns every mention of the venue into a directions link. |
 | `venueShort` | Used where the full venue name would swamp the line — the invitation's narrow "Where" column and the timeline, which repeats it on every event. |
@@ -54,7 +55,9 @@ Blessing footer, plus a reveal modal.
 - **Countdown** ticks every second to `weddingDate` and clamps at zero.
 - **Pick your side** is single-select; tapping the active side clears it.
 - **RSVP** collects name, celebrations and guest count (1–20) and saves them
-  to a Google Sheet. See below. Guest input is remembered in `localStorage`.
+  to a Google Sheet. See below. Both the WhatsApp fallback and the call line
+  let the guest choose who to contact, rather than routing everyone to one
+  person. Guest input is remembered in `localStorage`.
 - **+ Add to calendar** on each event downloads an `.ics` file.
 
 ## RSVPs
