@@ -15,7 +15,13 @@
  *  5. Copy the deployment's /exec URL into `rsvpEndpoint` in config.js.
  *
  *  To check it is live, open the /exec URL in a browser: it should reply
- *  {"ok":true,...} rather than an error page.
+ *  {"ok":true,...} rather than an error page. If you instead see "Sorry,
+ *  unable to open the file at this time", you are almost certainly signed
+ *  into more than one Google account — try an incognito window.
+ *
+ *  Rows go to a tab named "RSVPs", which the script creates on first use.
+ *  If the sheet looks empty, check the tabs along the bottom before anything
+ *  else — a fresh sheet opens on "Sheet1", which stays empty forever.
  *
  *  After editing this script, use Deploy → Manage deployments → edit → Version:
  *  New version. Without that the old code keeps serving.
@@ -23,7 +29,7 @@
  */
 
 var SHEET_NAME = 'RSVPs';
-var HEADERS = ['Submitted', 'ID', 'Name', 'Guests', 'Celebrations', 'Team'];
+var HEADERS = ['Submitted', 'ID', 'Name', 'Guests', 'Celebrations', 'Team', 'Flag'];
 
 function doPost(e) {
   // Guests can submit at the same moment; the lock stops two writes landing
@@ -38,9 +44,12 @@ function doPost(e) {
   try {
     var data = JSON.parse((e && e.postData && e.postData.contents) || '{}');
 
-    // honeypot: a real guest never fills this, so accept and discard silently
-    if (data.hp) return json({ ok: true });
     if (!data.name) return json({ ok: false, error: 'name required' });
+
+    /* The honeypot FLAGS a row, it never drops it. Browser autofill has been
+       known to fill off-screen inputs, and silently discarding a real RSVP
+       because of that is far worse than a flagged row you can glance at. */
+    var flag = data.hp ? 'check — honeypot filled' : '';
 
     var row = [
       new Date(),
@@ -49,6 +58,7 @@ function doPost(e) {
       Number(data.guests) || 1,
       (data.celebrations || []).join(', '),
       String(data.team || ''),
+      flag,
     ];
 
     var sheet = getSheet();
@@ -57,8 +67,18 @@ function doPost(e) {
       sheet.getRange(at, 1, 1, row.length).setValues([row]);   // an update
     } else {
       sheet.appendRow(row);
+      at = sheet.getLastRow();
     }
-    return json({ ok: true });
+
+    /* Reporting where the row landed turns "it said saved but I see nothing"
+       into a one-request answer: wrong tab, or wrong spreadsheet. */
+    return json({
+      ok: true,
+      spreadsheet: SpreadsheetApp.getActiveSpreadsheet().getName(),
+      sheet: sheet.getName(),
+      row: at,
+      flagged: !!flag,
+    });
   } catch (err) {
     return json({ ok: false, error: String(err) });
   } finally {
