@@ -56,6 +56,68 @@
   // ceremony and the wedding hall are different places on the same day.
   function placeOf(ev) { return (ev && ev.venue ? ev.venue : W.venue) + ', ' + W.city; }
 
+  // null on an event means "no map for this one"; undefined means "inherit"
+  function mapOf(ev) {
+    if (ev && Object.prototype.hasOwnProperty.call(ev, 'mapUrl')) return ev.mapUrl;
+    return W.mapUrl || null;
+  }
+
+  /* Renders the venue, as a directions link when there is a map for it.
+     `short` uses venueShort where the full hall name would swamp the line —
+     the timeline repeats the venue on every event, so it earns the shorter
+     form; the roomier modal card keeps the full name. */
+  function fillPlace(el, ev, short) {
+    const name = short && !((ev && ev.venue)) && W.venueShort
+      ? W.venueShort
+      : (ev && ev.venue ? ev.venue : W.venue);
+    const text = name + ', ' + W.city;
+    const url = mapOf(ev);
+
+    el.textContent = '';
+    if (!url) { el.textContent = text; return; }
+
+    const a = document.createElement('a');
+    a.className = 'map-link';
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.title = 'Open in Google Maps';
+    a.textContent = text;
+
+    // nbsp keeps the arrow welded to the last word instead of orphaning it
+    const pin = document.createElement('span');
+    pin.className = 'map-pin';
+    pin.setAttribute('aria-hidden', 'true');
+    pin.textContent = '\u00A0↗';
+    a.appendChild(pin);
+
+    el.appendChild(a);
+  }
+
+  /* The invitation's "Where" cell is a narrow column, so it uses venueShort
+     when the full hall name is too long to sit in it. */
+  (function fillInvitationWhere() {
+    const el = $('[data-where]');
+    if (!el) return;
+    const name = W.venueShort || W.venue;
+    if (!W.mapUrl) {
+      el.append(name + ',', document.createElement('br'), W.city);
+      return;
+    }
+    const a = document.createElement('a');
+    a.className = 'map-link';
+    a.href = W.mapUrl;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.title = 'Open in Google Maps';
+    const pin = document.createElement('span');
+    pin.className = 'map-pin';
+    pin.setAttribute('aria-hidden', 'true');
+    pin.textContent = '\u00A0↗';
+    a.append(name + ',', document.createElement('br'), W.city, pin);
+    el.append(a);
+  })();
+
   // Derived from `date`, so the weekday can never contradict the date itself.
   function dayLabelOf(ev) {
     if (ev.dayLabel) return ev.dayLabel;
@@ -138,7 +200,7 @@
       $('.event-title', main).textContent = ev.title;
       $('.event-sub', main).textContent = ev.subtitle;
       $('.event-when b', main).textContent = ev.timeLabel;
-      $('.event-when span', main).textContent = placeOf(ev);
+      fillPlace($('.event-when span', main), ev, true);
       if (ev.dressCode) $('.event-dress', main).textContent = 'Dress code: ' + ev.dressCode;
       if (ev.note) $('.event-note', main).textContent = ev.note;
       $('.event-quote', main).textContent = '“' + ev.quote + '”';
@@ -407,7 +469,11 @@
     // that actually starts with a clock time
     const time = ev.timeLabel.replace(' onwards', '');
     $('[data-card-time]').textContent = (/^[[\d]/.test(time) ? 'At ' : '') + time;
-    $('[data-card-where]').textContent = fmtDate(ev.date) + ' · ' + placeOf(ev);
+    const where = $('[data-card-where]');
+    where.textContent = fmtDate(ev.date) + ' · ';
+    const tail = document.createElement('span');
+    fillPlace(tail, ev);
+    where.appendChild(tail);
     $('[data-card-cta]').textContent = ev.cta || '';
     $('[data-card-art] use').setAttribute('href', '#art-' + ev.art);
 
@@ -432,6 +498,9 @@
     teardownGame();
     veil.hidden = false;
     veil.classList.remove('is-clearing');
+    // "Play again" lives on the card underneath — scratching the veil away
+    // would otherwise expose it right on top of the skip link
+    replayBtn.hidden = true;
     game = window.Games[ev.game]({
       veil, stage: veilStage, hint: veilHint, event: ev, complete: unlock,
     });

@@ -26,6 +26,8 @@ The two you must not forget:
 |---|---|
 | `whatsappNumber` | Digits only, with country code, no `+` (e.g. `919876543210`). Left empty, the RSVP button opens WhatsApp's contact picker instead of the family's chat. |
 | `weddingDate` | Drives the countdown. Local time, `YYYY-MM-DDTHH:MM:SS`. |
+| `mapUrl` | Google Maps link. Turns every mention of the venue into a directions link. |
+| `venueShort` | Used where the full venue name would swamp the line — the invitation's narrow "Where" column and the timeline, which repeats it on every event. |
 
 `weddingDateLabel` is the human-readable date shown on the invitation, kept
 separate so you can write it however you like ("28 December 2026", "28.12.26").
@@ -35,6 +37,7 @@ Each event takes these optional fields:
 | Field | Effect |
 |---|---|
 | `venue` | Overrides the default venue — the temple ceremony uses this |
+| `mapUrl` | Overrides the map link. `null` means "no map for this one" |
 | `note` | A plain practical line, set apart from the ceremonial copy |
 | `dressCode` | Rendered as "Dress code: …" |
 | `durationHours` | Overrides `eventDurationHours` for that calendar file |

@@ -26,9 +26,13 @@ window.WEDDING = {
   weddingDate: '2026-12-28T06:00:00',
   weddingDateLabel: '28 December 2026',
 
-  // Default venue. An event can override it with its own `venue` (the temple does).
-  venue: '[Wedding Hall]',
+  // Default venue. An event can override it with its own `venue` (the temple
+  // does). `mapUrl` turns the venue into a directions link wherever it appears;
+  // an event can override that too.
+  venue: 'Prasannalakshmi Kalyana Mandapam & Auditorium',
+  venueShort: 'Prasannalakshmi Kalyana Mandapam',
   city: 'Palakkad',
+  mapUrl: 'https://maps.app.goo.gl/44ULdVCSmp6FC4zDA',
 
   // Digits only, with country code and no "+" — e.g. '919876543210'.
   // Leave empty and the button opens WhatsApp's "choose a contact" screen.
@@ -105,6 +109,7 @@ window.WEDDING = {
       date: '2026-12-28T06:00:00',
       timeLabel: 'Early morning, [6:00 AM]',
       venue: '[Temple Name]',
+      mapUrl: null,          // ← add the temple's Google Maps link here
       durationHours: 2,
       quote: 'The knot that binds two families.',
       thumbLabel: 'View card',

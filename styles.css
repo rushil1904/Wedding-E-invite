@@ -306,6 +306,21 @@ button { font-family: var(--serif); }
   margin: 6px 0 0;
 }
 
+/* venue as a directions link — inherits its surrounding colour so it reads as
+   part of the sentence rather than as a button */
+.map-link {
+  color: inherit;
+  text-decoration: underline dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.map-link:hover { color: inherit; text-decoration-style: solid; }
+/* the invitation sets it in large script — an underline there is clutter, so
+   the arrow alone carries the affordance */
+.ww-value .map-link { text-decoration: none; }
+.ww-value .map-link:hover { text-decoration: underline dotted; }
+.map-pin { color: var(--gold); font-size: .82em; white-space: nowrap; }
+
 .hashtag {
   margin: 34px 0 0;
   display: inline-block;
@@ -838,7 +853,8 @@ button { font-family: var(--serif); }
 .veil--scratch .veil-hint,
 .veil--scratch .veil-skip { position: relative; z-index: 2; pointer-events: auto; }
 .veil--scratch .veil-hint { padding-top: 22px; color: #6B4405; text-shadow: none; }
-.veil--scratch .veil-skip { padding-bottom: 22px; color: rgba(80, 50, 5, .75); }
+/* clear of whatever is revealed on the card beneath as the layer comes off */
+.veil--scratch .veil-skip { padding-bottom: 26px; margin-top: 10px; color: rgba(80, 50, 5, .75); }
 .veil--scratch .veil-stage { pointer-events: none; }
 
 /* henna trace */
