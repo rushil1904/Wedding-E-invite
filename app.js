@@ -688,7 +688,8 @@
     game = window.Games[ev.game]({
       veil, stage: veilStage, hint: veilHint, event: ev, complete: unlock,
     });
-    armIdleSkip(!!window.Games[ev.game].idleSkip);
+    // every game: the skip link keeps out of the way until the guest pauses
+    armIdleSkip(true);
   }
 
   // The replay link only makes sense once the card is already open — including

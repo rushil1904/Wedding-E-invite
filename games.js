@@ -62,7 +62,10 @@ window.Games = (function () {
   function scratch(ctx) {
     const { veil, hint, complete } = ctx;
     veil.classList.add('veil--scratch');
-    hint.textContent = 'Rub off the turmeric';
+    /* No floating hint here. The instruction is painted into the turmeric
+       itself, so it rubs away with the layer instead of colliding with the
+       card text as that shows through. */
+    hint.textContent = '';
 
     const canvas = document.createElement('canvas');
     canvas.className = 'scratch-canvas';
@@ -95,6 +98,18 @@ window.Games = (function () {
         c.fillStyle = Math.random() > .5 ? 'rgba(255,225,150,.30)' : 'rgba(160,100,10,.16)';
         c.fillRect(x, y, 2.5, 2.5);
       }
+
+      // the instruction is part of the paste, so it comes off with it
+      c.save();
+      c.textAlign = 'center';
+      c.fillStyle = 'rgba(104, 66, 6, .82)';
+      c.font = 'italic 21px "Cormorant Garamond", Georgia, serif';
+      c.fillText('Rub off the turmeric', w / 2, 46);
+      c.fillStyle = 'rgba(104, 66, 6, .5)';
+      c.font = 'italic 15px "Cormorant Garamond", Georgia, serif';
+      c.fillText('to see the day', w / 2, 68);
+      c.restore();
+
       c.globalCompositeOperation = 'destination-out';
     }
 
@@ -757,22 +772,32 @@ window.Games = (function () {
     const wrap = document.createElement('div');
     wrap.className = 'thaal-wrap';
 
-    const svg = svgEl('svg', { viewBox: '0 0 200 190', class: 'thaal-svg' });
+    /* The gifts are HTML laid over the platter rather than nodes inside the
+       SVG. Moving an SVG node leaves smear trails on mobile — the browser
+       does not reliably repaint the area it vacated — whereas an HTML element
+       moved by transform gets its own composited layer and comes away clean. */
+    const board = document.createElement('div');
+    board.className = 'thaal-board';
 
-    // the platter
+    const svg = svgEl('svg', { viewBox: '0 0 200 190', class: 'thaal-svg' });
     const plate = svgEl('g', { class: 'thaal-plate' });
     plate.innerHTML =
       '<ellipse cx="100" cy="158" rx="66" ry="18" fill="#B8871F"/>' +
       '<ellipse cx="100" cy="152" rx="66" ry="18" fill="#E8C25A" stroke="#7A2E12" stroke-width="2"/>' +
       '<ellipse cx="100" cy="151" rx="50" ry="12" fill="#F3E0AE"/>';
     svg.appendChild(plate);
+    board.appendChild(svg);
 
     const nodes = GIFTS.map((g, i) => {
-      const el = svgEl('g', { class: 'gift', 'data-i': String(i) });
-      el.innerHTML = giftShape(g.kind);
-      el.style.transform = 'translate(' + g.from[0] + 'px,' + g.from[1] + 'px)';
-      svg.appendChild(el);
-      return el;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'gift';
+      b.dataset.i = String(i);
+      b.setAttribute('aria-label', 'Put the ' + g.kind + ' on the thaal');
+      b.innerHTML = '<span class="gift-in" style="animation-delay:' + (i * 0.4).toFixed(1) +
+        's"><svg viewBox="-16 -16 32 32" aria-hidden="true">' + giftShape(g.kind) + '</svg></span>';
+      board.appendChild(b);
+      return b;
     });
 
     const meter = document.createElement('div');
@@ -785,19 +810,37 @@ window.Games = (function () {
     cap.className = 'game-cap';
     cap.textContent = 'A brother comes bearing all his sister’s family could need.';
 
-    wrap.append(svg, meter, cap);
+    wrap.append(board, meter, cap);
     stage.appendChild(wrap);
 
-    let given = 0, done = false;
+    let given = 0, done = false, k = 1;
     const placed = nodes.map(() => false);
 
-    function toSvg(e) {
-      const m = svg.getScreenCTM();
-      if (!m) return null;
-      const p = svg.createSVGPoint();
-      p.x = e.clientX;
-      p.y = e.clientY;
-      return p.matrixTransform(m.inverse());
+    // viewBox units -> css pixels
+    function put(el, x, y) {
+      el.style.transform = 'translate(' + (x * k).toFixed(1) + 'px,' + (y * k).toFixed(1) + 'px)';
+    }
+
+    function layout() {
+      k = (board.clientWidth || 280) / 200;
+      // scale with the board, but never below a comfortable touch target
+      const size = Math.max(40, 34 * k);
+      nodes.forEach((el, i) => {
+        el.style.width = size.toFixed(1) + 'px';
+        el.style.height = size.toFixed(1) + 'px';
+        el.style.marginLeft = (-size / 2).toFixed(1) + 'px';
+        el.style.marginTop = (-size / 2).toFixed(1) + 'px';
+        const p = placed[i] ? GIFTS[i].to : GIFTS[i].from;
+        put(el, p[0], p[1]);
+      });
+    }
+    layout();
+
+    function toBoard(e) {
+      const r = board.getBoundingClientRect();
+      // the modal is mid scale-in on open, so correct for a scaled rect
+      const sx = r.width ? board.clientWidth / r.width : 1;
+      return { x: (e.clientX - r.left) * sx / k, y: (e.clientY - r.top) * sx / k };
     }
 
     function accept(i) {
@@ -808,7 +851,7 @@ window.Games = (function () {
       const el = nodes[i];
       el.classList.remove('is-dragging');
       el.classList.add('is-placed');
-      el.style.transform = 'translate(' + GIFTS[i].to[0] + 'px,' + GIFTS[i].to[1] + 'px)';
+      put(el, GIFTS[i].to[0], GIFTS[i].to[1]);
 
       tone({ freq: 660 + given * 70, to: 380, type: 'triangle', dur: .16, gain: .18 });
       fill.style.width = Math.round((given / GIFTS.length) * 100) + '%';
@@ -824,7 +867,6 @@ window.Games = (function () {
       }
     }
 
-    // drag state
     let dragI = -1, grab = null, moved = 0;
 
     function onDown(e) {
@@ -833,22 +875,19 @@ window.Games = (function () {
       if (!g) return;
       const i = Number(g.dataset.i);
       if (placed[i]) return;
-      const p = toSvg(e);
-      if (!p) return;
+      const p = toBoard(e);
       dragI = i;
       moved = 0;
       grab = { x: p.x - GIFTS[i].from[0], y: p.y - GIFTS[i].from[1] };
       g.classList.add('is-dragging');
-      try { svg.setPointerCapture(e.pointerId); } catch (_) { /* not capturable */ }
+      try { board.setPointerCapture(e.pointerId); } catch (_) { /* not capturable */ }
     }
 
     function onMove(e) {
       if (dragI < 0) return;
-      const p = toSvg(e);
-      if (!p) return;
+      const p = toBoard(e);
       moved++;
-      nodes[dragI].style.transform =
-        'translate(' + (p.x - grab.x) + 'px,' + (p.y - grab.y) + 'px)';
+      put(nodes[dragI], p.x - grab.x, p.y - grab.y);
     }
 
     function onUp(e) {
@@ -861,55 +900,27 @@ window.Games = (function () {
       // a tap counts as "send it" — no aim required
       if (moved < 3) { accept(i); return; }
 
-      const p = toSvg(e);
-      const onPlate = p && p.y > 118 && Math.abs(p.x - 100) < 78;
-      if (onPlate) {
-        accept(i);
-      } else {
-        el.style.transform = 'translate(' + GIFTS[i].from[0] + 'px,' + GIFTS[i].from[1] + 'px)';
-      }
+      const p = toBoard(e);
+      if (p.y > 118 && Math.abs(p.x - 100) < 78) accept(i);
+      else put(el, GIFTS[i].from[0], GIFTS[i].from[1]);
     }
 
-    svg.addEventListener('pointerdown', onDown);
-    svg.addEventListener('pointermove', onMove);
-    svg.addEventListener('pointerup', onUp);
-    svg.addEventListener('pointercancel', onUp);
+    board.addEventListener('pointerdown', onDown);
+    board.addEventListener('pointermove', onMove);
+    board.addEventListener('pointerup', onUp);
+    board.addEventListener('pointercancel', onUp);
+
+    const onResize = () => layout();
+    window.addEventListener('resize', onResize);
 
     return {
       destroy() {
+        window.removeEventListener('resize', onResize);
         wrap.remove();
         veil.style.removeProperty('--veil-bg');
       },
     };
   }
-
-  /* ------------------------------------------------------------------ *
-   * SIGHTSEEING — find the sights
-   * Four landmarks glow faintly on a map of the town; tap each to name it.
-   * ------------------------------------------------------------------ */
-  /* Each sight opens into a medallion of the thing itself — a name alone
-     leaves the guest none the wiser about what they just found. */
-  const SIGHT_ICONS = {
-    fort:
-      '<path d="M-9 6 V-2 h2.6 v-2.6 h2.6 v2.6 h3 v-2.6 h2.6 v2.6 h3 v-2.6 h2.6 v2.6 H9 V6 Z"' +
-      ' fill="#D3B075" stroke="#7A4A0E" stroke-width="1.3" stroke-linejoin="round"/>' +
-      '<path d="M-1.6 6 V1.6 a1.6 1.6 0 0 1 3.2 0 V6 Z" fill="#7A4A0E"/>',
-    palm:
-      '<path d="M0 8 V-1" stroke="#6B4A1E" stroke-width="2.2" stroke-linecap="round"/>' +
-      '<path d="M0 -1 q-8-6-12-2 q8-4 12 0 q3-8 11-6 q-8 1-11 6 q0-8 5-11 q-5 4-5 11 Z"' +
-      ' fill="#7F9245" stroke="#4A5626" stroke-width="1"/>',
-    temple:
-      '<path d="M-9 8 H9 L7 2 H-7 Z" fill="#F1DCB6" stroke="#7A4A0E" stroke-width="1.3"/>' +
-      '<path d="M-7 2 H7 L5 -4 H-5 Z" fill="#F1DCB6" stroke="#7A4A0E" stroke-width="1.3"/>' +
-      '<path d="M-3.4 -4 q3.4-5 6.8 0 Z" fill="#D9A648" stroke="#7A4A0E" stroke-width="1.1"/>' +
-      '<path d="M0 -8 v2.6" stroke="#7A4A0E" stroke-width="1.3"/>' +
-      '<path d="M-1.7 8 V4 a1.7 1.7 0 0 1 3.4 0 V8 Z" fill="#8B5E2A"/>',
-    river:
-      '<g fill="none" stroke-width="2.6" stroke-linecap="round">' +
-      '<path d="M-9 -4 q4.5-3.4 9 0 t9 0" stroke="#A8CBDC"/>' +
-      '<path d="M-9 1 q4.5-3.4 9 0 t9 0" stroke="#8FB6C9"/>' +
-      '<path d="M-9 6 q4.5-3.4 9 0 t9 0" stroke="#6FA0BC"/></g>',
-  };
 
   const SIGHTS = [
     { label: 'Fort',       icon: 'fort',   at: [56, 58] },
@@ -949,6 +960,7 @@ window.Games = (function () {
         '<circle class="pin-hit" r="24" fill="transparent"/>' +
         // before: a glowing pin with nothing to give away
         '<g class="pin-mark">' +
+        '<circle class="pin-halo" r="13" fill="#FFF7E4"/>' +
         '<circle class="pin-glow" r="14" fill="#FFF7E4"/>' +
         '<path class="pin-body" d="M0 4 q-8-10-8-16 a8 8 0 0 1 16 0 q0 6-8 16 Z"' +
         ' fill="#8E2436" stroke="#5E1622" stroke-width="1.6"/>' +

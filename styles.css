@@ -175,13 +175,12 @@ button { font-family: var(--serif); }
 }
 .seal:hover { color: #F3E4B8; }
 .seal:active { transform: scale(.96); }
-.seal-amp {
-  font-family: var(--script);
-  font-style: italic;
-  font-size: 58px;
-  line-height: 1;
-  color: #F0D48A;
+.seal-ring {
+  display: block;
+  width: 124px;
+  line-height: 0;
 }
+.seal-ring img { display: block; width: 100%; height: auto; }
 .seal-initials {
   font-size: 9px;
   letter-spacing: .28em;
@@ -920,7 +919,8 @@ button { font-family: var(--serif); }
 .veil-skip.is-idle { opacity: 0; pointer-events: none; }
 .veil-skip {
   transition: opacity .45s ease;
-  background: transparent;
+  background: rgba(255, 255, 255, .16);
+  border-radius: 999px;
   border: none;
   color: rgba(255, 255, 255, .85);
   font-size: 11px;
@@ -942,9 +942,12 @@ button { font-family: var(--serif); }
 }
 .veil--scratch .veil-hint,
 .veil--scratch .veil-skip { position: relative; z-index: 2; pointer-events: auto; }
-.veil--scratch .veil-hint { padding-top: 22px; color: #6B4405; text-shadow: none; }
 /* clear of whatever is revealed on the card beneath as the layer comes off */
-.veil--scratch .veil-skip { padding-bottom: 26px; margin-top: 10px; color: rgba(80, 50, 5, .75); }
+.veil--scratch .veil-skip {
+  margin-top: 10px;
+  color: rgba(70, 44, 4, .9);
+  background: rgba(255, 247, 228, .72);
+}
 .veil--scratch .veil-stage { pointer-events: none; }
 
 /* henna trace */
@@ -959,23 +962,41 @@ button { font-family: var(--serif); }
   gap: 10px;
   width: 100%;
 }
-.thaal-svg { width: 100%; height: auto; max-height: 220px; touch-action: none; }
+/* the platter is SVG; the gifts on top are HTML, so dragging them composites
+   cleanly instead of smearing the way a moving SVG node does on mobile */
+.thaal-board {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  touch-action: none;
+}
+.thaal-svg { display: block; width: 100%; height: auto; }
 
 .gift {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  border: none;
+  background: none;
   cursor: grab;
   transition: transform .45s cubic-bezier(.2, .9, .3, 1);
+  will-change: transform;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
-.gift.is-dragging { transition: none; cursor: grabbing; }
+.gift svg { display: block; width: 100%; height: 100%; }
+.gift.is-dragging { transition: none; cursor: grabbing; z-index: 3; }
 .gift.is-placed { cursor: default; }
-/* the untouched gifts bob gently, so they read as pick-up-able */
-.gift:not(.is-placed):not(.is-dragging) { animation: giftBob 2.6s ease-in-out infinite; }
-.gift:nth-of-type(3) { animation-delay: .4s; }
-.gift:nth-of-type(4) { animation-delay: .8s; }
-.gift:nth-of-type(5) { animation-delay: 1.2s; }
-.gift:nth-of-type(6) { animation-delay: 1.6s; }
+
+/* the bob sits on an inner span so it never fights the positioning transform */
+.gift-in { display: block; width: 100%; height: 100%; }
+.gift:not(.is-placed):not(.is-dragging) .gift-in {
+  animation: giftBob 2.6s ease-in-out infinite;
+}
 @keyframes giftBob {
-  0%, 100% { translate: 0 0; }
-  50%      { translate: 0 -4px; }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
 }
 
 .thaal-plate { transition: filter .4s ease; }
@@ -1010,15 +1031,17 @@ button { font-family: var(--serif); }
 .pin { cursor: pointer; }
 /* the generous invisible target must still take the tap */
 .pin-hit { pointer-events: all; }
-.pin-glow { opacity: .4; animation: pinGlow 2.1s ease-out infinite; }
+.pin-halo { opacity: .5; }
+.pin-glow { opacity: .95; animation: pinGlow 1.7s ease-out infinite; }
 .pin:nth-of-type(2) .pin-glow { animation-delay: .5s; }
 .pin:nth-of-type(3) .pin-glow { animation-delay: 1s; }
 .pin:nth-of-type(4) .pin-glow { animation-delay: 1.5s; }
 @keyframes pinGlow {
-  0%   { transform: scale(.55); opacity: .55; }
-  100% { transform: scale(1.35); opacity: 0; }
+  0%   { transform: scale(.45); opacity: 1; }
+  100% { transform: scale(1.9); opacity: 0; }
 }
-.pin.is-found .pin-glow { animation: none; opacity: 0; }
+.pin.is-found .pin-glow,
+.pin.is-found .pin-halo { animation: none; opacity: 0; }
 .pin.is-found { cursor: default; }
 
 /* the pin gives way to the medallion */
@@ -1227,7 +1250,7 @@ button { font-family: var(--serif); }
 @media (max-height: 620px) {
   .cover-body { padding-top: 24px; padding-bottom: 72px; }
   .seal { width: 132px; height: 132px; margin-top: 24px; }
-  .seal-amp { font-size: 44px; }
+  .seal-ring { width: 96px; }
   .tap-pill { bottom: 24px; }
 }
 
