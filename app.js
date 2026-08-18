@@ -656,6 +656,7 @@
 
   let game = null;
   let current = null;
+  let jumpUpdate = function () {};
   let lastFocus = null;
 
   function fmtDate(iso) {
@@ -695,6 +696,7 @@
 
     backdrop.hidden = false;
     document.body.style.overflow = 'hidden';
+    jumpUpdate();
 
     if (hasGame(ev) && !state.unlocked[ev.id]) {
       mountGame(ev);
@@ -788,6 +790,7 @@
   function closeModal() {
     backdrop.hidden = true;
     document.body.style.overflow = '';
+    jumpUpdate();
     teardownGame();
     veil.hidden = true;
     current = null;
@@ -809,6 +812,37 @@
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
+
+  /* ---------------------------------------------------------------- *
+   * The floating RSVP shortcut
+   *
+   * The RSVP sits at the foot of a long page and plenty of guests will never
+   * scroll that far. This shows once the cover is behind them and stands
+   * down when the RSVP is on screen, so it never sits on top of the form.
+   * ---------------------------------------------------------------- */
+  function watchJump() {
+    const jump = $('[data-jump]');
+    const cover = $('#cover');
+    const rsvpSection = $('#rsvp');
+    if (!jump || !cover || !rsvpSection) return;
+
+    function update() {
+      const pastCover = cover.getBoundingClientRect().bottom < 90;
+      const rsvpInView = rsvpSection.getBoundingClientRect().top < window.innerHeight * 0.92;
+      const modalOpen = !backdrop.hidden;
+      jump.classList.toggle('is-on', pastCover && !rsvpInView && !modalOpen);
+    }
+    jumpUpdate = update;
+
+    /* Straight to update rather than batching through rAF: this reads two
+       rects and toggles a class, which is cheaper than the machinery to
+       defer it — and it keeps working if rAF is throttled. */
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    // tapping it scrolls; once there the button should get out of the way
+    jump.addEventListener('click', () => setTimeout(update, 700));
+    update();
+  }
 
   /* ---------------------------------------------------------------- *
    * Scroll reveal
@@ -870,5 +904,6 @@
   initRsvpMode();
   startCountdown();
   watchReveals();
+  watchJump();
   sowPetals();
 })();
