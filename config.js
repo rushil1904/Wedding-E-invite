@@ -129,11 +129,7 @@ window.WEDDING = {
      `game` is one of 'thaal' | 'scratch' | 'trace' | 'dhol' | 'sights' | 'beat'
      | 'knots' | 'akshata'
      | null (null = no game,
-     the card opens straight away).
-
-     NOTE: every time in [brackets] is a guess from "morning" / "evening" /
-     "early morning" and needs confirming. The bracketed labels are what the
-     guest sees, so they stay obviously provisional until you set them. */
+     the card opens straight away). */
   events: [
     {
       id: 'bhaat',
@@ -250,7 +246,7 @@ window.WEDDING = {
       title: 'Mangalya Sutra',
       subtitle: 'The sacred thread, at the temple',
       date: '2026-12-28T06:00:00',
-      timeLabel: 'Early morning, [6:00 AM]',
+      timeLabel: '6:00 AM',
       venue: 'Vadakanthara Sree Thirupuraikkal Bhagavathi Temple',
       venueShort: 'Vadakanthara Bhagavathi Temple',
       mapUrl: 'https://maps.app.goo.gl/nJP9AKiKFJouvpw26',
