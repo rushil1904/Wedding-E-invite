@@ -884,34 +884,21 @@
 
     let ducked = false;
     let fadeTimer = null;
+    let settleTimer = null;
     let gainNode = null;
-    let cur = 0;
+    let noGraph = false;   // Web Audio unavailable, or the element cannot be routed
+    let started = false;
+    let cur = 0;           // the level last settled on, ramps aside
+    let ramp = null;       // { from, to, t0, ms } while a fade is in flight
     const level = () => (ducked ? DUCK : BASE);
 
-    /* iOS ignores HTMLMediaElement.volume — assignments are silently dropped
-       and the level stays wherever the hardware buttons put it. So the music
-       played at full blast on an iPhone and ducking did nothing at all.
-       Routing the element through a Web Audio gain node fixes both: gain is
-       honoured everywhere, including iOS. */
-    function buildGraph() {
-      if (gainNode) return true;
-      const mk = window.Games && window.Games.audioCtx;
-      const ac = mk ? mk() : null;
-      // a suspended context would silence the element once it is routed
-      // through it, so only take the graph over when it is actually running
-      if (!ac || ac.state !== 'running') return false;
-      try {
-        const src = ac.createMediaElementSource(el);
-        gainNode = ac.createGain();
-        gainNode.gain.value = Math.max(cur, 0.0001);
-        src.connect(gainNode).connect(ac.destination);
-        el.volume = 1;      // the gain node is the control now
-        el.muted = false;
-        return true;
-      } catch (_) {
-        gainNode = null;    // already routed, or unsupported
-        return false;
-      }
+    /* Where the music actually is, worked out from the fade in flight rather
+       than read back off the gain node: Safari's idea of gain.value part way
+       through a ramp is not something to steer by. */
+    function levelNow() {
+      if (!ramp) return cur;
+      const k = Math.min(1, (Date.now() - ramp.t0) / ramp.ms);
+      return ramp.from + (ramp.to - ramp.from) * k;
     }
 
     /* Last resort. Where volume cannot be set and Web Audio is unavailable,
@@ -925,37 +912,105 @@
       el.volume = keep;
     })();
 
+    /* iOS ignores HTMLMediaElement.volume — assignments are silently dropped
+       and the level stays wherever the hardware buttons put it. So the music
+       played at full blast on an iPhone and ducking did nothing at all.
+       Routing the element through a Web Audio gain node fixes both: gain is
+       honoured everywhere, including iOS.
+
+       The node has to be in place *before* the music starts. Built late, the
+       guest hears the ceremony music at full blast, ducking does nothing
+       while the card is open, and then the level drops out from under them
+       at whatever moment the node finally appears. */
+    function buildGraph() {
+      if (gainNode) return true;
+      if (noGraph) return false;
+      const mk = window.Games && window.Games.audioCtx;
+      const ac = mk ? mk() : null;
+      if (!ac) { noGraph = true; return false; }
+      // a suspended context would silence the element once it is routed
+      // through it, so only take the graph over when it is actually running
+      if (ac.state !== 'running') return false;
+      try {
+        const src = ac.createMediaElementSource(el);
+        gainNode = ac.createGain();
+        // where volume was being ignored the element has been held silent
+        // waiting for this, so open at nothing and ease up to the level
+        const from = volumeWorks ? Math.max(levelNow(), 0.0001) : 0.0001;
+        gainNode.gain.value = from;
+        src.connect(gainNode).connect(ac.destination);
+        el.volume = 1;      // the gain node is the control now
+        el.muted = false;
+        if (started) fadeTo(level(), from < level() ? 600 : 0, from);
+        ac.addEventListener('statechange', () => {
+          // an interruption can leave the level stranded where it was; a fade
+          // in flight pins its own target, so only speak up between them
+          if (ac.state === 'running' && !ramp && !muted) setNow(level());
+        });
+        return true;
+      } catch (_) {
+        gainNode = null;    // already routed, or unsupported
+        noGraph = true;
+        return false;
+      }
+    }
+
+    /* Resuming is asynchronous, so the context is rarely running by the time a
+       gesture handler returns — the build has to wait on the promise. */
+    function kickGraph(then) {
+      if (buildGraph() || noGraph) { if (then) then(); return; }
+      const ac = window.Games.audioCtx();
+      const p = ac && ac.resume && ac.resume();
+      if (p && p.then) p.then(() => { buildGraph(); if (then) then(); }).catch(() => { if (then) then(); });
+      else if (then) then();
+    }
+
     function setNow(v) {
+      clearInterval(fadeTimer); fadeTimer = null;
+      clearTimeout(settleTimer); settleTimer = null;
+      ramp = null;
       cur = v;
-      if (gainNode) { gainNode.gain.value = Math.max(v, 0.0001); return; }
+      if (gainNode) {
+        const t = gainNode.context.currentTime;
+        gainNode.gain.cancelScheduledValues(t);
+        gainNode.gain.setValueAtTime(Math.max(v, 0.0001), t);
+        return;
+      }
       if (volumeWorks) { el.volume = Math.max(0, Math.min(1, v)); return; }
-      el.muted = v < 0.01;
+      /* An iPhone drops volume assignments, so until the gain node is up the
+         only lever is mute — and full blast under an open mini game is the
+         thing to avoid, so stay quiet until there is a node to be quiet with.
+         Where Web Audio is off the table entirely, mute is the ducking too. */
+      el.muted = noGraph ? v < BASE : true;
     }
 
     /* A jump from full to ducked is more distracting than the music itself. */
-    function fadeTo(to, ms) {
-      clearInterval(fadeTimer);
-      fadeTimer = null;
+    function fadeTo(to, ms, from) {
+      if (!ms) { setNow(to); return; }
+      clearInterval(fadeTimer); fadeTimer = null;
+      clearTimeout(settleTimer); settleTimer = null;
+      const start = typeof from === 'number' ? from : levelNow();
+      ramp = { from: start, to: to, t0: Date.now(), ms: ms };
 
       if (gainNode) {
         const ac = gainNode.context;
         const t = ac.currentTime;
-        const from = Math.max(gainNode.gain.value, 0.0001);
         gainNode.gain.cancelScheduledValues(t);
-        gainNode.gain.setValueAtTime(from, t);
+        gainNode.gain.setValueAtTime(Math.max(start, 0.0001), t);
         gainNode.gain.linearRampToValueAtTime(Math.max(to, 0.0001), t + ms / 1000);
-        cur = to;
+        // and pin the target afterwards, so a ramp that was interrupted
+        // mid-flight cannot leave the music stranded at the ducked level
+        settleTimer = setTimeout(() => { settleTimer = null; setNow(to); }, ms + 80);
         return;
       }
 
       if (!volumeWorks) { setNow(to); return; }
 
-      const from = el.volume;
       const steps = Math.max(1, Math.round(ms / 40));
       let i = 0;
       fadeTimer = setInterval(() => {
         i++;
-        el.volume = Math.max(0, Math.min(1, from + (to - from) * (i / steps)));
+        el.volume = Math.max(0, Math.min(1, start + (to - start) * (i / steps)));
         if (i >= steps) { clearInterval(fadeTimer); fadeTimer = null; setNow(to); }
       }, 40);
     }
@@ -970,24 +1025,33 @@
 
     const GESTURES = ['pointerdown', 'touchstart', 'keydown'];
     function stopWaiting() {
-      GESTURES.forEach((t) => window.removeEventListener(t, tryStart));
+      GESTURES.forEach((t) => window.removeEventListener(t, onGesture));
     }
 
-    function tryStart() {
-      if (muted) { stopWaiting(); return; }
-      // a gesture has usually just happened, which is when the audio context
-      // can be resumed and the gain node taken over
-      buildGraph();
-      setNow(0);
+    function play() {
+      if (muted) return;
+      if (!started) setNow(0);          // fade up from silence, once
       const p = el.play();
-      if (p && p.then) {
-        p.then(() => { paintBtn(); fadeTo(level(), 1800); stopWaiting(); })
-         .catch(() => { /* still blocked; the next gesture will try again */ });
-      } else {
-        paintBtn();
-        fadeTo(level(), 1800);
-        stopWaiting();
-      }
+      if (p && p.then) p.then(onPlaying).catch(() => { /* the next gesture will try again */ });
+      else onPlaying();
+    }
+
+    function onPlaying() {
+      const first = !started;
+      started = true;
+      paintBtn();
+      if (first) fadeTo(level(), 1800);
+      // nothing more to wait for once the music is up and under our control
+      if (gainNode || noGraph) stopWaiting();
+    }
+
+    function onGesture() {
+      if (muted) { stopWaiting(); return; }
+      /* Where the element's own volume already works the music can start
+         straight away. Where it does not, it starts silent and comes in with
+         the gain node — see setNow — so there is nothing to wait for here. */
+      kickGraph();
+      play();
     }
 
     btn.addEventListener('click', () => {
@@ -998,9 +1062,10 @@
         fadeTo(0, 250);
         setTimeout(() => el.pause(), 300);
       } else {
-        buildGraph();
+        kickGraph();
         const p = el.play();
         if (p && p.catch) p.catch(() => {});
+        started = true;
         fadeTo(level(), 700);
       }
     });
@@ -1012,6 +1077,9 @@
       } else if (!muted) {
         const p = el.play();
         if (p && p.catch) p.catch(() => {});
+        // coming back from an interruption, restate the level we want: the
+        // card may well have been closed while the tab was away
+        setNow(level());
       }
     });
 
@@ -1020,12 +1088,12 @@
       ducked = on;
       // the first game is often the first gesture, so this may be the moment
       // the context becomes usable
-      buildGraph();
+      kickGraph();
       if (!muted) fadeTo(level(), 320);
     };
 
-    GESTURES.forEach((t) => window.addEventListener(t, tryStart, { passive: true }));
-    tryStart();
+    GESTURES.forEach((t) => window.addEventListener(t, onGesture, { passive: true }));
+    onGesture();
   }
 
   /* ---------------------------------------------------------------- *
