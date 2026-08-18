@@ -221,6 +221,12 @@ remembered, and the music pauses when the tab is hidden.
 It ducks rather than stopping, so the games' own sounds are always clearly on
 top without the music restarting every time a card closes.
 
+The level is applied through a Web Audio gain node, not `audio.volume`. iOS
+ignores `volume` on media elements entirely — assignments are silently
+dropped — so on an iPhone the music played at full blast and ducking did
+nothing. Gain is honoured everywhere. The element's own volume is the
+fallback for anything without Web Audio, and muting is the last resort.
+
 ## The browser icon
 
 `assets/rr.svg` is the source. Modern browsers take the SVG directly; the PNGs

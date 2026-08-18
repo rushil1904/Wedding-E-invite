@@ -1182,5 +1182,8 @@ window.Games = (function () {
   }
   beat.idleSkip = true;
 
-  return { thaal, scratch, trace, dhol, sights, beat, knots, akshata };
+  /* Shared so the background music can hang a gain node off the same context.
+     iOS ignores HTMLMediaElement.volume outright, and a second AudioContext
+     on top of this one is both wasteful and unreliable there. */
+  return { thaal, scratch, trace, dhol, sights, beat, knots, akshata, audioCtx };
 })();

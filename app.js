@@ -884,19 +884,79 @@
 
     let ducked = false;
     let fadeTimer = null;
+    let gainNode = null;
+    let cur = 0;
     const level = () => (ducked ? DUCK : BASE);
 
-    /* Volume has no CSS transition, so ramp it by hand — a jump from full to
-       ducked is more distracting than the music itself. */
+    /* iOS ignores HTMLMediaElement.volume — assignments are silently dropped
+       and the level stays wherever the hardware buttons put it. So the music
+       played at full blast on an iPhone and ducking did nothing at all.
+       Routing the element through a Web Audio gain node fixes both: gain is
+       honoured everywhere, including iOS. */
+    function buildGraph() {
+      if (gainNode) return true;
+      const mk = window.Games && window.Games.audioCtx;
+      const ac = mk ? mk() : null;
+      // a suspended context would silence the element once it is routed
+      // through it, so only take the graph over when it is actually running
+      if (!ac || ac.state !== 'running') return false;
+      try {
+        const src = ac.createMediaElementSource(el);
+        gainNode = ac.createGain();
+        gainNode.gain.value = Math.max(cur, 0.0001);
+        src.connect(gainNode).connect(ac.destination);
+        el.volume = 1;      // the gain node is the control now
+        el.muted = false;
+        return true;
+      } catch (_) {
+        gainNode = null;    // already routed, or unsupported
+        return false;
+      }
+    }
+
+    /* Last resort. Where volume cannot be set and Web Audio is unavailable,
+       muting is the only lever left — coarse, but better than a game trying
+       to be heard over music at full volume. */
+    let volumeWorks = true;
+    (function testVolume() {
+      const keep = el.volume;
+      try { el.volume = 0.4; } catch (_) { volumeWorks = false; return; }
+      volumeWorks = Math.abs(el.volume - 0.4) < 0.02;
+      el.volume = keep;
+    })();
+
+    function setNow(v) {
+      cur = v;
+      if (gainNode) { gainNode.gain.value = Math.max(v, 0.0001); return; }
+      if (volumeWorks) { el.volume = Math.max(0, Math.min(1, v)); return; }
+      el.muted = v < 0.01;
+    }
+
+    /* A jump from full to ducked is more distracting than the music itself. */
     function fadeTo(to, ms) {
       clearInterval(fadeTimer);
+      fadeTimer = null;
+
+      if (gainNode) {
+        const ac = gainNode.context;
+        const t = ac.currentTime;
+        const from = Math.max(gainNode.gain.value, 0.0001);
+        gainNode.gain.cancelScheduledValues(t);
+        gainNode.gain.setValueAtTime(from, t);
+        gainNode.gain.linearRampToValueAtTime(Math.max(to, 0.0001), t + ms / 1000);
+        cur = to;
+        return;
+      }
+
+      if (!volumeWorks) { setNow(to); return; }
+
       const from = el.volume;
       const steps = Math.max(1, Math.round(ms / 40));
       let i = 0;
       fadeTimer = setInterval(() => {
         i++;
         el.volume = Math.max(0, Math.min(1, from + (to - from) * (i / steps)));
-        if (i >= steps) { clearInterval(fadeTimer); fadeTimer = null; el.volume = to; }
+        if (i >= steps) { clearInterval(fadeTimer); fadeTimer = null; setNow(to); }
       }, 40);
     }
 
@@ -915,7 +975,10 @@
 
     function tryStart() {
       if (muted) { stopWaiting(); return; }
-      el.volume = 0;
+      // a gesture has usually just happened, which is when the audio context
+      // can be resumed and the gain node taken over
+      buildGraph();
+      setNow(0);
       const p = el.play();
       if (p && p.then) {
         p.then(() => { paintBtn(); fadeTo(level(), 1800); stopWaiting(); })
@@ -935,6 +998,7 @@
         fadeTo(0, 250);
         setTimeout(() => el.pause(), 300);
       } else {
+        buildGraph();
         const p = el.play();
         if (p && p.catch) p.catch(() => {});
         fadeTo(level(), 700);
@@ -954,6 +1018,9 @@
     musicDuck = function (on) {
       if (ducked === on) return;
       ducked = on;
+      // the first game is often the first gesture, so this may be the moment
+      // the context becomes usable
+      buildGraph();
       if (!muted) fadeTo(level(), 320);
     };
 
