@@ -5,8 +5,10 @@ Dockerfile
 devserver.py
 README.md
 *.md
+**/.DS_Store
 
-# ship only the web-sized artwork, not the multi-megabyte originals
+# Ship only the web-sized media, not the originals.
+# (Comments must sit on their own line — Docker treats a trailing "#" as part
+#  of the pattern, so an inline one silently matches nothing.)
 assets/*.png
-assets/*.mp3    # the 11 MB source track; assets/web/ has the loop
-.DS_Store
+assets/*.mp3

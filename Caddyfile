@@ -1,13 +1,12 @@
 {
 	admin off
-	persist_config off
 	auto_https off
 }
 
 # Railway injects PORT; 8080 is the fallback for `docker run` locally.
 :{$PORT:8080} {
 	root * /srv
-	encode zstd gzip
+	encode gzip
 
 	# /rithika and /rushil are not files — they are the two invitations, and
 	# each is served the same page, which picks its side from the path
@@ -29,6 +28,5 @@
 	header {
 		X-Content-Type-Options nosniff
 		Referrer-Policy strict-origin-when-cross-origin
-		-Server
 	}
 }
