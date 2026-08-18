@@ -145,7 +145,7 @@ control that flickers in and out is worse than one that is simply there.
 |---|---|
 | Bhaat | Tap or drag each gift — bangles, a sari, sweets, a cash envelope, a garland — onto the mama's thaal until it is full |
 | Haldi | Rub the turmeric off a canvas scratch layer (reveals at 60% cleared) |
-| Mehendi | Trace the henna vine with your finger — the path fills as you go |
+| Mehendi | Trace a henna heart with your finger — the path fills as you go |
 | Sangeet | Tap the dhol eight times to the beat, with a WebAudio drum hit |
 | Sightseeing | Four landmarks glow faintly on a map of the town — tap each to open a medallion of the sight itself, "X of 4 found" |
 | DJ Night | Tap the disc to layer the track, or hold it two seconds to build to the drop |

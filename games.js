@@ -182,9 +182,13 @@ window.Games = (function () {
   }
 
   /* ------------------------------------------------------------------ *
-   * MEHNDI — trace the henna along the vine
+   * MEHNDI — trace the henna heart
    * ------------------------------------------------------------------ */
-  const VINE = 'M28 132 C 28 96, 52 78, 78 88 S 118 118, 138 96 S 160 46, 132 34 C 112 26, 96 44, 108 58';
+  /* A heart, drawn the way a hand draws one: from the notch at the top, down
+     the left lobe to the point, and up the right side back to where it began.
+     One continuous path, so the trace can be followed end to end. */
+  const HEART = 'M100 54 C100 20 55 12 40 42 C25 72 55 110 100 152' +
+               ' C145 110 175 72 160 42 C145 12 100 20 100 54';
 
   function trace(ctx) {
     const { veil, stage, hint, complete } = ctx;
@@ -192,11 +196,11 @@ window.Games = (function () {
     hint.textContent = 'Trace the henna';
 
     const svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('viewBox', '14 16 172 130');
+    svg.setAttribute('viewBox', '12 0 176 164');
     svg.setAttribute('class', 'trace-svg');
 
     const guide = document.createElementNS(NS, 'path');
-    guide.setAttribute('d', VINE);
+    guide.setAttribute('d', HEART);
     guide.setAttribute('fill', 'none');
     guide.setAttribute('stroke', 'rgba(255,255,255,.35)');
     guide.setAttribute('stroke-width', '9');
@@ -204,7 +208,7 @@ window.Games = (function () {
     guide.setAttribute('stroke-dasharray', '2 9');
 
     const line = document.createElementNS(NS, 'path');
-    line.setAttribute('d', VINE);
+    line.setAttribute('d', HEART);
     line.setAttribute('fill', 'none');
     line.setAttribute('stroke', '#4A2C12');
     line.setAttribute('stroke-width', '7');
