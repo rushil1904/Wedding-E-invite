@@ -8,4 +8,5 @@ README.md
 
 # ship only the web-sized artwork, not the multi-megabyte originals
 assets/*.png
+assets/*.mp3    # the 11 MB source track; assets/web/ has the loop
 .DS_Store

@@ -63,6 +63,15 @@ window.WEDDING = {
     // { label: 'Groom’s family', phone: '+91XXXXXXXXXX' },
   ],
 
+  /* Background music. Set to null to switch it off entirely.
+     `volume` is the resting level; `ducked` is what it drops to while a
+     ceremony game is open, so the game's own sounds always win. */
+  music: {
+    src: 'music',        // basename in assets/web/ (.m4a and .mp3)
+    volume: 0.18,
+    ducked: 0.035,
+  },
+
   /* ------------------------------------------------------------------ *
    * TWO INVITATIONS, ONE SITE
    *

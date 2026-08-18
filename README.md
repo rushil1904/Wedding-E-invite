@@ -177,6 +177,50 @@ WebP is served to anything modern and JPEG to older phones, via `<picture>`.
 The card's `src` is set when the modal opens rather than up front, so a guest
 downloads only the one illustration they are looking at — not all eight.
 
+## Background music
+
+`assets/web/music.m4a` (361 KB) with `music.mp3` (528 KB) as a fallback — a
+45-second seamless loop cut from the source track in `assets/`, which is 11 MB
+and is **not** deployed (`.dockerignore` keeps it out).
+
+Regenerate the loop with:
+
+```sh
+cd assets
+ffmpeg -y -ss 180 -t 48 -i "SOURCE.mp3" -c:a pcm_s16le /tmp/seg.wav
+F="[0:a]atrim=start=3:end=48,asetpts=N/SR/TB[rest];\
+[1:a]atrim=start=0:end=3,asetpts=N/SR/TB[head];\
+[rest][head]acrossfade=d=3:c1=tri:c2=tri,loudnorm=I=-20:TP=-2:LRA=11[out]"
+ffmpeg -y -i /tmp/seg.wav -i /tmp/seg.wav -filter_complex "$F" -map "[out]" \
+  -c:a aac -b:a 64k web/music.m4a
+ffmpeg -y -i /tmp/seg.wav -i /tmp/seg.wav -filter_complex "$F" -map "[out]" \
+  -c:a libmp3lame -b:a 96k web/music.mp3
+```
+
+The crossfade is what makes it loop without a seam: the clip's tail is blended
+into the three seconds that preceded its start, so the end runs straight back
+into the beginning.
+
+**There is no play button.** Browsers refuse to start audio before the guest
+interacts, so the page tries immediately and otherwise starts on the first
+tap — which on this page is "tap to reveal". A guest never has to press
+anything to hear it.
+
+The toggle at bottom-left stops it. That is not optional politeness: audio
+that starts on its own needs a way to stop it, for anyone who opens the
+invitation somewhere they would rather it stayed quiet. The choice is
+remembered, and the music pauses when the tab is hidden.
+
+`music` in `config.js` sets the levels, or `null` turns it off:
+
+| Field | |
+|---|---|
+| `volume` | resting level, 0.18 |
+| `ducked` | level while a ceremony card is open, 0.035 |
+
+It ducks rather than stopping, so the games' own sounds are always clearly on
+top without the music restarting every time a card closes.
+
 ## The browser icon
 
 `assets/rr.svg` is the source. Modern browsers take the SVG directly; the PNGs

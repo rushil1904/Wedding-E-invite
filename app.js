@@ -657,6 +657,7 @@
   let game = null;
   let current = null;
   let jumpUpdate = function () {};
+  let musicDuck = function () {};
   let lastFocus = null;
 
   function fmtDate(iso) {
@@ -697,6 +698,7 @@
     backdrop.hidden = false;
     document.body.style.overflow = 'hidden';
     jumpUpdate();
+    musicDuck(true);
 
     if (hasGame(ev) && !state.unlocked[ev.id]) {
       mountGame(ev);
@@ -791,6 +793,7 @@
     backdrop.hidden = true;
     document.body.style.overflow = '';
     jumpUpdate();
+    musicDuck(false);
     teardownGame();
     veil.hidden = true;
     current = null;
@@ -842,6 +845,120 @@
     // tapping it scrolls; once there the button should get out of the way
     jump.addEventListener('click', () => setTimeout(update, 700));
     update();
+  }
+
+  /* ---------------------------------------------------------------- *
+   * Background music
+   *
+   * Browsers refuse to start audio before the guest interacts with the page,
+   * so there is no such thing as true autoplay. Rather than putting a play
+   * button in front of the invitation, it tries immediately and, failing
+   * that, starts on the first tap — which on this page is the cover's "tap
+   * to reveal". The guest never sees a control they must press first.
+   *
+   * It ducks almost to silence while a ceremony card is open so the games,
+   * which are the point, are never competing with it.
+   * ---------------------------------------------------------------- */
+  const MUSIC_KEY = 'wedding-music';
+
+  function setupMusic() {
+    const cfg = W.music;
+    const el = $('[data-music-el]');
+    const btn = $('[data-music-toggle]');
+    if (!el || !btn) return;
+    if (!cfg || !cfg.src) { el.remove(); btn.remove(); return; }
+
+    const BASE = typeof cfg.volume === 'number' ? cfg.volume : 0.18;
+    const DUCK = typeof cfg.ducked === 'number' ? cfg.ducked : 0.035;
+
+    // m4a first: same clip, a third smaller than the mp3 fallback
+    [['m4a', 'audio/mp4'], ['mp3', 'audio/mpeg']].forEach((pair) => {
+      const src = document.createElement('source');
+      src.src = '/assets/web/' + cfg.src + '.' + pair[0];
+      src.type = pair[1];
+      el.appendChild(src);
+    });
+
+    let muted = false;
+    try { muted = localStorage.getItem(MUSIC_KEY) === 'off'; } catch (_) { /* private mode */ }
+
+    let ducked = false;
+    let fadeTimer = null;
+    const level = () => (ducked ? DUCK : BASE);
+
+    /* Volume has no CSS transition, so ramp it by hand — a jump from full to
+       ducked is more distracting than the music itself. */
+    function fadeTo(to, ms) {
+      clearInterval(fadeTimer);
+      const from = el.volume;
+      const steps = Math.max(1, Math.round(ms / 40));
+      let i = 0;
+      fadeTimer = setInterval(() => {
+        i++;
+        el.volume = Math.max(0, Math.min(1, from + (to - from) * (i / steps)));
+        if (i >= steps) { clearInterval(fadeTimer); fadeTimer = null; el.volume = to; }
+      }, 40);
+    }
+
+    function paintBtn() {
+      btn.hidden = false;
+      btn.classList.toggle('is-muted', muted);
+      btn.setAttribute('aria-pressed', String(!muted));
+      btn.setAttribute('aria-label', muted ? 'Turn the music on' : 'Turn the music off');
+    }
+    if (muted) paintBtn();   // so it can be turned back on
+
+    const GESTURES = ['pointerdown', 'touchstart', 'keydown'];
+    function stopWaiting() {
+      GESTURES.forEach((t) => window.removeEventListener(t, tryStart));
+    }
+
+    function tryStart() {
+      if (muted) { stopWaiting(); return; }
+      el.volume = 0;
+      const p = el.play();
+      if (p && p.then) {
+        p.then(() => { paintBtn(); fadeTo(level(), 1800); stopWaiting(); })
+         .catch(() => { /* still blocked; the next gesture will try again */ });
+      } else {
+        paintBtn();
+        fadeTo(level(), 1800);
+        stopWaiting();
+      }
+    }
+
+    btn.addEventListener('click', () => {
+      muted = !muted;
+      try { localStorage.setItem(MUSIC_KEY, muted ? 'off' : 'on'); } catch (_) { /* ignore */ }
+      paintBtn();
+      if (muted) {
+        fadeTo(0, 250);
+        setTimeout(() => el.pause(), 300);
+      } else {
+        const p = el.play();
+        if (p && p.catch) p.catch(() => {});
+        fadeTo(level(), 700);
+      }
+    });
+
+    // nobody wants a tab humming away in the background
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        el.pause();
+      } else if (!muted) {
+        const p = el.play();
+        if (p && p.catch) p.catch(() => {});
+      }
+    });
+
+    musicDuck = function (on) {
+      if (ducked === on) return;
+      ducked = on;
+      if (!muted) fadeTo(level(), 320);
+    };
+
+    GESTURES.forEach((t) => window.addEventListener(t, tryStart, { passive: true }));
+    tryStart();
   }
 
   /* ---------------------------------------------------------------- *
@@ -905,5 +1022,6 @@
   startCountdown();
   watchReveals();
   watchJump();
+  setupMusic();
   sowPetals();
 })();

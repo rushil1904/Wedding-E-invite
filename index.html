@@ -408,6 +408,19 @@
 
 </div>
 
+<!-- Background music. preload="none" so it costs a guest nothing until it can
+     actually play, which browsers only allow after they interact anyway. -->
+<audio data-music-el loop preload="none"></audio>
+
+<button class="music-toggle" data-music-toggle type="button"
+        aria-label="Turn the music off" aria-pressed="true" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path class="spk" d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4Z"/>
+    <g class="wave"><path d="M15.5 9a4.2 4.2 0 0 1 0 6"/><path d="M18 6.8a7.4 7.4 0 0 1 0 10.4"/></g>
+    <g class="cross"><path d="M16 9.5l5 5"/><path d="M21 9.5l-5 5"/></g>
+  </svg>
+</button>
+
 <!-- Floating shortcut: the RSVP is at the foot of a long page, and not every
      guest will scroll that far to find it. -->
 <a class="jump-rsvp" data-jump href="#rsvp">RSVP <span aria-hidden="true">↓</span></a>
