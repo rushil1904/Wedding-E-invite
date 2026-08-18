@@ -181,8 +181,11 @@
   // Derived from `date`, so the weekday can never contradict the date itself.
   function dayLabelOf(ev) {
     if (ev.dayLabel) return ev.dayLabel;
+    /* No year: it is stated on the invitation just above and in the
+       countdown, and dropping it keeps the line from wrapping now that the
+       type is larger. */
     return new Date(ev.date).toLocaleDateString(undefined, {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+      weekday: 'long', day: 'numeric', month: 'long',
     });
   }
 
