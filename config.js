@@ -138,6 +138,7 @@ window.WEDDING = {
       subtitle: 'Mayra · the mama’s welcome',
       date: '2026-12-26T09:30:00',
       timeLabel: '9:30 AM onwards',
+      durationHours: 1,     // 9:30 to 10:30
       // its own venue — not the resort the rest of the 26th is at
       venue: 'Riverscapes by Noorjehan',
       mapUrl: 'https://maps.app.goo.gl/P4KH13UhaWHwoKDCA',
@@ -227,8 +228,9 @@ window.WEDDING = {
       image: 'DJ',
       title: 'DJ Night',
       subtitle: 'The dance floor by the river',
-      date: '2026-12-27T20:00:00',
-      timeLabel: '8:00 PM onwards',
+      date: '2026-12-27T19:00:00',
+      timeLabel: '7:00 PM – 11:00 PM',
+      durationHours: 4,
       venue: 'Riverscapes by Noorjehan',
       mapUrl: 'https://maps.app.goo.gl/P4KH13UhaWHwoKDCA',
       kind: 'Night out',
@@ -251,7 +253,7 @@ window.WEDDING = {
       venue: 'Vadakanthara Sree Thirupuraikkal Bhagavathi Temple',
       venueShort: 'Vadakanthara Bhagavathi Temple',
       mapUrl: 'https://maps.app.goo.gl/nJP9AKiKFJouvpw26',
-      durationHours: 2,
+      durationHours: 1,     // 6:00 to 7:00
       quote: 'The knot that binds two families.',
       thumbLabel: 'Tie the knots',
       cta: 'Tie the three knots',
