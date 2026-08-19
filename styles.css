@@ -462,6 +462,29 @@ button { font-family: var(--serif); }
 }
 .event-thumb.is-unlocked .event-thumb-lock { content: none; }
 
+/* One button for the whole schedule, set apart from the per-event ones so it
+   reads as a summary of the list rather than another item in it. */
+.cal-all {
+  display: block;
+  margin: 40px auto 0;
+  padding: 15px 26px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #FCF9F1;
+  background: var(--maroon);
+  border: 1px solid var(--maroon);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(142, 36, 54, .22);
+  transition: background .2s, transform .15s;
+}
+.cal-all:hover { background: var(--maroon-deep); }
+.cal-all:active { transform: translateY(1px); }
+.cal-all.is-done { background: #2F7A50; border-color: #2F7A50; }
+.cal-all[hidden] { display: none; }
+
 /* =========================== PICK YOUR SIDE =========================== */
 
 .sides { padding: var(--sec-y) var(--sec-x); background: var(--cream); text-align: center; }

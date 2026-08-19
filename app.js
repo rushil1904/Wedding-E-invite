@@ -273,13 +273,8 @@
       cal.type = 'button';
       cal.textContent = '+ Add to calendar';
       cal.addEventListener('click', () => {
-        downloadIcs(ev);
-        cal.classList.add('is-done');
-        cal.textContent = '✓ Added to calendar';
-        setTimeout(() => {
-          cal.classList.remove('is-done');
-          cal.textContent = '+ Add to calendar';
-        }, 2600);
+        downloadIcs(ev, ev.id + '.ics');
+        flashDone(cal, '✓ Added to calendar');
       });
       main.appendChild(cal);
 
@@ -306,6 +301,15 @@
       }
 
       host.appendChild(row);
+    });
+
+    const all = $('[data-cal-all]');
+    if (!all) return;
+    all.hidden = false;   // it does nothing without JS, so it stays hidden until now
+    all.addEventListener('click', () => {
+      // one file, every ceremony this guest is invited to
+      downloadIcs(EVENTS, (FIRST.short + '-' + SECOND.short).toLowerCase() + '-wedding.ics');
+      flashDone(all, '✓ All added to calendar');
     });
   }
 
@@ -340,39 +344,56 @@
     return String(s).replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
   }
 
-  function downloadIcs(ev) {
+  /* One VEVENT. A .ics file can hold any number of them, which is what lets
+     "add everything" be the same file format as a single ceremony. */
+  function icsEvent(ev) {
     const start = new Date(ev.date);
     const hours = ev.durationHours || W.eventDurationHours;
     const end = new Date(start.getTime() + hours * 3600e3);
     const couple = FIRST.short + ' & ' + SECOND.short;
-    const now = new Date();
 
-    const lines = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//wedding-e-invite//EN',
-      'CALSCALE:GREGORIAN',
+    return [
       'BEGIN:VEVENT',
       'UID:' + ev.id + '-' + start.getTime() + '@wedding-invite',
-      'DTSTAMP:' + icsStampUtc(now),
+      'DTSTAMP:' + icsStampUtc(new Date()),
       'DTSTART:' + icsStamp(start),
       'DTEND:' + icsStamp(end),
       'SUMMARY:' + icsEscape(ev.title + ' — ' + couple),
       'LOCATION:' + icsEscape(placeOf(ev)),
       'DESCRIPTION:' + icsEscape(ev.subtitle + '. ' + ev.quote),
       'END:VEVENT',
-      'END:VCALENDAR',
     ];
+  }
+
+  function downloadIcs(events, filename) {
+    const list = [].concat(events);
+    let lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//wedding-e-invite//EN',
+      'CALSCALE:GREGORIAN',
+    ];
+    list.forEach((ev) => { lines = lines.concat(icsEvent(ev)); });
+    lines.push('END:VCALENDAR');
 
     const blob = new Blob([lines.join('\r\n') + '\r\n'], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = ev.id + '.ics';
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+
+  /* Feedback on a button that opens a download: nothing else on screen
+     changes, so without this it is not obvious anything happened. */
+  function flashDone(btn, done) {
+    const was = btn.textContent;
+    btn.classList.add('is-done');
+    btn.textContent = done;
+    setTimeout(() => { btn.classList.remove('is-done'); btn.textContent = was; }, 2600);
   }
 
   /* ---------------------------------------------------------------- *
