@@ -156,7 +156,7 @@ window.WEDDING = {
       venue: DAY_ONE_VENUE.name,
       mapUrl: DAY_ONE_VENUE.map,
       title: 'Haldi',
-      subtitle: 'Manjal Neerattu Vizha',
+      subtitle: 'The morning everything turns gold',
       date: '2026-12-26T10:30:00',
       timeLabel: '10:30 AM',
       dressCode: 'Yellow',
