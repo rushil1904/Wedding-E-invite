@@ -211,6 +211,7 @@ window.WEDDING = {
       timeLabel: '9:30 AM onwards',
       venue: 'Around Palakkad',
       mapUrl: null,
+      durationHours: 7.5,   // 9:30 AM until 5 PM
       kind: 'Day out',
       cardLead: 'Join us for our',
       quote: 'Forts, palm groves and the long green quiet.',
