@@ -75,6 +75,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self._send(stamp().encode(), 'text/plain; charset=utf-8')
             return
 
+        # /dress-code → dress-code.html, as Caddy's {path}.html does
+        name = path.strip('/')
+        if name and '/' not in name and os.path.isfile(os.path.join(ROOT, name + '.html')):
+            self.path = '/' + name + '.html'
+            super().do_GET()
+            return
+
         # any extensionless path is one of the invitations (/rithika, /rushil),
         # matching the try_files fallback Caddy does in production
         if path in ('/', '/index.html') or '.' not in os.path.basename(path):

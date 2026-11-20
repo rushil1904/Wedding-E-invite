@@ -8,9 +8,10 @@
 	root * /srv
 	encode gzip
 
+	# /dress-code serves dress-code.html, so guests get a clean link.
 	# /rithika and /rushil are not files — they are the two invitations, and
 	# each is served the same page, which picks its side from the path
-	try_files {path} {path}/ /index.html
+	try_files {path} {path}.html {path}/ /index.html
 	file_server
 
 	# The page itself must always be revalidated, or a guest keeps seeing a
