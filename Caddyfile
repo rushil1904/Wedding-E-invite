@@ -16,7 +16,9 @@
 
 	# The page itself must always be revalidated, or a guest keeps seeing a
 	# stale invitation after the details change.
-	@html path *.html /
+	# Matched on the URL as requested, before try_files rewrites it, so the
+	# extensionless links guests are sent (/rushil, /dress-code) count too.
+	@html path_regexp \.html$|/[^./]*$
 	header @html Cache-Control "public, max-age=0, must-revalidate"
 
 	# config.js carries the names, dates and venues — same reasoning.
