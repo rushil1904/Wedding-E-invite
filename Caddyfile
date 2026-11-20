@@ -25,7 +25,11 @@
 	@config path /config.js
 	header @config Cache-Control "public, max-age=0, must-revalidate"
 
-	@static path *.css *.js *.svg *.png *.jpg *.webp *.woff2
+	# config.js is excluded, or this later rule overrides its must-revalidate.
+	@static {
+		path *.css *.js *.svg *.png *.jpg *.webp *.woff2
+		not path /config.js
+	}
 	header @static Cache-Control "public, max-age=3600"
 
 	header {
