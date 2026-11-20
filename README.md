@@ -10,6 +10,7 @@ styles.css    all styling and design tokens
 config.js     ← the only file you need to edit
 app.js        page logic: bindings, timeline, countdown, RSVP, modal
 games.js      the three ceremony mini-games
+dress-code.html  standalone dress-code page (3D scene, three.js from esm.sh)
 Dockerfile    Railway build — Caddy serving the files as-is
 Caddyfile     server config: ports, caching, security headers
 devserver.py  local dev server (no-cache + live reload); not deployed

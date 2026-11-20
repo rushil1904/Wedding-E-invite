@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dress Code · Rithika &amp; Rushil</title>
+<meta name="description" content="What to wear to each of our wedding celebrations.">
+<meta name="theme-color" content="#2a1a10">
+<link rel="icon" type="image/svg+xml" href="/assets/rr.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/web/icon-32.png">
+<link rel="apple-touch-icon" href="/assets/web/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#f6efe2;font-family:'Jost',system-ui,sans-serif;font-weight:300;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:hover{color:#b5651d}
+canvas{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1;pointer-events:none;display:block}
+nav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:5;display:flex;gap:4px;padding:6px;border-radius:999px;background:rgba(24,14,10,.74);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:12px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;max-width:calc(100vw - 24px);overflow-x:auto}
+nav a{padding:10px 14px;border-radius:999px;color:#f6efe2;opacity:.6}
+nav a.on{opacity:1;background:rgba(246,239,226,.16)}
+nav a:hover{color:#f6efe2}
+section{position:relative;min-height:100vh;display:flex;flex-wrap:wrap-reverse;align-items:center;gap:24px;padding:96px clamp(20px,6vw,96px) 120px;box-sizing:border-box}
+.copy{position:relative;z-index:2;flex:1 1 420px;max-width:580px;display:flex;flex-direction:column;gap:30px}
+.spacer{flex:1 1 420px;min-height:46vh}
+.stack{display:flex;flex-direction:column;gap:12px}
+.eyebrow{font-size:13px;letter-spacing:.24em;text-transform:uppercase}
+h1,h2{margin:0;font-family:'Cormorant Garamond',serif;font-weight:300}
+h2{font-size:clamp(64px,10vw,128px);line-height:.9}
+h2 span{font-size:.38em;font-style:italic}
+p{margin:0;font-size:18px;line-height:1.6;text-wrap:pretty}
+.palette{display:flex;flex-direction:column;gap:14px}
+.palette-label{font-size:12px;letter-spacing:.22em;text-transform:uppercase}
+.swatches{display:flex;flex-wrap:wrap;gap:16px}
+.swatches button{display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;padding:0;cursor:pointer;font:inherit;color:inherit}
+.swatches button span:first-child{width:60px;height:60px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);transition:transform .2s}
+.swatches button[aria-pressed=true] span:first-child{transform:scale(1.1);box-shadow:inset 0 0 0 1px rgba(0,0,0,.1),0 0 0 3px currentColor}
+.swatches button span:last-child{font-size:12px}
+.dark .swatches button span:first-child{box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.swatches button:focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:8px}
+footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:96px clamp(20px,6vw,96px) 140px;display:flex;flex-direction:column;gap:20px;align-items:flex-start}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+
+<nav>
+<a href="#haldi">Haldi</a>
+<a href="#sangeet">Sangeet</a>
+<a href="#muhurtham">Muhurtham</a>
+<a href="#pheras">Pheras</a>
+</nav>
+
+<section data-scene="0" style="background:#f6efe2;color:#2a1a10;padding-top:72px;padding-bottom:110px">
+<div class="copy" style="max-width:600px;gap:28px">
+<div class="eyebrow" style="letter-spacing:.28em;color:#8a5a2b">The wardrobe edit</div>
+<h1 style="font-size:clamp(56px,9vw,124px);line-height:.92;letter-spacing:-.01em">Rithika<br><span style="font-style:italic;color:#b5651d">&amp;</span> Rushil</h1>
+<p style="max-width:30em">Four ceremonies, two traditions, one colour story for each. Scroll through the celebrations and tap a colour to see it come alive.</p>
+<div style="font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#5a3d22">26 &amp; 28 December</div>
+<a href="#haldi" style="align-self:flex-start;font-size:13px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid #2a1a10;padding-bottom:6px">Begin with Haldi ↓</a>
+</div>
+<div class="spacer" data-spacer style="min-height:44vh"></div>
+</section>
+
+<section id="haldi" data-scene="1" style="background:#fbf0c4;color:#3d2c05">
+<div class="copy">
+<div class="stack">
+<div class="eyebrow" style="color:#8a5a00">01 · 26 December · 10:30 AM</div>
+<h2>Haldi <span style="color:#b06a00">हल्दी</span></h2>
+<p>Sunshine, turmeric and a lot of laughter. Dress bright, dress breezy — and wear something you won't mind turning a little golden.</p>
+</div>
+<div class="palette">
+<div class="palette-label" style="color:#8a5a00">The palette — <span aria-live="polite" data-picked>Marigold</span></div>
+<div class="swatches" data-ev="1">
+<button aria-pressed="true" style="--c:#f2a900"><span></span><span>Marigold</span></button>
+<button aria-pressed="false" style="--c:#f7d23e"><span></span><span>Sunflower</span></button>
+<button aria-pressed="false" style="--c:#f07f1b"><span></span><span>Tangerine</span></button>
+<button aria-pressed="false" style="--c:#7aa23f"><span></span><span>Leaf green</span></button>
+<button aria-pressed="false" style="--c:#f6eedb"><span></span><span>Ivory</span></button>
+</div>
+</div>
+</div>
+<div class="spacer" data-spacer></div>
+</section>
+
+<section id="sangeet" class="dark" data-scene="2" style="background:#110c24;color:#f3ead8">
+<div class="copy">
+<div class="stack">
+<div class="eyebrow" style="color:#d9b86a">02 · 26 December · 5:30 PM</div>
+<h2>Sangeet <span style="color:#d9b86a">संगीत</span></h2>
+<p>The night of music, dhol and questionable choreography. Go deep, go jewelled, catch the light — the dance floor is the dress code.</p>
+</div>
+<div class="palette">
+<div class="palette-label" style="color:#d9b86a">The palette — <span aria-live="polite" data-picked>Antique gold</span></div>
+<div class="swatches" data-ev="2">
+<button aria-pressed="true" style="--c:#c9a14a"><span></span><span>Antique gold</span></button>
+<button aria-pressed="false" style="--c:#13856a"><span></span><span>Emerald</span></button>
+<button aria-pressed="false" style="--c:#2c4fb8"><span></span><span>Sapphire</span></button>
+<button aria-pressed="false" style="--c:#7b48b8"><span></span><span>Amethyst</span></button>
+<button aria-pressed="false" style="--c:#a3234a"><span></span><span>Ruby wine</span></button>
+</div>
+</div>
+</div>
+<div class="spacer" data-spacer></div>
+</section>
+
+<section id="muhurtham" data-scene="3" style="background:#f4ead8;color:#4a1018">
+<div class="copy">
+<div class="stack">
+<div class="eyebrow" style="color:#8e1b2b">03 · 28 December · 10 AM · South Indian</div>
+<h2 style="font-size:clamp(60px,9.4vw,120px)">Muhurtham <span style="display:block;font-size:.34em;color:#9a6a1c;margin-top:10px">മുഹൂർത്തം</span></h2>
+<p>A temple-style ceremony lit by brass lamps and strung with jasmine. Think silk, gold and tradition.</p>
+</div>
+<div class="palette">
+<div class="palette-label" style="color:#8e1b2b">The palette — <span aria-live="polite" data-picked>Temple gold</span></div>
+<div class="swatches" data-ev="3">
+<button aria-pressed="true" style="--c:#c99a2e"><span></span><span>Temple gold</span></button>
+<button aria-pressed="false" style="--c:#8e1b2b"><span></span><span>Kumkum</span></button>
+<button aria-pressed="false" style="--c:#e7a12c"><span></span><span>Mango</span></button>
+<button aria-pressed="false" style="--c:#4f8a2b"><span></span><span>Parrot green</span></button>
+<button aria-pressed="false" style="--c:#f1e6cf"><span></span><span>Ivory silk</span></button>
+</div>
+</div>
+</div>
+<div class="spacer" data-spacer></div>
+</section>
+
+<section id="pheras" data-scene="4" style="background:#f7ebe7;color:#3a2430">
+<div class="copy">
+<div class="stack">
+<div class="eyebrow" style="color:#9a4a62">04 · 28 December · Midday · North Indian</div>
+<h2>Pheras <span style="color:#9a4a62">फेरे</span></h2>
+<p>Seven rounds of the sacred fire under the midday sun. Soft pastels, light fabrics and a little sparkle — let the bride be the colour.</p>
+</div>
+<div class="palette">
+<div class="palette-label" style="color:#9a4a62">The palette — <span aria-live="polite" data-picked>Blush</span></div>
+<div class="swatches" data-ev="4">
+<button aria-pressed="true" style="--c:#efbfbb"><span></span><span>Blush</span></button>
+<button aria-pressed="false" style="--c:#b6cfe9"><span></span><span>Powder blue</span></button>
+<button aria-pressed="false" style="--c:#bde2cc"><span></span><span>Mint</span></button>
+<button aria-pressed="false" style="--c:#d5c3ec"><span></span><span>Lilac</span></button>
+<button aria-pressed="false" style="--c:#e8d5ae"><span></span><span>Champagne</span></button>
+</div>
+</div>
+</div>
+<div class="spacer" data-spacer></div>
+</section>
+
+<footer>
+<div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,6vw,72px);line-height:1;font-style:italic">Still unsure what to wear?</div>
+<p style="max-width:32em;color:#e4d6c0">Send us a photo — we'll happily help. Most of all, come comfortable and ready to celebrate.</p>
+<div class="eyebrow" style="color:#d9b86a">With love, R &amp; R</div>
+</footer>
+
+<script type="module">
+const canvas = document.getElementById('scene');
+const navLinks = document.querySelectorAll('nav a');
+const secs = document.querySelectorAll('[data-scene]');
+const mouse = { x: 0, y: 0 };
+// The scene still renders when reduced motion is asked for; it just holds still.
+const speed = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1;
+let THREE, tintTargets, active = -1;
+
+addEventListener('pointermove', e => { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; });
+
+// Swatches work without the 3D scene; they just also retint it once it loads.
+document.querySelectorAll('.swatches').forEach(group => {
+  const ev = +group.dataset.ev;
+  const label = group.parentElement.querySelector('[data-picked]');
+  group.addEventListener('click', e => {
+    const btn = e.target.closest('button'); if (!btn) return;
+    group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === btn));
+    label.textContent = btn.lastElementChild.textContent;
+    if (tintTargets) tintTargets[ev] = new THREE.Color(btn.style.getPropertyValue('--c').trim());
+  });
+});
+
+const setActive = i => {
+  if (i === active) return;
+  active = i;
+  navLinks.forEach((a, k) => a.classList.toggle('on', k + 1 === i));
+};
+
+init().catch(e => console.warn('3D failed', e));
+
+async function init() {
+  THREE = await import('https://esm.sh/three@0.160.0');
+  const { RoomEnvironment } = await import('https://esm.sh/three@0.160.0/examples/jsm/environments/RoomEnvironment.js');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  const scene = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+  camera.position.set(0, 0, 10);
+  scene.add(new THREE.HemisphereLight(0xfff4e0, 0x553322, 0.9));
+  const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(3, 5, 6); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xffd9a0, 0.8); rim.position.set(-4, 2, -3); scene.add(rim);
+
+  const C = c => new THREE.Color(c);
+  const dummy = new THREE.Object3D();
+  const groups = [], updaters = [], tintMats = [];
+  tintTargets = [null, C('#f2a900'), C('#c9a14a'), C('#c99a2e'), C('#efbfbb')];
+  // Pick up anything tapped while three.js was still loading.
+  document.querySelectorAll('.swatches').forEach(g => { tintTargets[+g.dataset.ev] = C(g.querySelector('[aria-pressed=true]').style.getPropertyValue('--c').trim()); });
+
+  // 0 — Rings
+  {
+    const g = new THREE.Group();
+    const gold = new THREE.MeshPhysicalMaterial({ color: '#d8a845', metalness: 1, roughness: 0.18, clearcoat: 0.6 });
+    const ringGeo = new THREE.TorusGeometry(1, 0.11, 48, 160);
+    const r1 = new THREE.Mesh(ringGeo, gold); r1.position.x = -0.45;
+    const r2 = new THREE.Mesh(ringGeo, gold); r2.position.x = 0.45; r2.rotation.y = Math.PI / 2.4;
+    const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.28, 0),
+      new THREE.MeshPhysicalMaterial({ color: '#ffffff', metalness: 0, roughness: 0, transmission: 1, ior: 2.2, thickness: 0.6 }));
+    gem.position.set(-0.45, 1.18, 0); gem.scale.y = 1.3;
+    const inner = new THREE.Group(); inner.add(r1, r2, gem); g.add(inner);
+    updaters[0] = t => { inner.rotation.y = t * 0.35; inner.rotation.x = Math.sin(t * 0.5) * 0.25; inner.position.y = Math.sin(t * 0.9) * 0.08; gem.rotation.y = t; };
+    groups.push(g);
+  }
+
+  // 1 — Marigolds
+  {
+    const g = new THREE.Group();
+    const mat = new THREE.MeshStandardMaterial({ color: '#f2a900', roughness: 0.55 });
+    tintMats[1] = [mat];
+    const petal = new THREE.SphereGeometry(1, 8, 6);
+    const flowers = [];
+    const make = (rad, n, x, y, z) => {
+      const m = new THREE.InstancedMesh(petal, mat, n);
+      const golden = Math.PI * (3 - Math.sqrt(5));
+      for (let i = 0; i < n; i++) {
+        const yy = 1 - (i / (n - 1)) * 1.7, r = Math.sqrt(Math.max(0, 1 - yy * yy)), th = i * golden;
+        const p = new THREE.Vector3(r * Math.cos(th), yy, r * Math.sin(th)).multiplyScalar(rad * 0.82);
+        dummy.position.copy(p); dummy.lookAt(p.clone().multiplyScalar(2));
+        dummy.rotateZ(Math.random() * Math.PI);
+        dummy.scale.set(rad * 0.2, rad * 0.06, rad * 0.34);
+        dummy.updateMatrix(); m.setMatrixAt(i, dummy.matrix);
+        const l = 0.72 + Math.random() * 0.28; m.setColorAt(i, new THREE.Color(l, l * (0.88 + Math.random() * 0.12), l * 0.85));
+      }
+      const f = new THREE.Group(); f.add(m); f.position.set(x, y, z); g.add(f); flowers.push(f);
+    };
+    make(1.05, 420, 0, 0.15, 0);
+    make(0.62, 220, 1.15, -0.95, 0.5);
+    make(0.5, 180, -1.05, 1.0, -0.4);
+    make(0.4, 140, -0.9, -1.15, 0.6);
+    const drop = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 12, 10), new THREE.MeshStandardMaterial({ color: '#f5c518', roughness: 0.3 }), 26);
+    const dd = [];
+    for (let i = 0; i < 26; i++) dd.push({ a: Math.random() * 6.28, r: 1.6 + Math.random() * 0.9, y: (Math.random() - 0.5) * 3, s: 0.03 + Math.random() * 0.06, v: 0.2 + Math.random() * 0.4 });
+    g.add(drop);
+    updaters[1] = t => {
+      flowers.forEach((f, i) => { f.rotation.y = t * (0.25 + i * 0.07); f.rotation.x = Math.sin(t * 0.7 + i) * 0.2; f.position.y += Math.sin(t * 1.1 + i * 2) * 0.0015; });
+      dd.forEach((d, i) => { const a = d.a + t * d.v; dummy.position.set(Math.cos(a) * d.r, d.y + Math.sin(t + i) * 0.2, Math.sin(a) * d.r); dummy.rotation.set(0, 0, 0); dummy.scale.setScalar(d.s); dummy.updateMatrix(); drop.setMatrixAt(i, dummy.matrix); });
+      drop.instanceMatrix.needsUpdate = true;
+    };
+    groups.push(g);
+  }
+
+  // 2 — Mirror ball + orbiting jewels
+  {
+    const g = new THREE.Group();
+    const ballMat = new THREE.MeshStandardMaterial({ color: '#c9a14a', metalness: 1, roughness: 0.12, flatShading: true });
+    tintMats[2] = [ballMat];
+    const ball = new THREE.Mesh(new THREE.IcosahedronGeometry(1.15, 3), ballMat);
+    const string = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 3), new THREE.MeshStandardMaterial({ color: '#c9a14a', metalness: 1, roughness: 0.3 }));
+    string.position.y = 2.6;
+    g.add(ball, string);
+    const jewelCols = ['#13856a', '#2c4fb8', '#7b48b8', '#a3234a', '#d9b86a', '#13856a', '#2c4fb8'];
+    const gems = jewelCols.map((c, i) => {
+      const m = new THREE.Mesh(i % 2 ? new THREE.OctahedronGeometry(0.2) : new THREE.IcosahedronGeometry(0.17, 0),
+        new THREE.MeshPhysicalMaterial({ color: c, emissive: c, emissiveIntensity: 0.55, metalness: 0.3, roughness: 0.08, clearcoat: 1 }));
+      g.add(m); return m;
+    });
+    const pl1 = new THREE.PointLight('#7b48b8', 8, 8); const pl2 = new THREE.PointLight('#13856a', 8, 8);
+    g.add(pl1, pl2);
+    updaters[2] = t => {
+      ball.rotation.y = t * 0.5;
+      gems.forEach((m, i) => { const a = t * 0.55 + i * (Math.PI * 2 / gems.length); m.position.set(Math.cos(a) * 1.95, Math.sin(a * 2 + i) * 0.55, Math.sin(a) * 1.95); m.rotation.set(t + i, t * 1.3, 0); });
+      pl1.position.set(Math.cos(t) * 2.5, 1, Math.sin(t) * 2.5); pl2.position.set(Math.cos(t + 3) * 2.5, -1, Math.sin(t + 3) * 2.5);
+    };
+    groups.push(g);
+  }
+
+  // 3 — Kuthuvilakku (brass lamp) + jasmine
+  {
+    const g = new THREE.Group();
+    const brass = new THREE.MeshStandardMaterial({ color: '#c99a2e', metalness: 1, roughness: 0.26, side: THREE.DoubleSide });
+    tintMats[3] = [brass];
+    const prof = [[0,0],[1.0,0],[1.06,0.07],[0.98,0.15],[0.55,0.24],[0.28,0.4],[0.18,0.6],[0.32,0.76],[0.17,0.92],[0.12,1.3],[0.21,1.44],[0.12,1.58],[0.1,2.2],[0.24,2.34],[0.1,2.48],[0.14,2.58],[0.72,2.7],[0.86,2.84],[0.8,2.9],[0.16,2.78],[0.09,3.0],[0.2,3.18],[0.16,3.34],[0.05,3.62],[0,3.74]];
+    const lamp = new THREE.Mesh(new THREE.LatheGeometry(prof.map(p => new THREE.Vector2(p[0], p[1])), 72), brass);
+    const inner = new THREE.Group(); inner.add(lamp); inner.position.y = -1.85; g.add(inner);
+    const flameMat = new THREE.MeshBasicMaterial({ color: '#ffd27a' });
+    const flames = [];
+    for (let k = 0; k < 5; k++) {
+      const a = k / 5 * Math.PI * 2;
+      const f = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), flameMat);
+      f.position.set(Math.cos(a) * 0.8, 3.02, Math.sin(a) * 0.8); f.scale.set(0.06, 0.15, 0.06);
+      inner.add(f); flames.push(f);
+    }
+    const glow = new THREE.PointLight('#ffb347', 6, 5); glow.position.y = 3.2; inner.add(glow);
+    const jas = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), new THREE.MeshStandardMaterial({ color: '#fbf8ef', roughness: 0.5 }), 140);
+    inner.add(jas);
+    updaters[3] = t => {
+      lamp.rotation.y = t * 0.2;
+      flames.forEach((f, i) => { const s = 1 + Math.sin(t * 13 + i * 2.1) * 0.12 + Math.sin(t * 7.3 + i) * 0.08; f.scale.set(0.06, 0.15 * s, 0.06); });
+      glow.intensity = 6 + Math.sin(t * 11) * 0.8;
+      for (let i = 0; i < 140; i++) {
+        const a = i / 140 * Math.PI * 2 + t * 0.15;
+        const droop = Math.abs(Math.sin(a * 3)) * 0.35;
+        dummy.position.set(Math.cos(a) * 1.3, 0.55 - droop, Math.sin(a) * 1.3);
+        dummy.rotation.set(0, 0, 0); dummy.scale.set(0.05, 0.075, 0.05); dummy.updateMatrix(); jas.setMatrixAt(i, dummy.matrix);
+      }
+      jas.instanceMatrix.needsUpdate = true;
+    };
+    groups.push(g);
+  }
+
+  // 4 — Draped fabric + rose petals
+  {
+    const g = new THREE.Group();
+    const mkCloth = (col, w, h) => {
+      const geo = new THREE.PlaneGeometry(w, h, 36, 52);
+      const mat = new THREE.MeshPhysicalMaterial({ color: col, roughness: 0.55, sheen: 1, sheenColor: new THREE.Color('#ffffff'), sheenRoughness: 0.4, side: THREE.DoubleSide });
+      const m = new THREE.Mesh(geo, mat); m.userData.base = geo.attributes.position.array.slice(); return m;
+    };
+    const front = mkCloth('#efbfbb', 2.4, 3.6), back = mkCloth('#e8d5ae', 2.4, 3.6);
+    back.position.set(0.55, 0.2, -0.6); back.rotation.y = -0.35; front.rotation.y = 0.2;
+    tintMats[4] = [front.material];
+    g.add(back, front);
+    const petals = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 6), new THREE.MeshStandardMaterial({ color: '#e58fa0', roughness: 0.6, side: THREE.DoubleSide }), 46);
+    const pd = []; for (let i = 0; i < 46; i++) pd.push({ a: Math.random() * 6.28, r: 1.5 + Math.random(), y: Math.random() * 4 - 2, v: 0.15 + Math.random() * 0.3, s: 0.06 + Math.random() * 0.05 });
+    g.add(petals);
+    const wave = (m, t, ph) => {
+      const pos = m.geometry.attributes.position, b = m.userData.base;
+      for (let i = 0; i < pos.count; i++) {
+        const x = b[i * 3], y = b[i * 3 + 1];
+        const hang = (1.8 - y) / 3.6;
+        pos.array[i * 3 + 2] = Math.sin(x * 1.7 + t * 1.3 + ph) * 0.22 * hang + Math.sin(y * 1.2 + t * 0.9 + ph) * 0.14 * hang + Math.cos(x * 3.1 + y * 0.7 + t) * 0.05;
+        pos.array[i * 3] = x + Math.sin(y * 0.9 + t * 0.7 + ph) * 0.08 * hang;
+      }
+      pos.needsUpdate = true; m.geometry.computeVertexNormals();
+    };
+    updaters[4] = t => {
+      wave(front, t, 0); wave(back, t, 1.7);
+      pd.forEach((p, i) => { const a = p.a + t * p.v * 0.6; const y = ((p.y - t * p.v * 0.5 + 2) % 4 + 4) % 4 - 2; dummy.position.set(Math.cos(a) * p.r, y, Math.sin(a) * p.r); dummy.rotation.set(t * p.v * 3 + i, t * p.v * 2, i); dummy.scale.set(p.s, p.s * 0.25, p.s * 1.3); dummy.updateMatrix(); petals.setMatrixAt(i, dummy.matrix); });
+      petals.instanceMatrix.needsUpdate = true;
+    };
+    groups.push(g);
+  }
+
+  groups.forEach(g => scene.add(g));
+
+  // Global petal rain
+  const accents = [C('#d8a845'), C('#f2a900'), C('#c9a14a'), C('#f3efe2'), C('#e58fa0')];
+  const rainMat = new THREE.MeshStandardMaterial({ color: '#f2a900', roughness: 0.6, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+  const RN = 70;
+  const rain = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 8, 6), rainMat, RN);
+  const rd = []; for (let i = 0; i < RN; i++) rd.push({ x: Math.random(), y: Math.random(), z: -4 + Math.random() * 5, v: 0.05 + Math.random() * 0.08, s: 0.05 + Math.random() * 0.05, sw: Math.random() * 6 });
+  scene.add(rain);
+
+  const clamp = v => Math.max(0, Math.min(1, v));
+  let last = performance.now(), time = 0, w0 = 0, h0 = 0;
+  const loop = now => {
+    requestAnimationFrame(loop);
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    time += dt * speed;
+    const vw = innerWidth, vh = innerHeight;
+    if (vw !== w0 || vh !== h0) { w0 = vw; h0 = vh; renderer.setSize(vw, vh, false); camera.aspect = vw / vh; camera.updateProjectionMatrix(); }
+    const aspect = vw / vh, mobile = aspect < 0.9;
+    const visH = 2 * Math.tan(THREE.MathUtils.degToRad(17.5)) * 10, visW = visH * aspect;
+    let best = 0, bestW = -1;
+    secs.forEach((sec, i) => {
+      const g = groups[i]; if (!g) return;
+      let w, x, y, base;
+      if (!mobile) {
+        const r = sec.getBoundingClientRect(), mid = vh / 2;
+        const d = r.top > mid ? (r.top - mid) / vh : r.bottom < mid ? (r.bottom - mid) / vh : 0;
+        w = clamp(1 - Math.abs(d) * 1.7); x = visW * 0.24; y = -d * visH; base = Math.max(0.7, Math.min(1.1, visW / 11));
+      } else {
+        const r = sec.querySelector('[data-spacer]').getBoundingClientRect(), sy = r.top + r.height / 2;
+        w = clamp(Math.min(sy + 0.15 * vh, 1.15 * vh - sy) / (0.35 * vh)); x = 0; y = (0.5 - sy / vh) * visH; base = Math.max(0.5, Math.min(0.8, visW / 4.6));
+      }
+      const e = w * w * (3 - 2 * w);
+      g.visible = e > 0.004;
+      if (w > bestW) { bestW = w; best = i; }
+      if (!g.visible) return;
+      g.scale.setScalar(base * e);
+      g.position.set(x + mouse.x * 0.3, y - mouse.y * 0.2, 0);
+      g.rotation.y = (1 - e) * 1.8 + mouse.x * 0.35;
+      g.rotation.x = mouse.y * 0.15;
+      updaters[i](time);
+      (tintMats[i] || []).forEach(m => m.color.lerp(tintTargets[i], 0.08));
+    });
+    setActive(best);
+
+    const target = best > 0 && tintTargets[best] ? tintTargets[best] : accents[best];
+    rainMat.color.lerp(best === 3 ? accents[3] : target, 0.05);
+    rd.forEach((p, i) => {
+      p.y -= p.v * dt * speed * 0.6; if (p.y < -0.1) { p.y = 1.1; p.x = Math.random(); }
+      const zs = (10 - p.z) / 10;
+      dummy.position.set((p.x - 0.5) * visW * zs + Math.sin(time + p.sw) * 0.3, (p.y - 0.5) * visH * zs, p.z);
+      dummy.rotation.set(time * 1.3 + p.sw, time * 0.9 + i, p.sw);
+      dummy.scale.set(p.s, p.s * 0.3, p.s * 1.4); dummy.updateMatrix(); rain.setMatrixAt(i, dummy.matrix);
+    });
+    rain.instanceMatrix.needsUpdate = true;
+    renderer.render(scene, camera);
+  };
+  requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>
