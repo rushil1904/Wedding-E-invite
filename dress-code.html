@@ -10,36 +10,37 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/web/icon-32.png">
 <link rel="apple-touch-icon" href="/assets/web/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 html{scroll-behavior:smooth}
 body{margin:0;background:#f6efe2;font-family:'Jost',system-ui,sans-serif;font-weight:300;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 a:hover{color:#b5651d}
 canvas{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1;pointer-events:none;display:block}
-nav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:5;display:flex;gap:4px;padding:6px;border-radius:999px;background:rgba(24,14,10,.74);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:12px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;max-width:calc(100vw - 24px);overflow-x:auto}
-nav a{padding:10px 14px;border-radius:999px;color:#f6efe2;opacity:.6}
+nav{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:5;display:flex;gap:2px;padding:5px;border-radius:999px;background:rgba(24,14,10,.76);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:12px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;max-width:calc(100vw - 20px);overflow-x:auto}
+nav a{padding:10px 12px;border-radius:999px;color:#f6efe2;opacity:.6}
 nav a.on{opacity:1;background:rgba(246,239,226,.16)}
 nav a:hover{color:#f6efe2}
-section{position:relative;min-height:100vh;display:flex;flex-wrap:wrap-reverse;align-items:center;gap:24px;padding:96px clamp(20px,6vw,96px) 120px;box-sizing:border-box}
-.copy{position:relative;z-index:2;flex:1 1 420px;max-width:580px;display:flex;flex-direction:column;gap:30px}
-.spacer{flex:1 1 420px;min-height:46vh}
-.stack{display:flex;flex-direction:column;gap:12px}
-.eyebrow{font-size:13px;letter-spacing:.24em;text-transform:uppercase}
+section{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:72px 22px 96px;box-sizing:border-box}
+.intro{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:560px}
+.eyebrow{font-size:12px;letter-spacing:.26em;text-transform:uppercase}
 h1,h2{margin:0;font-family:'Cormorant Garamond',serif;font-weight:300}
-h2{font-size:clamp(64px,10vw,128px);line-height:.9}
-h2 span{font-size:.38em;font-style:italic}
-p{margin:0;font-size:18px;line-height:1.6;text-wrap:pretty}
-.palette{display:flex;flex-direction:column;gap:14px}
-.palette-label{font-size:12px;letter-spacing:.22em;text-transform:uppercase}
-.swatches{display:flex;flex-wrap:wrap;gap:16px}
-.swatches button{display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;padding:0;cursor:pointer;font:inherit;color:inherit}
-.swatches button span:first-child{width:60px;height:60px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);transition:transform .2s}
+h2{font-size:clamp(64px,17vw,128px);line-height:.88}
+h2 span{font-size:.36em;font-style:italic}
+p{margin:0;font-size:17px;line-height:1.55;text-wrap:pretty}
+/* The empty stage the couple stands on; dragging it turns the turntable */
+.stage{flex:1;min-height:56svh;width:100%;touch-action:pan-y;cursor:grab}
+.stage:active{cursor:grabbing}
+.palette{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px}
+.palette-label{font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+.swatches{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
+.swatches button{display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:0;padding:0;cursor:pointer;font:inherit;color:inherit}
+.swatches button span:first-child{width:52px;height:52px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);transition:transform .2s}
 .swatches button[aria-pressed=true] span:first-child{transform:scale(1.1);box-shadow:inset 0 0 0 1px rgba(0,0,0,.1),0 0 0 3px currentColor}
 .swatches button span:last-child{font-size:12px}
 .dark .swatches button span:first-child{box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
 .swatches button:focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:8px}
-footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:96px clamp(20px,6vw,96px) 140px;display:flex;flex-direction:column;gap:20px;align-items:flex-start}
+footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:72px 22px 120px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
 </style>
 </head>
 <body>
@@ -51,26 +52,23 @@ footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:96px
 <a href="#pheras">Pheras</a>
 </nav>
 
-<section data-scene="0" style="background:#f6efe2;color:#2a1a10;padding-top:72px;padding-bottom:110px">
-<div class="copy" style="max-width:600px;gap:28px">
-<div class="eyebrow" style="letter-spacing:.28em;color:#8a5a2b">The wardrobe edit</div>
-<h1 style="font-size:clamp(56px,9vw,124px);line-height:.92;letter-spacing:-.01em">Rithika<br><span style="font-style:italic;color:#b5651d">&amp;</span> Rushil</h1>
-<p style="max-width:30em">Three celebrations, one colour story for each. Scroll through the celebrations and tap a colour to see it come alive.</p>
-<div style="font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#5a3d22">26 &amp; 28 December</div>
-<a href="#haldi" style="align-self:flex-start;font-size:13px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid #2a1a10;padding-bottom:6px">Begin with Haldi ↓</a>
-</div>
-<div class="spacer" data-spacer style="min-height:44vh"></div>
+<section data-scene="0" style="background:#f6efe2;color:#2a1a10;min-height:88svh;justify-content:center;gap:24px">
+<div class="eyebrow" style="letter-spacing:.3em;color:#8a5a2b">The wardrobe edit</div>
+<h1 style="font-size:clamp(56px,15vw,124px);line-height:.92">Rithika<br><span style="font-style:italic;color:#b5651d">&amp;</span> Rushil</h1>
+<p style="max-width:24em">Three celebrations, three looks. Tap a colour to dress them, drag to turn them around.</p>
+<div style="font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#5a3d22">26 &amp; 28 December</div>
+<a href="#haldi" style="font-size:12px;letter-spacing:.24em;text-transform:uppercase;border-bottom:1px solid #2a1a10;padding-bottom:5px">Begin with Haldi ↓</a>
 </section>
 
 <section id="haldi" data-scene="1" style="background:#fbf0c4;color:#3d2c05">
-<div class="copy">
-<div class="stack">
+<div class="intro">
 <div class="eyebrow" style="color:#8a5a00">01 · 26 December · 10:30 AM</div>
 <h2>Haldi <span style="color:#b06a00">हल्दी</span></h2>
-<p>Sunshine, turmeric and a lot of laughter. Dress bright, dress breezy — and wear something you won't mind turning a little golden.</p>
+<p>Bright, breezy cottons in the colours of sunshine.</p>
 </div>
+<div class="stage" data-spacer data-ev="1"></div>
 <div class="palette">
-<div class="palette-label" style="color:#8a5a00">The palette — <span aria-live="polite" data-picked>Marigold</span></div>
+<div class="palette-label" style="color:#8a5a00">Wearing — <span aria-live="polite" data-picked>Marigold</span></div>
 <div class="swatches" data-ev="1">
 <button aria-pressed="true" style="--c:#f2a900"><span></span><span>Marigold</span></button>
 <button aria-pressed="false" style="--c:#f7d23e"><span></span><span>Sunflower</span></button>
@@ -79,19 +77,17 @@ footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:96px
 <button aria-pressed="false" style="--c:#f6eedb"><span></span><span>Ivory</span></button>
 </div>
 </div>
-</div>
-<div class="spacer" data-spacer></div>
 </section>
 
 <section id="sangeet" class="dark" data-scene="2" style="background:#110c24;color:#f3ead8">
-<div class="copy">
-<div class="stack">
+<div class="intro">
 <div class="eyebrow" style="color:#d9b86a">02 · 26 December · 5:30 PM</div>
 <h2>Sangeet <span style="color:#d9b86a">संगीत</span></h2>
-<p>The night of music, dhol and questionable choreography. Go dark and dramatic — deep shades that shine under the lights.</p>
+<p>Dark, deep shades and a little shimmer for a night of dancing.</p>
 </div>
+<div class="stage" data-spacer data-ev="2"></div>
 <div class="palette">
-<div class="palette-label" style="color:#d9b86a">The palette — <span aria-live="polite" data-picked>Midnight blue</span></div>
+<div class="palette-label" style="color:#d9b86a">Wearing — <span aria-live="polite" data-picked>Midnight blue</span></div>
 <div class="swatches" data-ev="2">
 <button aria-pressed="true" style="--c:#1d2a5c"><span></span><span>Midnight blue</span></button>
 <button aria-pressed="false" style="--c:#0f4d3a"><span></span><span>Bottle green</span></button>
@@ -100,19 +96,17 @@ footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:96px
 <button aria-pressed="false" style="--c:#16131c"><span></span><span>Black</span></button>
 </div>
 </div>
-</div>
-<div class="spacer" data-spacer></div>
 </section>
 
 <section id="pheras" data-scene="3" style="background:#f7ebe7;color:#3a2430">
-<div class="copy">
-<div class="stack">
+<div class="intro">
 <div class="eyebrow" style="color:#9a4a62">03 · 28 December · 10 AM · North Indian</div>
 <h2>Pheras <span style="color:#9a4a62">फेरे</span></h2>
-<p>Seven rounds of the sacred fire to seal the wedding. Go bright and cheerful — and please avoid dark colours.</p>
+<p>Bright, cheerful colours — and please avoid dark shades.</p>
 </div>
+<div class="stage" data-spacer data-ev="3"></div>
 <div class="palette">
-<div class="palette-label" style="color:#9a4a62">The palette — <span aria-live="polite" data-picked>Rani pink</span></div>
+<div class="palette-label" style="color:#9a4a62">Wearing — <span aria-live="polite" data-picked>Rani pink</span></div>
 <div class="swatches" data-ev="3">
 <button aria-pressed="true" style="--c:#e0457b"><span></span><span>Rani pink</span></button>
 <button aria-pressed="false" style="--c:#f47c5e"><span></span><span>Coral</span></button>
@@ -121,13 +115,10 @@ footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:96px
 <button aria-pressed="false" style="--c:#62b846"><span></span><span>Parrot green</span></button>
 </div>
 </div>
-</div>
-<div class="spacer" data-spacer></div>
 </section>
 
 <footer>
-<div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,6vw,72px);line-height:1;font-style:italic">Still unsure what to wear?</div>
-<p style="max-width:32em;color:#e4d6c0">Send us a photo — we'll happily help. Most of all, come comfortable and ready to celebrate.</p>
+<div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(34px,8vw,60px);line-height:1.05">See you in colour.</div>
 <div class="eyebrow" style="color:#d9b86a">With love, R &amp; R</div>
 </footer>
 
@@ -135,14 +126,19 @@ footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:96px
 const canvas = document.getElementById('scene');
 const navLinks = document.querySelectorAll('nav a');
 const secs = document.querySelectorAll('[data-scene]');
-const mouse = { x: 0, y: 0 };
-// The scene still renders when reduced motion is asked for; it just holds still.
-const speed = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1;
-let THREE, tintTargets, active = -1;
+// Reduced motion: no auto-spin or sway; dragging still turns the couple.
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const autoSpin = still ? 0 : 0.25;
+const spin = [0, 0, 0, 0], vel = [0, 0, 0, 0];
+let THREE, targets, drag = null, active = -1;
 
-addEventListener('pointermove', e => { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; });
+document.querySelectorAll('.stage').forEach(st => st.addEventListener('pointerdown', e => { drag = { ev: +st.dataset.ev, x: e.clientX }; }));
+addEventListener('pointermove', e => { if (!drag) return; const dx = e.clientX - drag.x; drag.x = e.clientX; spin[drag.ev] += dx * 0.012; vel[drag.ev] = dx * 0.012; });
+addEventListener('pointerup', () => { drag = null; });
+addEventListener('pointercancel', () => { drag = null; });
 
-// Swatches work without the 3D scene; they just also retint it once it loads.
+// Swatches work without the 3D scene; they just also redress the couple once it loads.
+const colourOf = btn => btn.style.getPropertyValue('--c').trim();
 document.querySelectorAll('.swatches').forEach(group => {
   const ev = +group.dataset.ev;
   const label = group.parentElement.querySelector('[data-picked]');
@@ -150,7 +146,7 @@ document.querySelectorAll('.swatches').forEach(group => {
     const btn = e.target.closest('button'); if (!btn) return;
     group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === btn));
     label.textContent = btn.lastElementChild.textContent;
-    if (tintTargets) tintTargets[ev] = new THREE.Color(btn.style.getPropertyValue('--c').trim());
+    if (targets) { targets[ev] = new THREE.Color(colourOf(btn)); vel[ev] += 0.12; }
   });
 });
 
@@ -170,187 +166,205 @@ async function init() {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene();
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  camera.position.set(0, 0, 10);
-  scene.add(new THREE.HemisphereLight(0xfff4e0, 0x553322, 0.9));
-  const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(3, 5, 6); scene.add(key);
-  const rim = new THREE.DirectionalLight(0xffd9a0, 0.8); rim.position.set(-4, 2, -3); scene.add(rim);
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100); camera.position.set(0, 0.6, 12);
+  scene.add(new THREE.HemisphereLight(0xfff6ea, 0x5a4636, 0.9));
+  const key = new THREE.DirectionalLight(0xffffff, 1.7); key.position.set(3, 6, 6); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xffe2b8, 1.0); rim.position.set(-4, 3, -4); scene.add(rim);
 
-  const C = c => new THREE.Color(c);
-  const dummy = new THREE.Object3D();
-  const groups = [], updaters = [], tintMats = [];
-  tintTargets = [null, C('#f2a900'), C('#1d2a5c'), C('#e0457b')];
-  // Pick up anything tapped while three.js was still loading.
-  document.querySelectorAll('.swatches').forEach(g => { tintTargets[+g.dataset.ev] = C(g.querySelector('[aria-pressed=true]').style.getPropertyValue('--c').trim()); });
+  const C = c => new THREE.Color(c), V = (x, y, z) => new THREE.Vector3(x, y, z);
+  const gold = new THREE.MeshStandardMaterial({ color: '#d4a84a', metalness: 1, roughness: 0.28 });
+  const fabric = (c, silk) => new THREE.MeshPhysicalMaterial({ color: c, roughness: silk ? 0.38 : 0.62, sheen: 1, sheenColor: C('#ffffff'), sheenRoughness: silk ? 0.3 : 0.55, side: THREE.DoubleSide });
+  const lathe = (pts, mat, fz = 0.78) => { const m = new THREE.Mesh(new THREE.LatheGeometry(pts.map(p => new THREE.Vector2(p[0], p[1])), 56), mat); m.scale.z = fz; return m; };
+  const pleat = (m, amt, n, y0, y1) => {
+    const p = m.geometry.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), y = p.getY(i), z = p.getZ(i), t = Math.max(0, Math.min(1, (y0 - y) / (y0 - y1)));
+      const f = 1 + amt * t * Math.sin(Math.atan2(z, x) * n);
+      p.setX(i, x * f); p.setZ(i, z * f);
+    }
+    m.geometry.computeVertexNormals();
+  };
+  const ribbon = (pts, w, mat) => {
+    const curve = new THREE.CatmullRomCurve3(pts.map(p => V(...p))), N = 48, pos = [], idx = [];
+    for (let i = 0; i <= N; i++) {
+      const u = i / N, p = curve.getPointAt(u), t = curve.getTangentAt(u);
+      let out = V(p.x, 0, p.z); if (out.lengthSq() < 1e-4) out.set(0, 0, 1); out.normalize();
+      const side = V().crossVectors(t, out).normalize().multiplyScalar(w / 2);
+      p.addScaledVector(out, 0.012);
+      pos.push(p.x - side.x, p.y - side.y, p.z - side.z, p.x + side.x, p.y + side.y, p.z + side.z);
+      if (i < N) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+    }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+    return new THREE.Mesh(g, mat);
+  };
+  const add = (parent, ...ms) => { ms.forEach(m => parent.add(m)); return ms[0]; };
 
-  // 0 — Rings
-  {
-    const g = new THREE.Group();
-    const gold = new THREE.MeshPhysicalMaterial({ color: '#d8a845', metalness: 1, roughness: 0.18, clearcoat: 0.6 });
-    const ringGeo = new THREE.TorusGeometry(1, 0.11, 48, 160);
-    const r1 = new THREE.Mesh(ringGeo, gold); r1.position.x = -0.45;
-    const r2 = new THREE.Mesh(ringGeo, gold); r2.position.x = 0.45; r2.rotation.y = Math.PI / 2.4;
-    const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.28, 0),
-      new THREE.MeshPhysicalMaterial({ color: '#ffffff', metalness: 0, roughness: 0, transmission: 1, ior: 2.2, thickness: 0.6 }));
-    gem.position.set(-0.45, 1.18, 0); gem.scale.y = 1.3;
-    const inner = new THREE.Group(); inner.add(r1, r2, gem); g.add(inner);
-    updaters[0] = t => { inner.rotation.y = t * 0.35; inner.rotation.x = Math.sin(t * 0.5) * 0.25; inner.position.y = Math.sin(t * 0.9) * 0.08; gem.rotation.y = t; };
-    groups.push(g);
-  }
-
-  // 1 — Marigolds
-  {
-    const g = new THREE.Group();
-    const mat = new THREE.MeshStandardMaterial({ color: '#f2a900', roughness: 0.55 });
-    tintMats[1] = [mat];
-    const petal = new THREE.SphereGeometry(1, 8, 6);
-    const flowers = [];
-    const make = (rad, n, x, y, z) => {
-      const m = new THREE.InstancedMesh(petal, mat, n);
-      const golden = Math.PI * (3 - Math.sqrt(5));
-      for (let i = 0; i < n; i++) {
-        const yy = 1 - (i / (n - 1)) * 1.7, r = Math.sqrt(Math.max(0, 1 - yy * yy)), th = i * golden;
-        const p = new THREE.Vector3(r * Math.cos(th), yy, r * Math.sin(th)).multiplyScalar(rad * 0.82);
-        dummy.position.copy(p); dummy.lookAt(p.clone().multiplyScalar(2));
-        dummy.rotateZ(Math.random() * Math.PI);
-        dummy.scale.set(rad * 0.2, rad * 0.06, rad * 0.34);
-        dummy.updateMatrix(); m.setMatrixAt(i, dummy.matrix);
-        const l = 0.72 + Math.random() * 0.28; m.setColorAt(i, new THREE.Color(l, l * (0.88 + Math.random() * 0.12), l * 0.85));
+  const skinF = new THREE.MeshPhysicalMaterial({ color: '#c08660', roughness: 0.5, sheen: 0.5, sheenColor: C('#ffd2b8'), sheenRoughness: 0.6 });
+  const skinM = new THREE.MeshPhysicalMaterial({ color: '#a87250', roughness: 0.52, sheen: 0.4, sheenColor: C('#ffd2b8'), sheenRoughness: 0.6 });
+  const hairM = new THREE.MeshPhysicalMaterial({ color: '#16100c', roughness: 0.4, sheen: 0.6, sheenColor: C('#6a4a3a') });
+  const kumkum = new THREE.MeshStandardMaterial({ color: '#b3122a', roughness: 0.4 });
+  const tube = (pts, radii, mat, seg = 32, rad = 18, caps = true) => {
+    const curve = new THREE.CatmullRomCurve3(pts.map(p => V(...p)));
+    const fr = curve.computeFrenetFrames(seg, false), pos = [], idx = [];
+    const rAt = u => { const f = u * (radii.length - 1), i = Math.min(radii.length - 2, Math.floor(f)), t = f - i, s = t * t * (3 - 2 * t); return radii[i] + (radii[i + 1] - radii[i]) * s; };
+    for (let i = 0; i <= seg; i++) {
+      const u = i / seg, p = curve.getPointAt(u), N = fr.normals[i], B = fr.binormals[i], r = rAt(u);
+      for (let j = 0; j <= rad; j++) { const an = j / rad * Math.PI * 2, c = Math.cos(an) * r, s = Math.sin(an) * r; pos.push(p.x + N.x * c + B.x * s, p.y + N.y * c + B.y * s, p.z + N.z * c + B.z * s); }
+      if (i < seg) for (let j = 0; j < rad; j++) { const q = i * (rad + 1) + j, w = q + rad + 1; idx.push(q, w, q + 1, w, w + 1, q + 1); }
+    }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+    const grp = new THREE.Group(); grp.add(new THREE.Mesh(g, mat));
+    if (caps) [[0, radii[0]], [1, radii[radii.length - 1]]].forEach(([u, r]) => { const s = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 12), mat); s.position.copy(curve.getPointAt(u)); grp.add(s); });
+    return grp;
+  };
+  const sph = (r, mat, x, y, z, sx = 1, sy = 1, sz = 1) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 20, 16), mat); m.position.set(x, y, z); m.scale.set(sx, sy, sz); return m; };
+  const bangle = (fig, p, q, n = 2) => {
+    const d = V(...q).sub(V(...p)).normalize();
+    for (let k = 0; k < n; k++) { const t = new THREE.Mesh(new THREE.TorusGeometry(0.036, 0.0065, 8, 28), gold); t.position.copy(V(...p).addScaledVector(d, -0.03 - k * 0.018)); t.lookAt(t.position.clone().add(d)); fig.add(t); }
+  };
+  const head = (fig, female) => {
+    const skin = female ? skinF : skinM;
+    const g = new THREE.SphereGeometry(0.135, 64, 48), p = g.attributes.position, v = V();
+    for (let i = 0; i < p.count; i++) {
+      v.fromBufferAttribute(p, i); const n = v.clone().normalize();
+      let x = v.x * (female ? 1 : 1.05), y = v.y * 1.24, z = v.z;
+      if (n.y < 0) { const k = Math.pow(-n.y, 1.4); x *= 1 - (female ? 0.32 : 0.24) * k; z *= 1 - 0.12 * k; }
+      if (n.z > 0) {
+        const fz = n.z, ax = Math.abs(n.x);
+        z += 0.03 * Math.exp(-((n.x / 0.1) ** 2 + ((n.y + 0.04) / 0.2) ** 2)) * fz;
+        z += 0.012 * Math.exp(-((n.x / 0.25) ** 2 + ((n.y + 0.74) / 0.13) ** 2)) * fz;
+        z += 0.009 * Math.exp(-(((n.y - 0.22) / 0.07) ** 2)) * fz ** 3;
+        z -= 0.013 * Math.exp(-(((ax - 0.32) / 0.11) ** 2 + ((n.y - 0.1) / 0.08) ** 2)) * fz;
+        z += 0.007 * Math.exp(-((n.x / 0.13) ** 2 + ((n.y + 0.42) / 0.05) ** 2)) * fz;
+        x += Math.sign(n.x) * 0.006 * Math.exp(-(((ax - 0.62) / 0.15) ** 2 + ((n.y + 0.05) / 0.12) ** 2));
       }
-      const f = new THREE.Group(); f.add(m); f.position.set(x, y, z); g.add(f); flowers.push(f);
-    };
-    make(1.05, 420, 0, 0.15, 0);
-    make(0.62, 220, 1.15, -0.95, 0.5);
-    make(0.5, 180, -1.05, 1.0, -0.4);
-    make(0.4, 140, -0.9, -1.15, 0.6);
-    const drop = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 12, 10), new THREE.MeshStandardMaterial({ color: '#f5c518', roughness: 0.3 }), 26);
-    const dd = [];
-    for (let i = 0; i < 26; i++) dd.push({ a: Math.random() * 6.28, r: 1.6 + Math.random() * 0.9, y: (Math.random() - 0.5) * 3, s: 0.03 + Math.random() * 0.06, v: 0.2 + Math.random() * 0.4 });
-    g.add(drop);
-    updaters[1] = t => {
-      flowers.forEach((f, i) => { f.rotation.y = t * (0.25 + i * 0.07); f.rotation.x = Math.sin(t * 0.7 + i) * 0.2; f.position.y += Math.sin(t * 1.1 + i * 2) * 0.0015; });
-      dd.forEach((d, i) => { const a = d.a + t * d.v; dummy.position.set(Math.cos(a) * d.r, d.y + Math.sin(t + i) * 0.2, Math.sin(a) * d.r); dummy.rotation.set(0, 0, 0); dummy.scale.setScalar(d.s); dummy.updateMatrix(); drop.setMatrixAt(i, dummy.matrix); });
-      drop.instanceMatrix.needsUpdate = true;
-    };
-    groups.push(g);
-  }
-
-  // 2 — Mirror ball + orbiting jewels
-  {
-    const g = new THREE.Group();
-    const ballMat = new THREE.MeshStandardMaterial({ color: '#1d2a5c', metalness: 1, roughness: 0.12, flatShading: true });
-    tintMats[2] = [ballMat];
-    const ball = new THREE.Mesh(new THREE.IcosahedronGeometry(1.15, 3), ballMat);
-    const string = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 3), new THREE.MeshStandardMaterial({ color: '#c9a14a', metalness: 1, roughness: 0.3 }));
-    string.position.y = 2.6;
-    g.add(ball, string);
-    const jewelCols = ['#13856a', '#2c4fb8', '#7b48b8', '#a3234a', '#d9b86a', '#13856a', '#2c4fb8'];
-    const gems = jewelCols.map((c, i) => {
-      const m = new THREE.Mesh(i % 2 ? new THREE.OctahedronGeometry(0.2) : new THREE.IcosahedronGeometry(0.17, 0),
-        new THREE.MeshPhysicalMaterial({ color: c, emissive: c, emissiveIntensity: 0.55, metalness: 0.3, roughness: 0.08, clearcoat: 1 }));
-      g.add(m); return m;
+      p.setXYZ(i, x, y, z);
+    }
+    g.computeVertexNormals();
+    const hd = new THREE.Mesh(g, skin); hd.position.set(0, 3.18, 0.01); hd.rotation.x = 0.06; fig.add(hd);
+    [-1, 1].forEach(s => fig.add(sph(0.03, skin, s * (female ? 0.128 : 0.136), 3.16, -0.01, 0.45, 1, 0.8)));
+    fig.add(tube([[0, 2.8, -0.01], [0, 2.92, 0], [0, 3.04, 0.012]], female ? [0.068, 0.054, 0.05] : [0.08, 0.066, 0.06], skin, 8, 16, false));
+    if (female) {
+      fig.add(sph(0.139, hairM, 0, 3.205, -0.024, 1.0, 1.2, 1.03));
+      fig.add(sph(0.075, hairM, 0, 3.12, -0.17, 1.1, 0.9, 0.85));
+      fig.add(sph(0.008, kumkum, 0, 3.235, 0.13));
+      fig.add(sph(0.014, gold, 0, 3.29, 0.112));
+      [-1, 1].forEach(s => { const c = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.035, 16), gold); c.position.set(s * 0.13, 3.06, 0); fig.add(c, sph(0.008, gold, s * 0.13, 3.09, 0)); });
+      const nk = new THREE.Mesh(new THREE.TorusGeometry(0.095, 0.009, 8, 40), gold); nk.position.set(0, 2.83, 0.03); nk.rotation.x = Math.PI / 2 - 0.4; nk.scale.y = 0.85; fig.add(nk, sph(0.02, gold, 0, 2.76, 0.105, 1, 1.3, 0.6));
+    } else {
+      fig.add(sph(0.14, hairM, 0, 3.235, -0.02, 1.05, 1.08, 1.04));
+    }
+  };
+  const shoulders = (fig, mat, r, w) => [-1, 1].forEach(s => fig.add(sph(r, mat, s * w, 2.74, 0)));
+  const armsHer = (fig, blouse) => {
+    const R = [[0.29, 2.74, 0], [0.36, 2.42, -0.02], [0.39, 2.2, -0.01], [0.42, 1.95, 0.04], [0.43, 1.78, 0.07]];
+    const L = [[-0.29, 2.74, 0], [-0.38, 2.45, -0.06], [-0.45, 2.22, -0.08], [-0.36, 2.02, 0.04], [-0.24, 1.92, 0.13]];
+    [R, L].forEach(path => fig.add(tube(path, [0.054, 0.048, 0.039, 0.034, 0.029], skinF)));
+    fig.add(tube([[0.43, 1.78, 0.07], [0.435, 1.68, 0.09], [0.43, 1.6, 0.1]], [0.027, 0.033, 0.012], skinF, 12, 12));
+    fig.add(tube([[-0.24, 1.92, 0.13], [-0.19, 1.88, 0.16], [-0.15, 1.86, 0.17]], [0.027, 0.032, 0.012], skinF, 12, 12));
+    bangle(fig, R[4], R[3], 3); bangle(fig, L[4], L[3], 3);
+    [R, L].forEach(path => fig.add(tube([path[0], [(path[0][0] + path[1][0]) / 2, 2.6, -0.01], path[1]], [0.066, 0.06, 0.054], blouse, 10, 16, false)));
+    shoulders(fig, blouse, 0.068, 0.29);
+  };
+  const armsHim = (fig, sleeve) => {
+    [-1, 1].forEach(s => fig.add(tube([[s * 0.33, 2.74, 0], [s * 0.38, 2.45, 0.02], [s * 0.36, 2.24, 0.1], [s * 0.2, 2.26, 0.24], [s * 0.045, 2.31, 0.29]], [0.075, 0.068, 0.06, 0.054, 0.05], sleeve)));
+    fig.add(tube([[0, 2.29, 0.3], [0, 2.4, 0.31], [0, 2.5, 0.31], [0, 2.57, 0.3]], [0.046, 0.05, 0.038, 0.012], skinM, 14, 14));
+    shoulders(fig, sleeve, 0.085, 0.32);
+  };
+  const legs = (fig, mat, top) => {
+    [-1, 1].forEach(s => {
+      fig.add(tube([[s * 0.11, top, 0], [s * 0.11, top * 0.55, 0.02], [s * 0.1, 0.12, 0]], [0.1, 0.074, 0.058], mat, 16, 16, false));
+      fig.add(sph(0.07, gold, s * 0.1, 0.04, 0.06, 0.9, 0.45, 1.9));
     });
-    const pl1 = new THREE.PointLight('#7b48b8', 8, 8); const pl2 = new THREE.PointLight('#13856a', 8, 8);
-    g.add(pl1, pl2);
-    updaters[2] = t => {
-      ball.rotation.y = t * 0.5;
-      gems.forEach((m, i) => { const a = t * 0.55 + i * (Math.PI * 2 / gems.length); m.position.set(Math.cos(a) * 1.95, Math.sin(a * 2 + i) * 0.55, Math.sin(a) * 1.95); m.rotation.set(t + i, t * 1.3, 0); });
-      pl1.position.set(Math.cos(t) * 2.5, 1, Math.sin(t) * 2.5); pl2.position.set(Math.cos(t + 3) * 2.5, -1, Math.sin(t + 3) * 2.5);
-    };
-    groups.push(g);
+  };
+  const buttons = (fig, y0, y1, z) => { for (let i = 0; i < 6; i++) fig.add(sph(0.018, gold, 0, y0 + (y1 - y0) * i / 5, z)); };
+  const band = (fig, r, y, fz) => { const t = new THREE.Mesh(new THREE.TorusGeometry(r, 0.022, 8, 64), gold); t.rotation.x = Math.PI / 2; t.scale.y = fz; t.position.set(0, y, 0); fig.add(t); };
+  const chest = fig => { fig.add(lathe([[0.25, 2.58], [0.28, 2.66], [0.24, 2.8], [0.08, 2.87], [0.07, 2.9]], skinF, 0.74)); };
+  const midriff = fig => fig.add(lathe([[0.185, 1.8], [0.195, 1.88], [0.21, 1.98]], skinF, 0.76));
+  const choliP = [[0.19, 1.94], [0.205, 1.98], [0.255, 2.3], [0.28, 2.58], [0.275, 2.65], [0.25, 2.66]];
+  const dupattaP = [[-0.17, 1.15, 0.3], [-0.21, 1.9, 0.27], [-0.25, 2.6, 0.2], [-0.27, 2.82, 0.0], [-0.26, 2.6, -0.21], [-0.3, 1.6, -0.3], [-0.36, 0.55, -0.36]];
+  const topM = (hem, hemR, collar) => [[hemR, hem], [hemR * 0.92 + 0.02, (hem + 1.45) / 2], [0.29, 1.45], [0.27, 1.85], [0.3, 2.35], [0.33, 2.7], [0.25, 2.82], [0.085, 2.9], [0.08, collar ? 2.99 : 2.92]];
+
+  const outfits = {
+    // Haldi — kurta and sharara for her, kurta for him
+    1: (her, him, main, acc) => {
+      add(her, lathe([[0.36, 1.0], [0.31, 1.4], [0.22, 1.8], [0.26, 2.3], [0.28, 2.58], [0.275, 2.65], [0.25, 2.66]], main)); chest(her);
+      const sh = add(her, lathe([[0.02, 1.12], [0.25, 1.12], [0.3, 0.8], [0.5, 0.3], [0.6, 0.04]], acc, 0.9)); pleat(sh, 0.07, 14, 1.0, 0.04);
+      add(her, ribbon(dupattaP, 0.3, main)); armsHer(her, main); head(her, true);
+      add(him, lathe(topM(1.0, 0.34), main)); legs(him, acc, 1.1); armsHim(him, main); head(him);
+    },
+    // Sangeet — lehenga for her, bandhgala for him
+    2: (her, him, main, acc) => {
+      add(her, lathe(choliP, main)); chest(her); midriff(her);
+      const sk = add(her, lathe([[0.02, 1.86], [0.2, 1.86], [0.22, 1.7], [0.34, 1.2], [0.55, 0.6], [0.74, 0.12], [0.78, 0.03]], main, 0.9)); pleat(sk, 0.06, 18, 1.6, 0.03);
+      band(her, 0.77, 0.07, 0.9); add(her, ribbon(dupattaP, 0.32, acc)); armsHer(her, main); head(her, true);
+      add(him, lathe(topM(1.35, 0.3, true), main)); buttons(him, 1.95, 2.72, 0.25); legs(him, fabric('#1d1b2a'), 1.45); armsHim(him, main); head(him);
+    },
+    // Pheras — lehenga for her, sherwani and safa for him
+    3: (her, him, main, acc) => {
+      add(her, lathe(choliP, main)); chest(her); midriff(her);
+      const sk = add(her, lathe([[0.02, 1.86], [0.2, 1.86], [0.22, 1.7], [0.34, 1.2], [0.55, 0.6], [0.72, 0.12], [0.76, 0.03]], main, 0.9)); pleat(sk, 0.05, 20, 1.6, 0.03);
+      band(her, 0.75, 0.07, 0.9); add(her, ribbon(dupattaP, 0.34, acc)); armsHer(her, main); head(her, true);
+      add(him, lathe(topM(0.75, 0.38, true), main)); buttons(him, 1.6, 2.72, 0.25); legs(him, fabric('#f3ead6'), 0.8); armsHim(him, main); head(him);
+      const safa = fabric('#d9b86a', true);
+      [3.25, 3.31, 3.36].forEach((y, i) => { const t = new THREE.Mesh(new THREE.TorusGeometry(0.15 - i * 0.022, 0.05, 12, 32), safa); t.rotation.x = Math.PI / 2 + 0.12; t.position.set(0, y, -0.01); him.add(t); });
+      him.add(sph(0.13, safa, 0, 3.38, -0.02, 1, 0.6, 1));
+      him.add(ribbon([[0, 3.3, -0.17], [0.02, 3.0, -0.22], [0.04, 2.6, -0.24]], 0.12, safa));
+    }
+  };
+  const figs = [null];
+  const accents = [null, '#f6eedb', '#c9a14a', '#e8d5ae'];
+  // Start from whichever swatch is pressed, so a tap made while three.js loaded is kept.
+  targets = [null, ...[...document.querySelectorAll('.swatches')].map(g => C(colourOf(g.querySelector('[aria-pressed=true]'))))];
+  const mains = [], groups = [null], turns = [null];
+
+  const shadowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); const g = x.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, 'rgba(0,0,0,.35)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); })();
+  for (let ev = 1; ev <= 3; ev++) {
+    const g = new THREE.Group(), turn = new THREE.Group(); g.add(turn);
+    const main = fabric(targets[ev], ev === 2), acc = fabric(accents[ev], true);
+    mains[ev] = main;
+    const ped = new THREE.Mesh(new THREE.CylinderGeometry(1.18, 1.24, 0.1, 64), new THREE.MeshStandardMaterial({ color: ev === 2 ? '#2a2140' : '#efe7da', roughness: 0.35 }));
+    ped.position.y = -0.05; turn.add(ped);
+    const rimT = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.018, 8, 96), gold); rimT.rotation.x = Math.PI / 2; turn.add(rimT);
+    const sh = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
+    sh.rotation.x = -Math.PI / 2; sh.position.y = -0.12; g.add(sh);
+    const her = new THREE.Group(), him = new THREE.Group();
+    her.position.set(-0.5, 0, 0.05); her.rotation.y = 0.22; him.position.set(0.52, 0, -0.02); him.rotation.y = -0.22;
+    outfits[ev](her, him, main, acc);
+    turn.add(her, him); figs.push([her, him]);
+    scene.add(g); groups.push(g); turns.push(turn);
   }
-
-  // 3 — Draped fabric + rose petals
-  {
-    const g = new THREE.Group();
-    const mkCloth = (col, w, h) => {
-      const geo = new THREE.PlaneGeometry(w, h, 36, 52);
-      const mat = new THREE.MeshPhysicalMaterial({ color: col, roughness: 0.55, sheen: 1, sheenColor: new THREE.Color('#ffffff'), sheenRoughness: 0.4, side: THREE.DoubleSide });
-      const m = new THREE.Mesh(geo, mat); m.userData.base = geo.attributes.position.array.slice(); return m;
-    };
-    const front = mkCloth('#efbfbb', 2.4, 3.6), back = mkCloth('#e8d5ae', 2.4, 3.6);
-    back.position.set(0.55, 0.2, -0.6); back.rotation.y = -0.35; front.rotation.y = 0.2;
-    tintMats[3] = [front.material];
-    g.add(back, front);
-    const petals = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 6), new THREE.MeshStandardMaterial({ color: '#e58fa0', roughness: 0.6, side: THREE.DoubleSide }), 46);
-    const pd = []; for (let i = 0; i < 46; i++) pd.push({ a: Math.random() * 6.28, r: 1.5 + Math.random(), y: Math.random() * 4 - 2, v: 0.15 + Math.random() * 0.3, s: 0.06 + Math.random() * 0.05 });
-    g.add(petals);
-    const wave = (m, t, ph) => {
-      const pos = m.geometry.attributes.position, b = m.userData.base;
-      for (let i = 0; i < pos.count; i++) {
-        const x = b[i * 3], y = b[i * 3 + 1];
-        const hang = (1.8 - y) / 3.6;
-        pos.array[i * 3 + 2] = Math.sin(x * 1.7 + t * 1.3 + ph) * 0.22 * hang + Math.sin(y * 1.2 + t * 0.9 + ph) * 0.14 * hang + Math.cos(x * 3.1 + y * 0.7 + t) * 0.05;
-        pos.array[i * 3] = x + Math.sin(y * 0.9 + t * 0.7 + ph) * 0.08 * hang;
-      }
-      pos.needsUpdate = true; m.geometry.computeVertexNormals();
-    };
-    updaters[3] = t => {
-      wave(front, t, 0); wave(back, t, 1.7);
-      pd.forEach((p, i) => { const a = p.a + t * p.v * 0.6; const y = ((p.y - t * p.v * 0.5 + 2) % 4 + 4) % 4 - 2; dummy.position.set(Math.cos(a) * p.r, y, Math.sin(a) * p.r); dummy.rotation.set(t * p.v * 3 + i, t * p.v * 2, i); dummy.scale.set(p.s, p.s * 0.25, p.s * 1.3); dummy.updateMatrix(); petals.setMatrixAt(i, dummy.matrix); });
-      petals.instanceMatrix.needsUpdate = true;
-    };
-    groups.push(g);
-  }
-
-  groups.forEach(g => scene.add(g));
-
-  // Global petal rain
-  const accents = [C('#d8a845'), C('#f2a900'), C('#c9a14a'), C('#e58fa0')];
-  const rainMat = new THREE.MeshStandardMaterial({ color: '#f2a900', roughness: 0.6, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
-  const RN = 70;
-  const rain = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 8, 6), rainMat, RN);
-  const rd = []; for (let i = 0; i < RN; i++) rd.push({ x: Math.random(), y: Math.random(), z: -4 + Math.random() * 5, v: 0.05 + Math.random() * 0.08, s: 0.05 + Math.random() * 0.05, sw: Math.random() * 6 });
-  scene.add(rain);
 
   const clamp = v => Math.max(0, Math.min(1, v));
   let last = performance.now(), time = 0, w0 = 0, h0 = 0;
+  const tanH = Math.tan(THREE.MathUtils.degToRad(15)) * 2;
   const loop = now => {
     requestAnimationFrame(loop);
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    time += dt * speed;
+    if (!still) time += dt;
     const vw = innerWidth, vh = innerHeight;
     if (vw !== w0 || vh !== h0) { w0 = vw; h0 = vh; renderer.setSize(vw, vh, false); camera.aspect = vw / vh; camera.updateProjectionMatrix(); }
-    const aspect = vw / vh, mobile = aspect < 0.9;
-    const visH = 2 * Math.tan(THREE.MathUtils.degToRad(17.5)) * 10, visW = visH * aspect;
+    const visH = tanH * 12, visW = visH * vw / vh;
     let best = 0, bestW = -1;
-    secs.forEach((sec, i) => {
-      const g = groups[i]; if (!g) return;
-      let w, x, y, base;
-      if (!mobile) {
-        const r = sec.getBoundingClientRect(), mid = vh / 2;
-        const d = r.top > mid ? (r.top - mid) / vh : r.bottom < mid ? (r.bottom - mid) / vh : 0;
-        w = clamp(1 - Math.abs(d) * 1.7); x = visW * 0.24; y = -d * visH; base = Math.max(0.7, Math.min(1.1, visW / 11));
-      } else {
-        const r = sec.querySelector('[data-spacer]').getBoundingClientRect(), sy = r.top + r.height / 2;
-        w = clamp(Math.min(sy + 0.15 * vh, 1.15 * vh - sy) / (0.35 * vh)); x = 0; y = (0.5 - sy / vh) * visH; base = Math.max(0.5, Math.min(0.8, visW / 4.6));
-      }
-      const e = w * w * (3 - 2 * w);
-      g.visible = e > 0.004;
-      if (w > bestW) { bestW = w; best = i; }
-      if (!g.visible) return;
-      g.scale.setScalar(base * e);
-      g.position.set(x + mouse.x * 0.3, y - mouse.y * 0.2, 0);
-      g.rotation.y = (1 - e) * 1.8 + mouse.x * 0.35;
-      g.rotation.x = mouse.y * 0.15;
-      updaters[i](time);
-      (tintMats[i] || []).forEach(m => m.color.lerp(tintTargets[i], 0.08));
+    secs.forEach(sec => {
+      const i = +sec.dataset.scene, g = groups[i], sp = sec.querySelector('[data-spacer]');
+      const rr = sec.getBoundingClientRect(), sw = clamp(1 - Math.abs((rr.top + rr.height / 2 - vh / 2) / vh));
+      if (sw > bestW) { bestW = sw; best = i; }
+      if (!g || !sp) return;
+      const s = sp.getBoundingClientRect(), sy = s.top + s.height / 2;
+      const w = clamp(Math.min(sy + 0.25 * vh, 1.25 * vh - sy) / (0.4 * vh)), e = w * w * (3 - 2 * w);
+      g.visible = e > 0.004; if (!g.visible) return;
+      const fit = Math.min(1.35, (visW * 0.92) / 2.6, (s.height / vh) * visH / 3.75);
+      g.scale.setScalar(fit * (0.75 + 0.25 * e));
+      g.position.set(0, (0.5 - sy / vh) * visH + 0.6 - 1.72 * fit - (1 - e) * 0.5, 0);
+      if (!drag || drag.ev !== i) { vel[i] *= 0.94; spin[i] += vel[i] + dt * autoSpin * Math.min(1, e); }
+      turns[i].rotation.y = spin[i] + (1 - e) * -1.2;
+      g.rotation.x = 0.06;
+      mains[i].color.lerp(targets[i], 0.09);
+      figs[i].forEach((f, k) => { f.position.y = Math.sin(time * 1.4 + k * 1.7) * 0.006; f.rotation.z = Math.sin(time * 0.6 + k * 2) * 0.01; });
     });
     setActive(best);
-
-    const target = best > 0 && tintTargets[best] ? tintTargets[best] : accents[best];
-    // Dark petals would vanish against the Sangeet sky, so they stay gold there.
-    rainMat.color.lerp(best === 2 ? accents[2] : target, 0.05);
-    rd.forEach((p, i) => {
-      p.y -= p.v * dt * speed * 0.6; if (p.y < -0.1) { p.y = 1.1; p.x = Math.random(); }
-      const zs = (10 - p.z) / 10;
-      dummy.position.set((p.x - 0.5) * visW * zs + Math.sin(time + p.sw) * 0.3, (p.y - 0.5) * visH * zs, p.z);
-      dummy.rotation.set(time * 1.3 + p.sw, time * 0.9 + i, p.sw);
-      dummy.scale.set(p.s, p.s * 0.3, p.s * 1.4); dummy.updateMatrix(); rain.setMatrixAt(i, dummy.matrix);
-    });
-    rain.instanceMatrix.needsUpdate = true;
     renderer.render(scene, camera);
   };
   requestAnimationFrame(loop);
