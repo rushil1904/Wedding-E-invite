@@ -23,17 +23,21 @@ nav a.on{opacity:1;background:rgba(246,239,226,.16)}
 nav a:hover{color:#f6efe2}
 @media (max-width:359px){nav{letter-spacing:.06em}nav a{padding-inline:9px}}
 nav a,.swatches button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-section{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:72px calc(22px + env(safe-area-inset-right)) calc(96px + env(safe-area-inset-bottom)) calc(22px + env(safe-area-inset-left));box-sizing:border-box}
+section{position:relative;overflow-x:clip;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:72px calc(22px + env(safe-area-inset-right)) calc(96px + env(safe-area-inset-bottom)) calc(22px + env(safe-area-inset-left));box-sizing:border-box}
+[data-scene="0"]>*{position:relative;z-index:2}
 .intro{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:560px}
 .eyebrow{font-size:12px;letter-spacing:.26em;text-transform:uppercase;text-wrap:balance}
 h1,h2{margin:0;font-family:'Cormorant Garamond',serif;font-weight:300}
 h2{font-size:clamp(64px,17vw,128px);line-height:.88}
 h2 span{font-size:.36em;font-style:italic}
 p{margin:0;font-size:17px;line-height:1.55;text-wrap:pretty}
-/* The empty stage the couple stands on; dragging it turns the turntable */
-.stage{flex:1;min-height:56vh;min-height:clamp(240px,calc(100svh - 340px),56svh);width:100%;touch-action:pan-y;cursor:grab}
-.stage:active{cursor:grabbing}
-.no3d .stage,.no3d .hint{display:none}
+/* The couple stands in an arch; scroll, pointer and tilt move them */
+.stage{position:relative;z-index:2;width:100%;max-width:560px;flex:none;height:min(64vh,620px,calc(128vw - 56px));height:min(620px,calc(128vw - 56px),clamp(240px,calc(100svh - 340px),64svh));perspective:1100px}
+.arch{position:absolute;inset:4% 13% 3%;border-radius:999px 999px 6px 6px}
+.floor{position:absolute;left:8%;right:8%;bottom:0;height:7%;border-radius:50%}
+.stage img{position:absolute;bottom:1%;left:50%;height:98%;width:auto;transform-origin:50% 100%}
+.stage .her{transform:translateX(-80%)}
+.stage .him{transform:translateX(-20%)}
 .palette{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px}
 .palette-label{font-size:12px;letter-spacing:.2em;text-transform:uppercase}
 .swatches{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
@@ -58,7 +62,7 @@ footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:72px
 <section data-scene="0" style="background:#f6efe2;color:#2a1a10;min-height:88svh;justify-content:center;gap:24px">
 <div class="eyebrow" style="letter-spacing:.3em;color:#8a5a2b">The wardrobe edit</div>
 <h1 style="font-size:clamp(56px,15vw,124px);line-height:.92">Rithika<br><span style="font-style:italic;color:#b5651d">&amp;</span> Rushil</h1>
-<p style="max-width:24em">Three celebrations, three looks.<span class="hint"> Tap a colour to dress them, drag to turn them around.</span></p>
+<p style="max-width:24em">Three celebrations, three looks. Scroll to meet each one, and tap a colour to see the other shades you can wear.</p>
 <div style="font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#5a3d22">26 &amp; 28 December</div>
 <a href="#haldi" style="font-size:12px;letter-spacing:.24em;text-transform:uppercase;border-bottom:1px solid #2a1a10;padding:16px 0 5px">Begin with Haldi ↓</a>
 </section>
@@ -69,9 +73,14 @@ footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:72px
 <h2>Haldi <span style="color:#b06a00">हल्दी</span></h2>
 <p>Bright, breezy cottons in the colours of sunshine.</p>
 </div>
-<div class="stage" data-spacer data-ev="1"></div>
+<div class="stage" data-ev="1">
+<div class="arch" style="background:linear-gradient(180deg,#f7d867,#f3c93a 70%,#e9b92a);box-shadow:inset 0 0 0 2px rgba(176,106,0,.35),0 0 0 8px rgba(255,255,255,.35)"></div>
+<div class="floor" style="background:radial-gradient(closest-side,rgba(90,60,0,.28),transparent)"></div>
+<img class="her" src="assets/web/dress-haldi-her.webp" width="1024" height="1536" alt="Woman in a marigold sharara set" loading="lazy" decoding="async" style="filter:drop-shadow(0 10px 16px rgba(60,40,0,.18))">
+<img class="him" src="assets/web/dress-haldi-him.webp" width="1024" height="1536" alt="Man in a yellow kurta" loading="lazy" decoding="async" style="filter:drop-shadow(0 10px 16px rgba(60,40,0,.18))">
+</div>
 <div class="palette">
-<div class="palette-label" style="color:#8a5a00">Wearing — <span aria-live="polite" data-picked>Marigold</span></div>
+<div class="palette-label" style="color:#8a5a00">Also lovely in — <span aria-live="polite" data-picked>Marigold</span></div>
 <div class="swatches" data-ev="1">
 <button aria-pressed="true" style="--c:#f2a900"><span></span><span>Marigold</span></button>
 <button aria-pressed="false" style="--c:#f7d23e"><span></span><span>Sunflower</span></button>
@@ -88,9 +97,14 @@ footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:72px
 <h2>Sangeet <span style="color:#d9b86a">संगीत</span></h2>
 <p>Dark, deep shades and a little shimmer for a night of dancing.</p>
 </div>
-<div class="stage" data-spacer data-ev="2"></div>
+<div class="stage" data-ev="2">
+<div class="arch" style="background:radial-gradient(ellipse 70% 60% at 50% 40%,#3a2a66,#1d1540 70%);box-shadow:inset 0 0 0 2px rgba(217,184,106,.55),0 0 60px rgba(123,72,184,.35)"></div>
+<div class="floor" style="background:radial-gradient(closest-side,rgba(0,0,0,.5),transparent)"></div>
+<img class="her" src="assets/web/dress-sangeet-her.webp" width="1024" height="1536" alt="Woman in an emerald sequinned lehenga" loading="lazy" decoding="async" style="filter:drop-shadow(0 10px 16px rgba(0,0,0,.4))">
+<img class="him" src="assets/web/dress-sangeet-him.webp" width="1024" height="1536" alt="Man in a navy velvet bandhgala" loading="lazy" decoding="async" style="filter:drop-shadow(0 10px 16px rgba(0,0,0,.4))">
+</div>
 <div class="palette">
-<div class="palette-label" style="color:#d9b86a">Wearing — <span aria-live="polite" data-picked>Midnight blue</span></div>
+<div class="palette-label" style="color:#d9b86a">Also lovely in — <span aria-live="polite" data-picked>Midnight blue</span></div>
 <div class="swatches" data-ev="2">
 <button aria-pressed="true" style="--c:#1d2a5c"><span></span><span>Midnight blue</span></button>
 <button aria-pressed="false" style="--c:#0f4d3a"><span></span><span>Bottle green</span></button>
@@ -107,9 +121,14 @@ footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:72px
 <h2>Pheras / Marriage <span style="color:#9a4a62">फेरे</span></h2>
 <p>Bright, cheerful colours — and please avoid dark shades.</p>
 </div>
-<div class="stage" data-spacer data-ev="3"></div>
+<div class="stage" data-ev="3">
+<div class="arch" style="background:linear-gradient(180deg,#fbe3df,#f3cfc9 70%,#ecc0b9);box-shadow:inset 0 0 0 2px rgba(212,175,90,.6),0 0 0 8px rgba(255,255,255,.5)"></div>
+<div class="floor" style="background:radial-gradient(closest-side,rgba(80,40,50,.25),transparent)"></div>
+<img class="her" src="assets/web/dress-pheras-her.webp" width="1024" height="1536" alt="Woman in a blush embroidered saree" loading="lazy" decoding="async" style="filter:drop-shadow(0 10px 16px rgba(80,40,50,.18))">
+<img class="him" src="assets/web/dress-pheras-him.webp" width="1024" height="1536" alt="Man in a powder-blue sherwani and gold safa" loading="lazy" decoding="async" style="filter:drop-shadow(0 10px 16px rgba(80,40,50,.18))">
+</div>
 <div class="palette">
-<div class="palette-label" style="color:#9a4a62">Wearing — <span aria-live="polite" data-picked>Rani pink</span></div>
+<div class="palette-label" style="color:#9a4a62">Also lovely in — <span aria-live="polite" data-picked>Rani pink</span></div>
 <div class="swatches" data-ev="3">
 <button aria-pressed="true" style="--c:#e0457b"><span></span><span>Rani pink</span></button>
 <button aria-pressed="false" style="--c:#f47c5e"><span></span><span>Coral</span></button>
@@ -129,18 +148,17 @@ footer{position:relative;z-index:2;background:#2a1a10;color:#f6efe2;padding:72px
 const canvas = document.getElementById('scene');
 const navLinks = document.querySelectorAll('nav a');
 const secs = document.querySelectorAll('[data-scene]');
-// Reduced motion: no auto-spin or sway; dragging still turns the couple.
+const stages = [...document.querySelectorAll('.stage')].map(st => ({ i: +st.dataset.ev, st, her: st.querySelector('.her'), him: st.querySelector('.him'), arch: st.querySelector('.arch') }));
+// Reduced motion: the couple stands still and the petals stop falling; only the fade-in remains.
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const autoSpin = still ? 0 : 0.25;
-const spin = [0, 0, 0, 0], vel = [0, 0, 0, 0];
-let THREE, targets, drag = null, active = -1;
+const depth = still ? 0 : 1;
+const mouse = { x: 0 }, pulse = [0, 0, 0, 0];
+let tx = 0, active = -1, THREE, targets, burst = null, particles = null;
 
-document.querySelectorAll('.stage').forEach(st => st.addEventListener('pointerdown', e => { drag = { ev: +st.dataset.ev, x: e.clientX }; }));
-addEventListener('pointermove', e => { if (!drag) return; const dx = e.clientX - drag.x; drag.x = e.clientX; spin[drag.ev] += dx * 0.012; vel[drag.ev] = dx * 0.012; });
-addEventListener('pointerup', () => { drag = null; });
-addEventListener('pointercancel', () => { drag = null; });
+addEventListener('pointermove', e => { mouse.x = e.clientX / innerWidth - 0.5; });
+addEventListener('deviceorientation', e => { if (e.gamma != null) mouse.x = Math.max(-0.5, Math.min(0.5, e.gamma / 60)); });
 
-// Swatches work without the 3D scene; they just also redress the couple once it loads.
+// Swatches work without the 3D scene; they just also tint the petals once it loads.
 const colourOf = btn => btn.style.getPropertyValue('--c').trim();
 document.querySelectorAll('.swatches').forEach(group => {
   const ev = +group.dataset.ev;
@@ -149,7 +167,9 @@ document.querySelectorAll('.swatches').forEach(group => {
     const btn = e.target.closest('button'); if (!btn) return;
     group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === btn));
     label.textContent = btn.lastElementChild.textContent;
-    if (targets) { targets[ev] = new THREE.Color(colourOf(btn)); vel[ev] += 0.12; }
+    pulse[ev] = 1; burst = { t: 0 };
+    // Sangeet petals stay gold: a dark petal would vanish against the night sky.
+    if (targets && ev !== 2) targets[ev] = new THREE.Color(colourOf(btn));
   });
 });
 
@@ -159,218 +179,91 @@ const setActive = i => {
   navLinks.forEach((a, k) => a.classList.toggle('on', k + 1 === i));
 };
 
-init().catch(e => { console.warn('3D failed', e); document.body.classList.add('no3d'); });
+const clamp = v => Math.max(0, Math.min(1, v));
+let last = performance.now(), time = 0;
+const loop = now => {
+  requestAnimationFrame(loop);
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (!still) time += dt;
+  const vh = innerHeight;
+  tx += (mouse.x - tx) * 0.06;
+  let best = 0, bestW = -1;
+  secs.forEach(sec => {
+    const r = sec.getBoundingClientRect(), w = clamp(1 - Math.abs((r.top + r.height / 2 - vh / 2) / vh));
+    if (w > bestW) { bestW = w; best = +sec.dataset.scene; }
+  });
+  stages.forEach(({ i, st, her, him, arch }) => {
+    const sr = st.getBoundingClientRect(), p = (sr.top + sr.height / 2 - vh / 2) / vh;
+    if (Math.abs(p) > 1.3) return;
+    const e = clamp(1 - Math.abs(p) * 1.15), ee = e * e * (3 - 2 * e), off = (1 - ee) * depth;
+    const pu = pulse[i] *= 0.92, sc = 0.9 + 0.1 * ee + pu * 0.03;
+    const sway = Math.sin(time * 0.9 + i) * 0.6 * depth, rx = tx * 14 * depth;
+    her.style.transform = `translateX(-80%) translate3d(${-tx * 14 * depth - off * 50}px, ${p * 26 * depth + off * 30}px, 40px) rotateY(${rx + 6 + off * 30}deg) rotate(${sway * 0.4}deg) scale(${sc})`;
+    him.style.transform = `translateX(-20%) translate3d(${-tx * 8 * depth + off * 50}px, ${p * 16 * depth + off * 30}px, 0px) rotateY(${rx - 6 - off * 30}deg) rotate(${-sway * 0.4}deg) scale(${sc})`;
+    her.style.opacity = him.style.opacity = Math.min(1, ee * 1.3).toFixed(3);
+    arch.style.transform = `translate3d(${tx * 18 * depth}px, ${p * 50 * depth}px, -60px) scale(${0.94 + 0.06 * ee + pu * 0.04})`;
+  });
+  setActive(best);
+  if (particles) particles(dt, best);
+};
+requestAnimationFrame(loop);
 
+init().catch(e => console.warn('3D failed', e));
+
+// Falling petals and gold sparks behind the couple, tinted by each celebration's colour.
 async function init() {
   THREE = await import('https://esm.sh/three@0.160.0');
-  const { RoomEnvironment } = await import('https://esm.sh/three@0.160.0/examples/jsm/environments/RoomEnvironment.js');
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene();
-  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
-  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100); camera.position.set(0, 0.6, 12);
-  scene.add(new THREE.HemisphereLight(0xfff6ea, 0x5a4636, 0.9));
-  const key = new THREE.DirectionalLight(0xffffff, 1.7); key.position.set(3, 6, 6); scene.add(key);
-  const rim = new THREE.DirectionalLight(0xffe2b8, 1.0); rim.position.set(-4, 3, -4); scene.add(rim);
-
-  const C = c => new THREE.Color(c), V = (x, y, z) => new THREE.Vector3(x, y, z);
-  const gold = new THREE.MeshStandardMaterial({ color: '#d4a84a', metalness: 1, roughness: 0.28 });
-  const fabric = (c, silk) => new THREE.MeshPhysicalMaterial({ color: c, roughness: silk ? 0.38 : 0.62, sheen: 1, sheenColor: C('#ffffff'), sheenRoughness: silk ? 0.3 : 0.55, side: THREE.DoubleSide });
-  const lathe = (pts, mat, fz = 0.78) => { const m = new THREE.Mesh(new THREE.LatheGeometry(pts.map(p => new THREE.Vector2(p[0], p[1])), 56), mat); m.scale.z = fz; return m; };
-  const pleat = (m, amt, n, y0, y1) => {
-    const p = m.geometry.attributes.position;
-    for (let i = 0; i < p.count; i++) {
-      const x = p.getX(i), y = p.getY(i), z = p.getZ(i), t = Math.max(0, Math.min(1, (y0 - y) / (y0 - y1)));
-      const f = 1 + amt * t * Math.sin(Math.atan2(z, x) * n);
-      p.setX(i, x * f); p.setZ(i, z * f);
-    }
-    m.geometry.computeVertexNormals();
-  };
-  const ribbon = (pts, w, mat) => {
-    const curve = new THREE.CatmullRomCurve3(pts.map(p => V(...p))), N = 48, pos = [], idx = [];
-    for (let i = 0; i <= N; i++) {
-      const u = i / N, p = curve.getPointAt(u), t = curve.getTangentAt(u);
-      let out = V(p.x, 0, p.z); if (out.lengthSq() < 1e-4) out.set(0, 0, 1); out.normalize();
-      const side = V().crossVectors(t, out).normalize().multiplyScalar(w / 2);
-      p.addScaledVector(out, 0.012);
-      pos.push(p.x - side.x, p.y - side.y, p.z - side.z, p.x + side.x, p.y + side.y, p.z + side.z);
-      if (i < N) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
-    }
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
-    return new THREE.Mesh(g, mat);
-  };
-  const add = (parent, ...ms) => { ms.forEach(m => parent.add(m)); return ms[0]; };
-
-  const skinF = new THREE.MeshPhysicalMaterial({ color: '#c08660', roughness: 0.5, sheen: 0.5, sheenColor: C('#ffd2b8'), sheenRoughness: 0.6 });
-  const skinM = new THREE.MeshPhysicalMaterial({ color: '#a87250', roughness: 0.52, sheen: 0.4, sheenColor: C('#ffd2b8'), sheenRoughness: 0.6 });
-  const hairM = new THREE.MeshPhysicalMaterial({ color: '#16100c', roughness: 0.4, sheen: 0.6, sheenColor: C('#6a4a3a') });
-  const kumkum = new THREE.MeshStandardMaterial({ color: '#b3122a', roughness: 0.4 });
-  const tube = (pts, radii, mat, seg = 32, rad = 18, caps = true) => {
-    const curve = new THREE.CatmullRomCurve3(pts.map(p => V(...p)));
-    const fr = curve.computeFrenetFrames(seg, false), pos = [], idx = [];
-    const rAt = u => { const f = u * (radii.length - 1), i = Math.min(radii.length - 2, Math.floor(f)), t = f - i, s = t * t * (3 - 2 * t); return radii[i] + (radii[i + 1] - radii[i]) * s; };
-    for (let i = 0; i <= seg; i++) {
-      const u = i / seg, p = curve.getPointAt(u), N = fr.normals[i], B = fr.binormals[i], r = rAt(u);
-      for (let j = 0; j <= rad; j++) { const an = j / rad * Math.PI * 2, c = Math.cos(an) * r, s = Math.sin(an) * r; pos.push(p.x + N.x * c + B.x * s, p.y + N.y * c + B.y * s, p.z + N.z * c + B.z * s); }
-      if (i < seg) for (let j = 0; j < rad; j++) { const q = i * (rad + 1) + j, w = q + rad + 1; idx.push(q, w, q + 1, w, w + 1, q + 1); }
-    }
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
-    const grp = new THREE.Group(); grp.add(new THREE.Mesh(g, mat));
-    if (caps) [[0, radii[0]], [1, radii[radii.length - 1]]].forEach(([u, r]) => { const s = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 12), mat); s.position.copy(curve.getPointAt(u)); grp.add(s); });
-    return grp;
-  };
-  const sph = (r, mat, x, y, z, sx = 1, sy = 1, sz = 1) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 20, 16), mat); m.position.set(x, y, z); m.scale.set(sx, sy, sz); return m; };
-  const bangle = (fig, p, q, n = 2) => {
-    const d = V(...q).sub(V(...p)).normalize();
-    for (let k = 0; k < n; k++) { const t = new THREE.Mesh(new THREE.TorusGeometry(0.036, 0.0065, 8, 28), gold); t.position.copy(V(...p).addScaledVector(d, -0.03 - k * 0.018)); t.lookAt(t.position.clone().add(d)); fig.add(t); }
-  };
-  const head = (fig, female) => {
-    const skin = female ? skinF : skinM;
-    const g = new THREE.SphereGeometry(0.135, 64, 48), p = g.attributes.position, v = V();
-    for (let i = 0; i < p.count; i++) {
-      v.fromBufferAttribute(p, i); const n = v.clone().normalize();
-      let x = v.x * (female ? 1 : 1.05), y = v.y * 1.24, z = v.z;
-      if (n.y < 0) { const k = Math.pow(-n.y, 1.4); x *= 1 - (female ? 0.32 : 0.24) * k; z *= 1 - 0.12 * k; }
-      if (n.z > 0) {
-        const fz = n.z, ax = Math.abs(n.x);
-        z += 0.03 * Math.exp(-((n.x / 0.1) ** 2 + ((n.y + 0.04) / 0.2) ** 2)) * fz;
-        z += 0.012 * Math.exp(-((n.x / 0.25) ** 2 + ((n.y + 0.74) / 0.13) ** 2)) * fz;
-        z += 0.009 * Math.exp(-(((n.y - 0.22) / 0.07) ** 2)) * fz ** 3;
-        z -= 0.013 * Math.exp(-(((ax - 0.32) / 0.11) ** 2 + ((n.y - 0.1) / 0.08) ** 2)) * fz;
-        z += 0.007 * Math.exp(-((n.x / 0.13) ** 2 + ((n.y + 0.42) / 0.05) ** 2)) * fz;
-        x += Math.sign(n.x) * 0.006 * Math.exp(-(((ax - 0.62) / 0.15) ** 2 + ((n.y + 0.05) / 0.12) ** 2));
-      }
-      p.setXYZ(i, x, y, z);
-    }
-    g.computeVertexNormals();
-    const hd = new THREE.Mesh(g, skin); hd.position.set(0, 3.18, 0.01); hd.rotation.x = 0.06; fig.add(hd);
-    [-1, 1].forEach(s => fig.add(sph(0.03, skin, s * (female ? 0.128 : 0.136), 3.16, -0.01, 0.45, 1, 0.8)));
-    fig.add(tube([[0, 2.8, -0.01], [0, 2.92, 0], [0, 3.04, 0.012]], female ? [0.068, 0.054, 0.05] : [0.08, 0.066, 0.06], skin, 8, 16, false));
-    if (female) {
-      fig.add(sph(0.139, hairM, 0, 3.205, -0.024, 1.0, 1.2, 1.03));
-      fig.add(sph(0.075, hairM, 0, 3.12, -0.17, 1.1, 0.9, 0.85));
-      fig.add(sph(0.008, kumkum, 0, 3.235, 0.13));
-      fig.add(sph(0.014, gold, 0, 3.29, 0.112));
-      [-1, 1].forEach(s => { const c = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.035, 16), gold); c.position.set(s * 0.13, 3.06, 0); fig.add(c, sph(0.008, gold, s * 0.13, 3.09, 0)); });
-      const nk = new THREE.Mesh(new THREE.TorusGeometry(0.095, 0.009, 8, 40), gold); nk.position.set(0, 2.83, 0.03); nk.rotation.x = Math.PI / 2 - 0.4; nk.scale.y = 0.85; fig.add(nk, sph(0.02, gold, 0, 2.76, 0.105, 1, 1.3, 0.6));
-    } else {
-      fig.add(sph(0.14, hairM, 0, 3.235, -0.02, 1.05, 1.08, 1.04));
-    }
-  };
-  const shoulders = (fig, mat, r, w) => [-1, 1].forEach(s => fig.add(sph(r, mat, s * w, 2.74, 0)));
-  const armsHer = (fig, blouse) => {
-    const R = [[0.29, 2.74, 0], [0.36, 2.42, -0.02], [0.39, 2.2, -0.01], [0.42, 1.95, 0.04], [0.43, 1.78, 0.07]];
-    const L = [[-0.29, 2.74, 0], [-0.38, 2.45, -0.06], [-0.45, 2.22, -0.08], [-0.36, 2.02, 0.04], [-0.24, 1.92, 0.13]];
-    [R, L].forEach(path => fig.add(tube(path, [0.054, 0.048, 0.039, 0.034, 0.029], skinF)));
-    fig.add(tube([[0.43, 1.78, 0.07], [0.435, 1.68, 0.09], [0.43, 1.6, 0.1]], [0.027, 0.033, 0.012], skinF, 12, 12));
-    fig.add(tube([[-0.24, 1.92, 0.13], [-0.19, 1.88, 0.16], [-0.15, 1.86, 0.17]], [0.027, 0.032, 0.012], skinF, 12, 12));
-    bangle(fig, R[4], R[3], 3); bangle(fig, L[4], L[3], 3);
-    [R, L].forEach(path => fig.add(tube([path[0], [(path[0][0] + path[1][0]) / 2, 2.6, -0.01], path[1]], [0.066, 0.06, 0.054], blouse, 10, 16, false)));
-    shoulders(fig, blouse, 0.068, 0.29);
-  };
-  const armsHim = (fig, sleeve) => {
-    [-1, 1].forEach(s => fig.add(tube([[s * 0.33, 2.74, 0], [s * 0.38, 2.45, 0.02], [s * 0.36, 2.24, 0.1], [s * 0.2, 2.26, 0.24], [s * 0.045, 2.31, 0.29]], [0.075, 0.068, 0.06, 0.054, 0.05], sleeve)));
-    fig.add(tube([[0, 2.29, 0.3], [0, 2.4, 0.31], [0, 2.5, 0.31], [0, 2.57, 0.3]], [0.046, 0.05, 0.038, 0.012], skinM, 14, 14));
-    shoulders(fig, sleeve, 0.085, 0.32);
-  };
-  const legs = (fig, mat, top) => {
-    [-1, 1].forEach(s => {
-      fig.add(tube([[s * 0.11, top, 0], [s * 0.11, top * 0.55, 0.02], [s * 0.1, 0.12, 0]], [0.1, 0.074, 0.058], mat, 16, 16, false));
-      fig.add(sph(0.07, gold, s * 0.1, 0.04, 0.06, 0.9, 0.45, 1.9));
-    });
-  };
-  const buttons = (fig, y0, y1, z) => { for (let i = 0; i < 6; i++) fig.add(sph(0.018, gold, 0, y0 + (y1 - y0) * i / 5, z)); };
-  const band = (fig, r, y, fz) => { const t = new THREE.Mesh(new THREE.TorusGeometry(r, 0.022, 8, 64), gold); t.rotation.x = Math.PI / 2; t.scale.y = fz; t.position.set(0, y, 0); fig.add(t); };
-  const chest = fig => { fig.add(lathe([[0.25, 2.58], [0.28, 2.66], [0.24, 2.8], [0.08, 2.87], [0.07, 2.9]], skinF, 0.74)); };
-  const midriff = fig => fig.add(lathe([[0.185, 1.8], [0.195, 1.88], [0.21, 1.98]], skinF, 0.76));
-  const choliP = [[0.19, 1.94], [0.205, 1.98], [0.255, 2.3], [0.28, 2.58], [0.275, 2.65], [0.25, 2.66]];
-  const dupattaP = [[-0.17, 1.15, 0.3], [-0.21, 1.9, 0.27], [-0.25, 2.6, 0.2], [-0.27, 2.82, 0.0], [-0.26, 2.6, -0.21], [-0.3, 1.6, -0.3], [-0.36, 0.55, -0.36]];
-  const topM = (hem, hemR, collar) => [[hemR, hem], [hemR * 0.92 + 0.02, (hem + 1.45) / 2], [0.29, 1.45], [0.27, 1.85], [0.3, 2.35], [0.33, 2.7], [0.25, 2.82], [0.085, 2.9], [0.08, collar ? 2.99 : 2.92]];
-
-  const outfits = {
-    // Haldi — kurta and sharara for her, kurta for him
-    1: (her, him, main, acc) => {
-      add(her, lathe([[0.36, 1.0], [0.31, 1.4], [0.22, 1.8], [0.26, 2.3], [0.28, 2.58], [0.275, 2.65], [0.25, 2.66]], main)); chest(her);
-      const sh = add(her, lathe([[0.02, 1.12], [0.25, 1.12], [0.3, 0.8], [0.5, 0.3], [0.6, 0.04]], acc, 0.9)); pleat(sh, 0.07, 14, 1.0, 0.04);
-      add(her, ribbon(dupattaP, 0.3, main)); armsHer(her, main); head(her, true);
-      add(him, lathe(topM(1.0, 0.34), main)); legs(him, acc, 1.1); armsHim(him, main); head(him);
-    },
-    // Sangeet — lehenga for her, bandhgala for him
-    2: (her, him, main, acc) => {
-      add(her, lathe(choliP, main)); chest(her); midriff(her);
-      const sk = add(her, lathe([[0.02, 1.86], [0.2, 1.86], [0.22, 1.7], [0.34, 1.2], [0.55, 0.6], [0.74, 0.12], [0.78, 0.03]], main, 0.9)); pleat(sk, 0.06, 18, 1.6, 0.03);
-      band(her, 0.77, 0.07, 0.9); add(her, ribbon(dupattaP, 0.32, acc)); armsHer(her, main); head(her, true);
-      add(him, lathe(topM(1.35, 0.3, true), main)); buttons(him, 1.95, 2.72, 0.25); legs(him, fabric('#1d1b2a'), 1.45); armsHim(him, main); head(him);
-    },
-    // Pheras — lehenga for her, sherwani and safa for him
-    3: (her, him, main, acc) => {
-      add(her, lathe(choliP, main)); chest(her); midriff(her);
-      const sk = add(her, lathe([[0.02, 1.86], [0.2, 1.86], [0.22, 1.7], [0.34, 1.2], [0.55, 0.6], [0.72, 0.12], [0.76, 0.03]], main, 0.9)); pleat(sk, 0.05, 20, 1.6, 0.03);
-      band(her, 0.75, 0.07, 0.9); add(her, ribbon(dupattaP, 0.34, acc)); armsHer(her, main); head(her, true);
-      add(him, lathe(topM(0.75, 0.38, true), main)); buttons(him, 1.6, 2.72, 0.25); legs(him, fabric('#f3ead6'), 0.8); armsHim(him, main); head(him);
-      const safa = fabric('#d9b86a', true);
-      [3.25, 3.31, 3.36].forEach((y, i) => { const t = new THREE.Mesh(new THREE.TorusGeometry(0.15 - i * 0.022, 0.05, 12, 32), safa); t.rotation.x = Math.PI / 2 + 0.12; t.position.set(0, y, -0.01); him.add(t); });
-      him.add(sph(0.13, safa, 0, 3.38, -0.02, 1, 0.6, 1));
-      him.add(ribbon([[0, 3.3, -0.17], [0.02, 3.0, -0.22], [0.04, 2.6, -0.24]], 0.12, safa));
-    }
-  };
-  const figs = [null];
-  const accents = [null, '#f6eedb', '#c9a14a', '#e8d5ae'];
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100); camera.position.set(0, 0, 10);
+  scene.add(new THREE.HemisphereLight(0xfff6ea, 0x664433, 1.4));
+  const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(2, 4, 6); scene.add(key);
+  const C = c => new THREE.Color(c);
   // Start from whichever swatch is pressed, so a tap made while three.js loaded is kept.
-  targets = [null, ...[...document.querySelectorAll('.swatches')].map(g => C(colourOf(g.querySelector('[aria-pressed=true]'))))];
-  const mains = [], groups = [null], turns = [null];
+  const pressed = [...document.querySelectorAll('.swatches')].map(g => C(colourOf(g.querySelector('[aria-pressed=true]'))));
+  targets = [C('#d8a845'), pressed[0], C('#c9a14a'), pressed[2]];
 
-  const shadowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); const g = x.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, 'rgba(0,0,0,.35)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); })();
-  for (let ev = 1; ev <= 3; ev++) {
-    const g = new THREE.Group(), turn = new THREE.Group(); g.add(turn);
-    const main = fabric(targets[ev], ev === 2), acc = fabric(accents[ev], true);
-    mains[ev] = main;
-    const ped = new THREE.Mesh(new THREE.CylinderGeometry(1.18, 1.24, 0.1, 64), new THREE.MeshStandardMaterial({ color: ev === 2 ? '#2a2140' : '#efe7da', roughness: 0.35 }));
-    ped.position.y = -0.05; turn.add(ped);
-    const rimT = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.018, 8, 96), gold); rimT.rotation.x = Math.PI / 2; turn.add(rimT);
-    const sh = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
-    sh.rotation.x = -Math.PI / 2; sh.position.y = -0.12; g.add(sh);
-    const her = new THREE.Group(), him = new THREE.Group();
-    her.position.set(-0.5, 0, 0.05); her.rotation.y = 0.22; him.position.set(0.52, 0, -0.02); him.rotation.y = -0.22;
-    outfits[ev](her, him, main, acc);
-    turn.add(her, him); figs.push([her, him]);
-    scene.add(g); groups.push(g); turns.push(turn);
-  }
+  const N = 90;
+  const mat = new THREE.MeshStandardMaterial({ color: '#d8a845', roughness: 0.55, metalness: 0, side: THREE.DoubleSide });
+  const petals = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 6), mat, N); scene.add(petals);
+  const sparkMat = new THREE.MeshStandardMaterial({ color: '#e8c770', metalness: 1, roughness: 0.2, emissive: '#6a4a10', emissiveIntensity: 0.4 });
+  const sparks = new THREE.InstancedMesh(new THREE.OctahedronGeometry(1, 0), sparkMat, 40); scene.add(sparks);
+  const P = []; for (let i = 0; i < N; i++) P.push({ x: Math.random(), y: Math.random(), z: -5 + Math.random() * 6, v: 0.04 + Math.random() * 0.07, s: 0.05 + Math.random() * 0.06, w: Math.random() * 6.28 });
+  const S = []; for (let i = 0; i < 40; i++) S.push({ x: Math.random(), y: Math.random(), z: -6 + Math.random() * 5, s: 0.03 + Math.random() * 0.04, w: Math.random() * 6.28 });
+  const dummy = new THREE.Object3D();
+  // Per scene (welcome, Haldi, Sangeet, Pheras): petal proportions and how much the sparks show.
+  const shapes = [[1.4, 0.3, 1], [1.4, 0.3, 1], [1, 1, 1], [1.5, 0.25, 1.1]];
+  const sparkAmt = [0.3, 0.2, 1, 0.35];
+  const shape = [1.4, 0.3, 1];
+  const visH = 2 * Math.tan(THREE.MathUtils.degToRad(17.5)) * 10;
+  let w0 = 0, h0 = 0, sAmt = 0.3;
 
-  const clamp = v => Math.max(0, Math.min(1, v));
-  let last = performance.now(), time = 0, w0 = 0, h0 = 0;
-  const tanH = Math.tan(THREE.MathUtils.degToRad(15)) * 2;
-  const loop = now => {
-    requestAnimationFrame(loop);
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    if (!still) time += dt;
+  particles = (dt, best) => {
     const vw = innerWidth, vh = innerHeight;
     if (vw !== w0 || vh !== h0) { w0 = vw; h0 = vh; renderer.setSize(vw, vh, false); camera.aspect = vw / vh; camera.updateProjectionMatrix(); }
-    const visH = tanH * 12, visW = visH * vw / vh;
-    let best = 0, bestW = -1;
-    secs.forEach(sec => {
-      const i = +sec.dataset.scene, g = groups[i], sp = sec.querySelector('[data-spacer]');
-      const rr = sec.getBoundingClientRect(), sw = clamp(1 - Math.abs((rr.top + rr.height / 2 - vh / 2) / vh));
-      if (sw > bestW) { bestW = sw; best = i; }
-      if (!g || !sp) return;
-      const s = sp.getBoundingClientRect(), sy = s.top + s.height / 2;
-      const w = clamp(Math.min(sy + 0.25 * vh, 1.25 * vh - sy) / (0.4 * vh)), e = w * w * (3 - 2 * w);
-      g.visible = e > 0.004; if (!g.visible) return;
-      const fit = Math.min(1.35, (visW * 0.92) / 2.6, (s.height / vh) * visH / 3.75);
-      g.scale.setScalar(fit * (0.75 + 0.25 * e));
-      g.position.set(0, (0.5 - sy / vh) * visH + 0.6 - 1.72 * fit - (1 - e) * 0.5, 0);
-      if (!drag || drag.ev !== i) { vel[i] *= 0.94; spin[i] += vel[i] + dt * autoSpin * Math.min(1, e); }
-      turns[i].rotation.y = spin[i] + (1 - e) * -1.2;
-      g.rotation.x = 0.06;
-      mains[i].color.lerp(targets[i], 0.09);
-      figs[i].forEach((f, k) => { f.position.y = Math.sin(time * 1.4 + k * 1.7) * 0.006; f.rotation.z = Math.sin(time * 0.6 + k * 2) * 0.01; });
+    mat.color.lerp(targets[best], 0.06);
+    for (let k = 0; k < 3; k++) shape[k] += (shapes[best][k] - shape[k]) * 0.05;
+    sAmt += (sparkAmt[best] - sAmt) * 0.05;
+    const visW = visH * vw / vh, fall = still ? 0 : dt;
+    if (burst && (burst.t += dt) > 1.5) burst = null;
+    P.forEach((q, i) => {
+      q.y -= q.v * fall * (burst ? 3 : 1); if (q.y < -0.1) { q.y = 1.1; q.x = Math.random(); }
+      const zs = (10 - q.z) / 10;
+      dummy.position.set((q.x - 0.5) * visW * zs + Math.sin(time * 0.8 + q.w) * 0.35 - tx * (q.z + 5) * 0.3, (q.y - 0.5) * visH * zs, q.z);
+      dummy.rotation.set(time * 1.2 + q.w, time * 0.8 + i, q.w);
+      dummy.scale.set(q.s * shape[0], q.s * shape[1], q.s * shape[2]); dummy.updateMatrix(); petals.setMatrixAt(i, dummy.matrix);
     });
-    setActive(best);
+    petals.instanceMatrix.needsUpdate = true;
+    S.forEach((q, i) => {
+      const zs = (10 - q.z) / 10, tw = 0.5 + 0.5 * Math.sin(time * 2.5 + q.w * 3);
+      dummy.position.set((q.x - 0.5) * visW * zs - tx * 0.6, (q.y - 0.5) * visH * zs + Math.sin(time * 0.5 + q.w) * 0.15, q.z);
+      dummy.rotation.set(time + q.w, time * 1.4, 0); dummy.scale.setScalar(q.s * sAmt * (0.4 + tw)); dummy.updateMatrix(); sparks.setMatrixAt(i, dummy.matrix);
+    });
+    sparks.instanceMatrix.needsUpdate = true;
     renderer.render(scene, camera);
   };
-  requestAnimationFrame(loop);
 }
 </script>
 </body>
